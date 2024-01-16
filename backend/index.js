@@ -2,8 +2,19 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
+var usuarioRoute = require('./routes/usuario');
+var tipo_servicioRoute = require('./routes/tipoServicio');
+var servicioRoute = require('./routes/servicio');
+var ganadoRoute = require('./routes/ganado');
+var lecheRoute = require('./routes/leche');
+var padreRoute = require('./routes/padres');
+var ventasRoute = require('./routes/ventas');
+var tmpventasRoute = require('./routes/tempVenta');
+var salidaRoute = require('./routes/salida');
+var tmpsalidaRoute = require('./routes/tempSalida');
+var trasladoRoute = require('./routes/traslado');
 
-//var usuarioRoute = require('./routes/usuario');
+const cookieSession = require("cookie-session");
 
 app.set('port', process.env.PORT || 8080);
 var corsOptions = {
@@ -30,7 +41,17 @@ app.use(
     })
 )
 
-//app.use('/usuario', usuarioRoute);
+app.use('/usuario', usuarioRoute);
+app.use('/tipoServicio', tipo_servicioRoute);
+app.use('/servicio', servicioRoute);
+app.use('/ganado', ganadoRoute);
+app.use('/leche', lecheRoute);
+app.use('/padres', padreRoute);
+app.use('/venta', ventasRoute);
+app.use('/tmpVenta', tmpventasRoute);
+app.use('/salida', salidaRoute);
+app.use('/tmpSalida', tmpsalidaRoute);
+app.use('/traslado', trasladoRoute);
 
 app.listen(app.get('port'), () => {
     console.log('Port:', app.get('port'));
