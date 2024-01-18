@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT Id_leche, Fecha, Produccion_diaria, Id_ganado FROM Leche;',
+    mysqlconexion.query('SELECT id, Fecha, Produccion_diaria, Id_ganado FROM Leche;',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('select Id_leche, Fecha, Produccion_diaria, Id_ganado FROM Leche WHERE Id_leche=?', 
+    mysqlconexion.query('select id, Fecha, Produccion_diaria, Id_ganado FROM Leche WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -73,7 +73,7 @@ router.put('/:id', (req,res)=>{
         produccion: req.body.Produccion_diaria,
         ganado: req.body.Id_ganado
     };
-    mysqlconexion.query(`UPDATE leche SET Fecha=?, Produccion_diaria=?, Id_ganado=? WHERE Id_leche=?`,
+    mysqlconexion.query(`UPDATE leche SET Fecha=?, Produccion_diaria=?, Id_ganado=? WHERE id=?`,
         [leche.fecha, leche.produccion, leche.ganado, id], 
         (error,rows,fields)=>{
             if(!error){
@@ -96,7 +96,7 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM leche WHERE Id_leche=?',[id], (error,rows,fields)=>{
+    mysqlconexion.query('DELETE FROM leche WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
             //res.json(rows);
             res.send({

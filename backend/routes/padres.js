@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT Id_relacion, Id_ganado_madre, Tipo_nacimiento, Id_ganado_padre, Id_ganado_hijo FROM relacion_padres',
+    mysqlconexion.query('SELECT id, Id_ganado_madre, Tipo_nacimiento, Id_ganado_padre, Id_ganado_hijo FROM relacion_padres',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT Id_relacion, Id_ganado_madre, Tipo_nacimiento, Id_ganado_padre, Id_ganado_hijo FROM relacion_padres WHERE Id_relacion=?', 
+    mysqlconexion.query('SELECT id, Id_ganado_madre, Tipo_nacimiento, Id_ganado_padre, Id_ganado_hijo FROM relacion_padres WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -77,7 +77,7 @@ router.put('/:id', (req,res)=>{
         hijo: req.body.Id_ganado_hijo
     };
     mysqlconexion.query(`UPDATE relacion_padres SET Id_ganado_madre=?, Tipo_nacimiento=?, Id_ganado_padre=?, Id_ganado_hijo=?
-    WHERE Id_relacion=?`,
+    WHERE id=?`,
         [relacion.madre, relacion.nacimiento, relacion.padre, relacion.hijo, id], 
         (error,rows,fields)=>{
             if(!error){
@@ -100,7 +100,7 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM relacion_padres WHERE Id_relacion=?',[id], (error,rows,fields)=>{
+    mysqlconexion.query('DELETE FROM relacion_padres WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
             //res.json(rows);
             res.send({

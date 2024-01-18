@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT Id_traslado, Finca_origen, Finca_destino, Fecha, Id_ganado FROM traslado',
+    mysqlconexion.query('SELECT id, Finca_origen, Finca_destino, Fecha, Id_ganado FROM traslado',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT Id_traslado, Finca_origen, Finca_destino, Fecha, Id_ganado FROM traslado WHERE Id_traslado=?', 
+    mysqlconexion.query('SELECT id, Finca_origen, Finca_destino, Fecha, Id_ganado FROM traslado WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -77,7 +77,7 @@ router.put('/:id', (req,res)=>{
         Id_ganado: req.body.Id_ganado
     };
     mysqlconexion.query(`UPDATE traslado SET Finca_origen=?, Finca_destino=?, Fecha=?, Id_ganado=?
-    WHERE Id_traslado=?`,
+    WHERE id=?`,
     [traslado.Finca_origen, traslado.Finca_destino, traslado.Fecha, traslado.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
@@ -100,7 +100,7 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM traslado WHERE Id_traslado=?',[id], (error,rows,fields)=>{
+    mysqlconexion.query('DELETE FROM traslado WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
             //res.json(rows);
             res.send({

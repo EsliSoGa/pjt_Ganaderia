@@ -36,10 +36,10 @@ router.post('/signup', expressAsyncHandler(async(req, res) => {
 router.post('/in', expressAsyncHandler(async(req, res) => {
     const correo = req.body.correo;
     const contrasena = req.body.contrasena;
-    mysql.query("SELECT id_usuario, rol, nombre_usuario, correo, contrasena"
+    mysql.query("SELECT id, rol, nombre_usuario, correo, contrasena"
     + " FROM usuario as u"  
     + " INNER JOIN roles as r " 
-    + "ON u.id_rol = r.id_rol "
+    + "ON u.id_rol = r.id "
     + "WHERE u.correo = ?; ", [correo], async function(error, results, fields){
         if (error) {        
                 res.send({
@@ -52,7 +52,7 @@ router.post('/in', expressAsyncHandler(async(req, res) => {
                 const compare = await bcrypt.compare(contrasena, results[0].contrasena)
                 if(compare){
                     const user = {
-                        id_usuario: results[0].id_usuario,
+                        id: results[0].id,
                         rol: results[0].rol,
                         nombre_usuario: results[0].nombre_usuario,
                         correo: results[0].correo
@@ -62,7 +62,7 @@ router.post('/in', expressAsyncHandler(async(req, res) => {
                     res.send({
                         code:200,
                         success:"Inicio de sesión correctamente",
-                        id_usuario: results[0].id_usuario,
+                        id: results[0].id,
                         rol: results[0].rol,
                         nombre_usuario: results[0].nombre_usuario,
                         correo: results[0].correo,
@@ -106,10 +106,10 @@ router.post('/create', expressAsyncHandler(async(req, res) => {
 }));
 
 router.get('/', expressAsyncHandler(async(req, res) => {
-    mysql.query(`SELECT id_usuario, nombre_usuario, contrasena, correo, rol 
+    mysql.query(`SELECT id, nombre_usuario, contrasena, correo, rol 
     FROM usuario u 
     INNER JOIN roles AS r 
-    ON U.id_rol = R.id_rol`, async (error, rows, fields) => {
+    ON U.id_rol = R.id`, async (error, rows, fields) => {
         if(error){
             res.send({message: "Error"});
         } else {
@@ -120,10 +120,10 @@ router.get('/', expressAsyncHandler(async(req, res) => {
 
 router.get('/:id', expressAsyncHandler(async(req, res) => {
     const { id } = req.params; 
-    mysql.query(`SELECT id_usuario, nombre_usuario, contrasena, correo, rol 
+    mysql.query(`SELECT id, nombre_usuario, contrasena, correo, rol 
     FROM usuario u 
     INNER JOIN roles AS r 
-    ON U.id_rol = R.id_rol WHERE id_usuario = ?`, [id] ,async (error, rows, fields) => {
+    ON U.id_rol = R.id WHERE id = ?`, [id] ,async (error, rows, fields) => {
         if(error){
             res.send({message: "Error"});
         } else {
@@ -143,7 +143,7 @@ router.put('/:id', expressAsyncHandler(async(req, res) => {
         password: encryptedPassword
     };
     mysql.query(`UPDATE usuario SET id_rol = ?, nombre_usuario = ?, correo=?, contrasena=?
-                WHERE id_usuario = ?`, 
+                WHERE id = ?`, 
     [nuevo.idRol, nuevo.nombre, nuevo.correo, nuevo.password, id], async function(error, rows, fields){
         if (error) {        
             res.send({          
@@ -159,7 +159,7 @@ router.put('/:id', expressAsyncHandler(async(req, res) => {
 
 router.delete('/:id', expressAsyncHandler(async(req, res) => {
     const { id } = req.params;
-    mysql.query('DELETE FROM usuario WHERE id_usuario = ?',[id], async function(error, rows, fields){
+    mysql.query('DELETE FROM usuario WHERE id = ?',[id], async function(error, rows, fields){
         if(error){
             res.send({code: 400, failed: "Error en eliminar"});
         }else{

@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT Id_venta, Fecha_venta, Comprador, Precio, Peso, Total, Id_ganado FROM venta',
+    mysqlconexion.query('SELECT id, Fecha_venta, Comprador, Precio, Peso, Total, Id_ganado FROM venta',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT Id_venta, Fecha_venta, Comprador, Precio, Peso, Total, Id_ganado FROM venta WHERE Id_venta=?', 
+    mysqlconexion.query('SELECT id, Fecha_venta, Comprador, Precio, Peso, Total, Id_ganado FROM venta WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -81,7 +81,7 @@ router.put('/:id', (req,res)=>{
         Id_ganado: req.body.Id_ganado
     };
     mysqlconexion.query(`UPDATE venta SET Fecha_venta=?, Comprador=?, Precio=?, Peso=?, Total=?, Id_ganado=?
-    WHERE Id_venta=?`,
+    WHERE id=?`,
     [venta.Fecha_venta, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
@@ -104,7 +104,7 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM venta WHERE Id_venta=?',[id], (error,rows,fields)=>{
+    mysqlconexion.query('DELETE FROM venta WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
             //res.json(rows);
             res.send({

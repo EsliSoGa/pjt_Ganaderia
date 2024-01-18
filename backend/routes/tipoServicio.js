@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('select Id_tipo_servicio, Nombre_tipo from tipo_servicio',
+    mysqlconexion.query('select id, Nombre_tipo from tipo_servicio',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('select Id_tipo_servicio, Nombre_tipo from tipo_servicio WHERE Id_tipo_servicio=?', 
+    mysqlconexion.query('select id, Nombre_tipo from tipo_servicio WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -69,7 +69,7 @@ router.put('/:id', (req,res)=>{
     const tipoServicio = {
         Nombre_tipo: req.body.Nombre_tipo
     };
-    mysqlconexion.query(`UPDATE tipo_servicio SET Nombre_tipo=? WHERE Id_tipo_servicio=?`,
+    mysqlconexion.query(`UPDATE tipo_servicio SET Nombre_tipo=? WHERE id=?`,
         [tipoServicio.Nombre_tipo, id], 
         (error,rows,fields)=>{
             if(!error){
@@ -92,7 +92,7 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM tipo_servicio WHERE Id_tipo_servicio=?',[id], (error,rows,fields)=>{
+    mysqlconexion.query('DELETE FROM tipo_servicio WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
             //res.json(rows);
             res.send({

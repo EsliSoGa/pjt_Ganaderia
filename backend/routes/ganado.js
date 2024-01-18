@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query(`SELECT id_ganado, nombre_ganado, numero_ganado, sexo,
+    mysqlconexion.query(`SELECT id, nombre_ganado, numero_ganado, sexo,
          color, peso, fecha_nacimiento_vaca, tipo, finca, estado,
          imagen, comentarios, id_usuario 
          FROM ganado;`,
@@ -21,10 +21,10 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query(`SELECT id_ganado, nombre_ganado, numero_ganado, sexo,
+    mysqlconexion.query(`SELECT id, nombre_ganado, numero_ganado, sexo,
     color, peso, fecha_nacimiento_vaca, tipo, finca, estado,
     imagen, comentarios, id_usuario  
-    FROM ganado WHERE id_ganado=?`, 
+    FROM ganado WHERE id=?`, 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -85,7 +85,7 @@ router.put('/:id', (req,res)=>{
         id_usuario: req.body.id_usuario,
     };
     mysqlconexion.query(`UPDATE ganado SET nombre_ganado=?, numero_ganado=?, sexo=?, color=?, peso=?, 
-    fecha_nacimiento_vaca=?, tipo=?, finca=?, estado=?, imagen=?, comentarios=?, id_usuario=? WHERE id_ganado=?`,
+    fecha_nacimiento_vaca=?, tipo=?, finca=?, estado=?, imagen=?, comentarios=?, id_usuario=? WHERE id=?`,
         [ganado.nombre_ganado, ganado.numero_ganado, ganado.sexo, ganado.color, ganado.peso, ganado.fecha,
         ganado.tipo, ganado.finca, ganado.estado, ganado.imagen, ganado.comentarios, ganado.id_usuario, id], 
         (error,rows,fields)=>{
@@ -101,7 +101,7 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM ganado WHERE id_ganado=?',[id], (error,rows,fields)=>{
+    mysqlconexion.query('DELETE FROM ganado WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
             res.json(rows);
         }

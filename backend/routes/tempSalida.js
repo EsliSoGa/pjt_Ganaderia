@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT Id_salida, Fecha_salida, Motivo_salida, Imagen, Comentarios, Id_ganado FROM salidas_temporal',
+    mysqlconexion.query('SELECT id, Fecha_salida, Motivo_salida, Imagen, Comentarios, Id_ganado FROM salidas_temporal',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT Id_salida, Fecha_salida, Motivo_salida, Imagen, Comentarios, Id_ganado FROM salidas_temporal WHERE Id_salida=?', 
+    mysqlconexion.query('SELECT id, Fecha_salida, Motivo_salida, Imagen, Comentarios, Id_ganado FROM salidas_temporal WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -79,7 +79,7 @@ router.put('/:id', (req,res)=>{
         Id_ganado: req.body.Id_ganado
     };
     mysqlconexion.query(`UPDATE salidas_temporal SET Fecha_salida=?, Motivo_salida=?, Imagen=?, Comentarios=?, Id_ganado=?
-    WHERE Id_salida=?`,
+    WHERE id=?`,
     [salida.Fecha_salida, salida.Motivo_salida, salida.Imagen, salida.Comentarios,  salida.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
@@ -102,7 +102,7 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM salidas_temporal WHERE Id_salida=?',[id], (error,rows,fields)=>{
+    mysqlconexion.query('DELETE FROM salidas_temporal WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
             //res.json(rows);
             res.send({
