@@ -3,7 +3,7 @@ import { GanadoContext } from "../../context/GanadoContext";
 import {Dialog} from "primereact/dialog";
 import { Button } from "primereact/button";
 import {InputText} from "primereact/inputtext";
-import {InputNumber} from "primereact/inputnumber";
+//import {InputNumber} from "primereact/inputnumber";
 import { Dropdown } from 'primereact/dropdown';
 import {Calendar} from 'primereact/calendar';
 
@@ -31,11 +31,16 @@ const Form =(props) =>{
         fecha_nacimiento_vaca:"",
         tipo:"",
         finca:"",
-        estado:0,
+        estado:1,
         imagen:"",
         comentarios:"",
         id_usuario:1
     };
+
+    const estados = [
+        {label: 'Activo', value: 1},
+        {label: 'Inactivo', value: 0}
+    ];
 
     const generos = [
         {label: 'Masculino', value: "Masculino"},
@@ -167,8 +172,8 @@ const Form =(props) =>{
                 <br />
                 <div className="p-float-label">
                     <Calendar
-                        value={ganadoData.fecha_nacimiento_vaca}
-                        onChange={(e) => updateField( e.target.value, "fecha_nacimiento_vaca")}
+                        value={ganadoData.fecha_nacimiento_vaca && new Date(ganadoData.fecha_nacimiento_vaca)}
+                        onChange={(e) => updateField(e.target.value.toISOString(), "fecha_nacimiento_vaca")}
                         dateFormat="dd-mm-yy"
                     />
                     <label>Fecha de nacimiento*</label>
@@ -189,14 +194,10 @@ const Form =(props) =>{
                     />
                     <label>Finca*</label>
                 </div>
-                <br/>
+                <br />
                 <div className="p-float-label">
-                    <InputNumber
-                        value={ganadoData.estado}
-                        onChange={(e)=>updateField(e.value, "estado")}
-                        locale="en-US"
-                    />
-                    <label>Estado*</label>
+                    <Dropdown value={ganadoData.estado} options={estados} onChange={(e) => updateField(e.target.value, "estado")} placeholder="Seleccione un estado"/>
+                    <label>Estado</label>
                 </div>
                 <br/>
                 <div className="p-float-label">

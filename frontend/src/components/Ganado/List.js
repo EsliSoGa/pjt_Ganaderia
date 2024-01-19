@@ -8,15 +8,15 @@ import {InputText} from "primereact/inputtext";
 import {Button} from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 const GanadoList = () =>{
     const {ganados, findGanado} = useContext(GanadoContext);
     
-    /*const statusBodyTemplate = (ganado) => {
-        return <span className={`${ganado.estado ? "activo" : "inactivo"}`}>{ganado.estado ? " Activo " : " Inactivo "}</span>;
-    }*/
+    const estadoTemplate = (ganados) => {
+        return <span className={`${ganados.estado ? "activo" : "inactivo"}`}>{ganados.estado ? " Activo " : " Inactivo "}</span>;
+    }
     const dateGanado = (ganados) => {
         return moment(ganados.fecha_nacimiento_vaca).format("DD/MM/YYYY");
     }
@@ -103,7 +103,7 @@ const GanadoList = () =>{
                 onSelectionChange={(e) => saveGanado(e.value.id)}
                 paginator className="p-datatable-customers" showGridlines rows={10}
                 dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Nombre_ganado', 'Numero_ganado', 'estado']} header={header1} emptyMessage="No se encontraro el ganado."
+                globalFilterFields={['nombre_ganado', 'numero_ganado', 'sexo', 'finca', 'tipo','peso', dateGanado]} header={header1} emptyMessage="No se encontraro el ganado."
                 >
                 <Column field="id" header="No." sortable/>
                 <Column field="nombre_ganado" header="Nombre" sortable/>
@@ -111,10 +111,10 @@ const GanadoList = () =>{
                 <Column field="sexo" header="Sexo" sortable/>
                 <Column field="color" header="Color" sortable/>
                 <Column field="peso" header="Peso" sortable/>
-                <Column body={dateGanado} header="Fecha de nacimiento" sortable/>
+                <Column field="fecha_nacimiento_vaca" body={dateGanado} header="Fecha de nacimiento" sortable/>
                 <Column field="tipo" header="Tipo" sortable/>
                 <Column field="finca" header="Finca" sortable/>
-                <Column field="estado" header="Estado" sortable/>
+                <Column field='estado' body={estadoTemplate} header="Estado" sortable/>
                 <Column field="comentarios" header="Comentario" sortable/>
             </DataTable>
             </div>
