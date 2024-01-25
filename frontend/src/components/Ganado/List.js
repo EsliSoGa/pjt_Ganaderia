@@ -11,7 +11,7 @@ import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 //import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import FormButton from "./Buttons";
+import FormTraslado from "./Traslado";
 
 const GanadoList = () =>{
     const {ganados, findGanado} = useContext(GanadoContext);
@@ -23,7 +23,7 @@ const GanadoList = () =>{
         return moment(ganados.fecha).format("DD/MM/YYYY");
     }
     const [isVisible, setIsVisible] = useState(false);
-    const [isVisibleButton, setIsVisibleButton] = useState(false);
+    const [isVisibleButtonTraslado, setIsVisibleButtonTraslado] = useState(false);
 
     const saveGanado = (id) => {
         findGanado(id);
@@ -124,7 +124,7 @@ const GanadoList = () =>{
             </DataTable>
             </div>
         </Panel>
-        <FormButton isVisibleButton = {isVisibleButton} setIsVisibleButton={setIsVisibleButton}/>
+        <FormTraslado isVisibleButtonTraslado = {isVisibleButtonTraslado} setIsVisibleButtonTraslado={setIsVisibleButtonTraslado}/>
         <Form isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );

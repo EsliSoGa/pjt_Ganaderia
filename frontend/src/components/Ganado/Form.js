@@ -8,10 +8,15 @@ import {Calendar} from 'primereact/calendar';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import moment from "moment";
+import FormTraslado from './Traslado';
+import { Divider } from 'primereact/divider';
+
 
 const Form =(props) =>{
     const {isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButtonTraslado, setIsVisibleButtonTraslado] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
 
     const {
         createGanado,
@@ -45,10 +50,17 @@ const Form =(props) =>{
         {label: "Femenino", value: "Femenino"}
     ];
 
+    const estadoTemplate = () => {
+        return <span >{"Detalle de ganado  "+ganadoData.numero}</span>;
+    }
+
     const [ganadoData, setGanadoData] = useState(inicialGanadosState);
 
     useEffect(() => {
-        if (editGanados) setGanadoData(editGanados);
+        if (editGanados) {
+            setGanadoData(editGanados);
+            setIsVisibleButton(true);
+        }
     }, [editGanados]);
 
     const updateField = (data, field) =>{
@@ -73,6 +85,10 @@ const Form =(props) =>{
             }
             retornar();
         }
+    };
+
+    const trasladoButton = () => {
+        setIsVisibleButtonTraslado(true);
     };
 
     const showInfo = () => {
@@ -105,10 +121,10 @@ const Form =(props) =>{
                 acceptClassName="p-button-danger"
                 />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" label="Eliminar"
+                icon="pi pi-trash" label="Eliminar" visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                label="Guardar" icon="pi pi-check"
+                label="Guardar" icon="pi pi-save"
                 onClick={saveGanado}/>
         </div>
     );
@@ -116,6 +132,7 @@ const Form =(props) =>{
     const clearSelected = () => {
         setIsVisible(false);
         setGanadoData(inicialGanadosState);
+        setIsVisibleButton(false);
     };
 
     return(<div>
@@ -125,11 +142,27 @@ const Form =(props) =>{
             modal={true}
             style={{width:"420px", overflow:"scroll"}}
             contentStyle={{overflow:"visible"}}
-            header = "Detalle de ganado"
+            header = {estadoTemplate}
             onHide={()=>clearSelected()}
             footer={dialogFooter}
         >
-            <div className="p-grid p-fluid">
+            <Button className="p-button-rounded mb-3 p-button-info" 
+                icon="pi pi-times" label="Traslado" visible={isVisibleButton}
+                onClick={trasladoButton}/> 
+            <Button className="p-button-rounded mb-3 p-button-success"
+                label="Venta" icon="pi pi-tag" visible={isVisibleButton}
+                onClick={trasladoButton}/>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-help"
+                label="Servicio" icon="pi pi-check" visible={isVisibleButton}
+                onClick={trasladoButton}/>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
+                label="Padres" icon="pi pi-check" visible={isVisibleButton}
+                onClick={trasladoButton}/>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
+                label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
+                onClick={trasladoButton}/>
+            <Divider/>
+            <div className=" p-grid p-fluid">
                 <br/>
                 <div className="p-float-label">
                     <InputText
@@ -215,6 +248,7 @@ const Form =(props) =>{
                 </div>
             </div>
         </Dialog>
+        <FormTraslado isVisibleButtonTraslado = {isVisibleButtonTraslado} setIsVisibleButtonTraslado={setIsVisibleButtonTraslado}/>
     </div>);
 }
 
