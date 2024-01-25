@@ -4,12 +4,14 @@ import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
 import {Column} from 'primereact/column';
 import Form from './Form';
+
 import {InputText} from "primereact/inputtext";
 import {Button} from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 //import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import FormButton from "./Buttons";
 
 const GanadoList = () =>{
     const {ganados, findGanado} = useContext(GanadoContext);
@@ -18,14 +20,17 @@ const GanadoList = () =>{
         return <span className={`${ganados.estado ? "activo" : "inactivo"}`}>{ganados.estado ? " Activo " : " Inactivo "}</span>;
     }
     const dateGanado = (ganados) => {
-        return moment(ganados.fecha_nacimiento_vaca).format("DD/MM/YYYY");
+        return moment(ganados.fecha).format("DD/MM/YYYY");
     }
     const [isVisible, setIsVisible] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
 
     const saveGanado = (id) => {
         findGanado(id);
+        //setIsVisibleButton(true);
         setIsVisible(true);
     };
+
 
     const leftToolbarTemplate = () => {
         return (
@@ -103,15 +108,15 @@ const GanadoList = () =>{
                 onSelectionChange={(e) => saveGanado(e.value.id)}
                 paginator className="p-datatable-customers" showGridlines rows={10}
                 dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['nombre_ganado', 'numero_ganado', 'sexo', 'finca', 'tipo','peso', dateGanado]} header={header1} emptyMessage="No se encontraro el ganado."
+                globalFilterFields={['nombre', 'numero', 'sexo', 'finca', 'tipo','peso', dateGanado]} header={header1} emptyMessage="No se encontraro el ganado."
                 >
                 <Column field="id" header="No." sortable/>
-                <Column field="nombre_ganado" header="Nombre" sortable/>
-                <Column field="numero_ganado" header="Número" sortable/>
+                <Column field="nombre" header="Nombre" sortable/>
+                <Column field="numero" header="Número" sortable/>
                 <Column field="sexo" header="Sexo" sortable/>
                 <Column field="color" header="Color" sortable/>
                 <Column field="peso" header="Peso" sortable/>
-                <Column field="fecha_nacimiento_vaca" body={dateGanado} header="Fecha de nacimiento" sortable/>
+                <Column field="fecha" body={dateGanado} header="Fecha de nacimiento" sortable/>
                 <Column field="tipo" header="Tipo" sortable/>
                 <Column field="finca" header="Finca" sortable/>
                 <Column field='estado' body={estadoTemplate} header="Estado" sortable/>
@@ -119,6 +124,7 @@ const GanadoList = () =>{
             </DataTable>
             </div>
         </Panel>
+        <FormButton isVisibleButton = {isVisibleButton} setIsVisibleButton={setIsVisibleButton}/>
         <Form isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );

@@ -30,7 +30,7 @@ const GanadoContextProvider = (props)=>{
         const ganado = ganados.find((p)=>p.id === id);
         setEditGanados(ganado);
     };
-
+    
     const updateGanado =(ganado)=>{
         ganadoService
         .update(ganado)

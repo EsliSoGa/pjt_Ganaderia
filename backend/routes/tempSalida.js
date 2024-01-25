@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT id, Fecha_salida, Motivo_salida, Imagen, Comentarios, Id_ganado FROM salidas_temporal',
+    mysqlconexion.query('SELECT id, Fecha, Motivo, Imagen, Comentarios, Id_ganado FROM salidas_temporal',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT id, Fecha_salida, Motivo_salida, Imagen, Comentarios, Id_ganado FROM salidas_temporal WHERE id=?', 
+    mysqlconexion.query('SELECT id, Fecha, Motivo, Imagen, Comentarios, Id_ganado FROM salidas_temporal WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -40,15 +40,15 @@ router.get('/:id', (req,res)=>{
 //post
 router.post('/', (req,res)=>{
     const salida = {
-        Fecha_salida : req.body.Fecha_salida,
-        Motivo_salida: req.body.Motivo_salida,
+        Fecha : req.body.Fecha,
+        Motivo: req.body.Motivo,
         Imagen: req.body.Imagen,
         Comentarios: req.body.Comentarios,
         Id_ganado: req.body.Id_ganado
     };
-    mysqlconexion.query(`INSERT INTO salidas_temporal (Fecha_salida, Motivo_salida, Imagen, Comentarios, Id_ganado) 
+    mysqlconexion.query(`INSERT INTO salidas_temporal (Fecha, Motivo, Imagen, Comentarios, Id_ganado) 
 	VALUES (?, ?, ?, ?, ?);`,
-        [salida.Fecha_salida, salida.Motivo_salida, salida.Imagen, salida.Comentarios,  salida.Id_ganado], 
+        [salida.Fecha, salida.Motivo, salida.Imagen, salida.Comentarios,  salida.Id_ganado], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);
@@ -72,15 +72,15 @@ router.post('/', (req,res)=>{
 router.put('/:id', (req,res)=>{
     const {id} = req.params;
     const salida = {
-        Fecha_salida : req.body.Fecha_salida,
-        Motivo_salida: req.body.Motivo_salida,
+        Fecha : req.body.Fecha,
+        Motivo: req.body.Motivo,
         Imagen: req.body.Imagen,
         Comentarios: req.body.Comentarios,
         Id_ganado: req.body.Id_ganado
     };
-    mysqlconexion.query(`UPDATE salidas_temporal SET Fecha_salida=?, Motivo_salida=?, Imagen=?, Comentarios=?, Id_ganado=?
+    mysqlconexion.query(`UPDATE salidas_temporal SET Fecha=?, Motivo=?, Imagen=?, Comentarios=?, Id_ganado=?
     WHERE id=?`,
-    [salida.Fecha_salida, salida.Motivo_salida, salida.Imagen, salida.Comentarios,  salida.Id_ganado, id], 
+    [salida.Fecha, salida.Motivo, salida.Imagen, salida.Comentarios,  salida.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);

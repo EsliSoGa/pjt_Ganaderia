@@ -3,10 +3,8 @@ import { GanadoContext } from "../../context/GanadoContext";
 import {Dialog} from "primereact/dialog";
 import { Button } from "primereact/button";
 import {InputText} from "primereact/inputtext";
-//import {InputNumber} from "primereact/inputnumber";
 import { Dropdown } from 'primereact/dropdown';
 import {Calendar} from 'primereact/calendar';
-
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import moment from "moment";
@@ -24,11 +22,11 @@ const Form =(props) =>{
 
     const inicialGanadosState ={
         id:null,
-        nombre_ganado:"",
-        numero_ganado:"",
+        nombre:"",
+        numero:"",
         sexo:"",
         peso:"",
-        fecha_nacimiento_vaca:"",
+        fecha:"",
         tipo:"",
         finca:"",
         estado:1,
@@ -62,15 +60,15 @@ const Form =(props) =>{
     };
 
     const saveGanado = () => {
-        if(ganadoData.numero_ganado==="" || ganadoData.nombre_ganado===""){
+        if(ganadoData.numero==="" || ganadoData.nombre===""){
             showInfo();
         }
         else{
             if (!editGanados) {
-                ganadoData.fecha_nacimiento_vaca = moment(ganadoData.fecha_nacimiento_vaca).format("YYYY-MM-DD");
+                ganadoData.fecha = moment(ganadoData.fecha).format("YYYY-MM-DD");
                 createGanado(ganadoData);
             } else {
-                ganadoData.fecha_nacimiento_vaca = moment(ganadoData.fecha_nacimiento_vaca).format("YYYY-MM-DD");
+                ganadoData.fecha = moment(ganadoData.fecha).format("YYYY-MM-DD");
                 updateGanado(ganadoData);
             }
             retornar();
@@ -135,16 +133,16 @@ const Form =(props) =>{
                 <br/>
                 <div className="p-float-label">
                     <InputText
-                        value={ganadoData.nombre_ganado}
-                        onChange={(e)=>updateField(e.target.value, "nombre_ganado")}
+                        value={ganadoData.nombre}
+                        onChange={(e)=>updateField(e.target.value, "nombre")}
                     />
                     <label>Nombre*</label>
                 </div>
                 <br/>
                 <div className="p-float-label">
                     <InputText
-                        value={ganadoData.numero_ganado}
-                        onChange={(e)=>updateField(e.target.value, "numero_ganado")}
+                        value={ganadoData.numero}
+                        onChange={(e)=>updateField(e.target.value, "numero")}
                     />
                     <label>Número*</label>
                 </div>
@@ -172,8 +170,8 @@ const Form =(props) =>{
                 <br />
                 <div className="p-float-label">
                     <Calendar
-                        value={ganadoData.fecha_nacimiento_vaca && new Date(ganadoData.fecha_nacimiento_vaca)}
-                        onChange={(e) => updateField(e.target.value.toISOString(), "fecha_nacimiento_vaca")}
+                        value={ganadoData.fecha && new Date(ganadoData.fecha)}
+                        onChange={(e) => updateField(e.target.value.toISOString(), "fecha")}
                         dateFormat="dd-mm-yy"
                     />
                     <label>Fecha de nacimiento*</label>
@@ -213,7 +211,7 @@ const Form =(props) =>{
                         value={ganadoData.comentarios}
                         onChange={(e)=>updateField(e.target.value, "comentarios")}
                     />
-                    <label>Comentarios*</label>
+                    <label>Comentarios</label>
                 </div>
             </div>
         </Dialog>

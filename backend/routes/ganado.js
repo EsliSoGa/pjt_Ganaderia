@@ -4,8 +4,8 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query(`SELECT id, nombre_ganado, numero_ganado, sexo,
-         color, peso, fecha_nacimiento_vaca, tipo, finca, estado,
+    mysqlconexion.query(`SELECT id, nombre, numero, sexo,
+         color, peso, fecha, tipo, finca, estado,
          imagen, comentarios, id_usuario 
          FROM ganado;`,
     (error,rows,fields)=>{
@@ -21,8 +21,8 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query(`SELECT id, nombre_ganado, numero_ganado, sexo,
-    color, peso, fecha_nacimiento_vaca, tipo, finca, estado,
+    mysqlconexion.query(`SELECT id, nombre, numero, sexo,
+    color, peso, fecha, tipo, finca, estado,
     imagen, comentarios, id_usuario  
     FROM ganado WHERE id=?`, 
         [id],(error,rows,fields)=>{
@@ -38,12 +38,12 @@ router.get('/:id', (req,res)=>{
 //post
 router.post('/', (req,res)=>{
     const ganado = {
-        nombre_ganado: req.body.nombre_ganado,
-        numero_ganado: req.body.numero_ganado,
+        nombre: req.body.nombre,
+        numero: req.body.numero,
         sexo: req.body.sexo,
         color: req.body.color,
         peso: req.body.peso,
-        fecha: req.body.fecha_nacimiento_vaca,
+        fecha: req.body.fecha,
         tipo: req.body.tipo,
         finca:req.body.finca,
         estado: req.body.estado,
@@ -51,10 +51,10 @@ router.post('/', (req,res)=>{
         comentarios: req.body.comentarios,
         id_usuario: req.body.id_usuario,
     };
-    mysqlconexion.query(`INSERT INTO ganado(nombre_ganado, numero_ganado, sexo, color, peso, 
-        fecha_nacimiento_vaca, tipo, finca, estado, imagen, comentarios, id_usuario)
+    mysqlconexion.query(`INSERT INTO ganado(nombre, numero, sexo, color, peso, 
+        fecha, tipo, finca, estado, imagen, comentarios, id_usuario)
          VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [ganado.nombre_ganado, ganado.numero_ganado, ganado.sexo, ganado.color, ganado.peso, ganado.fecha,
+        [ganado.nombre, ganado.numero, ganado.sexo, ganado.color, ganado.peso, ganado.fecha,
         ganado.tipo, ganado.finca, ganado.estado, ganado.imagen, ganado.comentarios, ganado.id_usuario], 
         (error,rows,fields)=>{
             if(!error){
@@ -71,12 +71,12 @@ router.post('/', (req,res)=>{
 router.put('/:id', (req,res)=>{
     const {id} = req.params;
     const ganado = {
-        nombre_ganado: req.body.nombre_ganado,
-        numero_ganado: req.body.numero_ganado,
+        nombre: req.body.nombre,
+        numero: req.body.numero,
         sexo: req.body.sexo,
         color: req.body.color,
         peso: req.body.peso,
-        fecha: req.body.fecha_nacimiento_vaca,
+        fecha: req.body.fecha,
         tipo: req.body.tipo,
         finca:req.body.finca,
         estado: req.body.estado,
@@ -84,9 +84,9 @@ router.put('/:id', (req,res)=>{
         comentarios: req.body.comentarios,
         id_usuario: req.body.id_usuario,
     };
-    mysqlconexion.query(`UPDATE ganado SET nombre_ganado=?, numero_ganado=?, sexo=?, color=?, peso=?, 
-    fecha_nacimiento_vaca=?, tipo=?, finca=?, estado=?, imagen=?, comentarios=?, id_usuario=? WHERE id=?`,
-        [ganado.nombre_ganado, ganado.numero_ganado, ganado.sexo, ganado.color, ganado.peso, ganado.fecha,
+    mysqlconexion.query(`UPDATE ganado SET nombre=?, numero=?, sexo=?, color=?, peso=?, 
+    fecha=?, tipo=?, finca=?, estado=?, imagen=?, comentarios=?, id_usuario=? WHERE id=?`,
+        [ganado.nombre, ganado.numero, ganado.sexo, ganado.color, ganado.peso, ganado.fecha,
         ganado.tipo, ganado.finca, ganado.estado, ganado.imagen, ganado.comentarios, ganado.id_usuario, id], 
         (error,rows,fields)=>{
             if(!error){

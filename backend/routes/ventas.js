@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT id, Fecha_venta, Comprador, Precio, Peso, Total, Id_ganado FROM venta',
+    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT id, Fecha_venta, Comprador, Precio, Peso, Total, Id_ganado FROM venta WHERE id=?', 
+    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -40,16 +40,16 @@ router.get('/:id', (req,res)=>{
 //post
 router.post('/', (req,res)=>{
     const venta = {
-        Fecha_venta : req.body.Fecha_venta,
+        Fecha : req.body.Fecha,
         Comprador: req.body.Comprador,
         Precio: req.body.Precio,
         Peso: req.body.Peso,
         Total: req.body.Total,
         Id_ganado: req.body.Id_ganado
     };
-    mysqlconexion.query(`INSERT INTO venta (Fecha_venta, Comprador, Precio, Peso, Total, Id_ganado)
+    mysqlconexion.query(`INSERT INTO venta (Fecha, Comprador, Precio, Peso, Total, Id_ganado)
 	VALUES (?, ?, ?, ?, ?, ?);`,
-        [venta.Fecha_venta, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado], 
+        [venta.Fecha, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);
@@ -73,16 +73,16 @@ router.post('/', (req,res)=>{
 router.put('/:id', (req,res)=>{
     const {id} = req.params;
     const venta = {
-        Fecha_venta : req.body.Fecha_venta,
+        Fecha : req.body.Fecha,
         Comprador: req.body.Comprador,
         Precio: req.body.Precio,
         Peso: req.body.Peso,
         Total: req.body.Total,
         Id_ganado: req.body.Id_ganado
     };
-    mysqlconexion.query(`UPDATE venta SET Fecha_venta=?, Comprador=?, Precio=?, Peso=?, Total=?, Id_ganado=?
+    mysqlconexion.query(`UPDATE venta SET Fecha=?, Comprador=?, Precio=?, Peso=?, Total=?, Id_ganado=?
     WHERE id=?`,
-    [venta.Fecha_venta, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado, id], 
+    [venta.Fecha, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);

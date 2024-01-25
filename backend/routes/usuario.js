@@ -10,11 +10,11 @@ router.post('/signup', expressAsyncHandler(async(req, res) => {
     const encryptedPassword = bcrypt.hashSync(password, 10);
     const nuevo = {
         idRol: req.body.id_rol,
-        nombre: req.body.nombre_usuario,
+        nombre: req.body.nombre,
         correo: req.body.correo,
         password: encryptedPassword
     };
-    mysql.query('INSERT INTO usuario(nombre_usuario, contrasena, id_rol, correo)  VALUES (?, ?, ?, ?)', 
+    mysql.query('INSERT INTO usuario(nombre, contrasena, id_rol, correo)  VALUES (?, ?, ?, ?)', 
     [ nuevo.nombre, nuevo.password, nuevo.idRol, nuevo.correo], 
     async function(error, results, fields) {
         if (error) {        
@@ -36,7 +36,7 @@ router.post('/signup', expressAsyncHandler(async(req, res) => {
 router.post('/in', expressAsyncHandler(async(req, res) => {
     const correo = req.body.correo;
     const contrasena = req.body.contrasena;
-    mysql.query("SELECT id, rol, nombre_usuario, correo, contrasena"
+    mysql.query("SELECT id, rol, nombre, correo, contrasena"
     + " FROM usuario as u"  
     + " INNER JOIN roles as r " 
     + "ON u.id_rol = r.id "
@@ -54,7 +54,7 @@ router.post('/in', expressAsyncHandler(async(req, res) => {
                     const user = {
                         id: results[0].id,
                         rol: results[0].rol,
-                        nombre_usuario: results[0].nombre_usuario,
+                        nombre: results[0].nombre,
                         correo: results[0].correo
                     };
                     const token = utils(user);
@@ -64,7 +64,7 @@ router.post('/in', expressAsyncHandler(async(req, res) => {
                         success:"Inicio de sesión correctamente",
                         id: results[0].id,
                         rol: results[0].rol,
-                        nombre_usuario: results[0].nombre_usuario,
+                        nombre: results[0].nombre,
                         correo: results[0].correo,
                         token: token
                     });
@@ -83,11 +83,11 @@ router.post('/create', expressAsyncHandler(async(req, res) => {
     const encryptedPassword = bcrypt.hashSync(contrasena, 10);
     const nuevo = {
         id_rol: req.body.id_rol,
-        nombre: req.body.nombre_usuario,
+        nombre: req.body.nombre,
         correo: req.body.correo,
         contrasena: encryptedPassword
     };
-    mysql.query('INSERT INTO usuario(nombre_usuario, contrasena, id_rol, correo) VALUES (?, ?, ?, ?)', 
+    mysql.query('INSERT INTO usuario(nombre, contrasena, id_rol, correo) VALUES (?, ?, ?, ?)', 
     [nuevo.nombre, nuevo.contrasena, nuevo.id_rol, nuevo.correo], 
     async function(error, results, fields) {
         if (error) {        
@@ -106,7 +106,7 @@ router.post('/create', expressAsyncHandler(async(req, res) => {
 }));
 
 router.get('/', expressAsyncHandler(async(req, res) => {
-    mysql.query(`SELECT id, nombre_usuario, contrasena, correo, rol 
+    mysql.query(`SELECT id, nombre, contrasena, correo, rol 
     FROM usuario u 
     INNER JOIN roles AS r 
     ON U.id_rol = R.id`, async (error, rows, fields) => {
@@ -120,7 +120,7 @@ router.get('/', expressAsyncHandler(async(req, res) => {
 
 router.get('/:id', expressAsyncHandler(async(req, res) => {
     const { id } = req.params; 
-    mysql.query(`SELECT id, nombre_usuario, contrasena, correo, rol 
+    mysql.query(`SELECT id, nombre, contrasena, correo, rol 
     FROM usuario u 
     INNER JOIN roles AS r 
     ON U.id_rol = R.id WHERE id = ?`, [id] ,async (error, rows, fields) => {
@@ -138,11 +138,11 @@ router.put('/:id', expressAsyncHandler(async(req, res) => {
     const encryptedPassword = bcrypt.hashSync(contrasena, 10)
     const nuevo = {
         idRol: req.body.id_rol,
-        nombre: req.body.nombre_usuario,
+        nombre: req.body.nombre,
         correo: req.body.correo,
         password: encryptedPassword
     };
-    mysql.query(`UPDATE usuario SET id_rol = ?, nombre_usuario = ?, correo=?, contrasena=?
+    mysql.query(`UPDATE usuario SET id_rol = ?, nombre = ?, correo=?, contrasena=?
                 WHERE id = ?`, 
     [nuevo.idRol, nuevo.nombre, nuevo.correo, nuevo.password, id], async function(error, rows, fields){
         if (error) {        

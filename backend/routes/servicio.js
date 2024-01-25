@@ -4,7 +4,7 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT id, Fecha_servicio, Condicion, Edad_ternero_gestante, comentario, id_ganado, id_tipo_servicio FROM servicios;',
+    mysqlconexion.query('SELECT id, Fecha, Condicion, Edad, comentario, id_ganado, id_tipo_servicio FROM servicios;',
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +22,7 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT id, Fecha_servicio, Condicion, Edad_ternero_gestante, comentario, id_ganado, id_tipo_servicio FROM servicios WHERE id=?', 
+    mysqlconexion.query('SELECT id, Fecha, Condicion, Edad, comentario, id_ganado, id_tipo_servicio FROM servicios WHERE id=?', 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -40,16 +40,16 @@ router.get('/:id', (req,res)=>{
 //post
 router.post('/', (req,res)=>{
     const servicio = {
-        fechaServicio : req.body.Fecha_servicio,
+        fecha : req.body.Fecha,
         condicion: req.body.Condicion,
-        edad_ternero: req.body.Edad_ternero_gestante,
+        edad: req.body.Edad,
         comentario: req.body.comentario,
         idganado: req.body.id_ganado,
         tipo: req.body.id_tipo_servicio
     };
-    mysqlconexion.query(`INSERT INTO servicios (Fecha_servicio, Condicion, Edad_ternero_gestante, comentario, id_ganado, id_tipo_servicio)
+    mysqlconexion.query(`INSERT INTO servicios (Fecha, Condicion, Edad, comentario, id_ganado, id_tipo_servicio)
 	VALUES (?, ?, ?, ?, ?, ?);`,
-        [servicio.fechaServicio, servicio.condicion, servicio.edad_ternero, servicio.comentario, servicio.idganado, servicio.tipo], 
+        [servicio.fecha, servicio.condicion, servicio.edad, servicio.comentario, servicio.idganado, servicio.tipo], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);
@@ -73,16 +73,16 @@ router.post('/', (req,res)=>{
 router.put('/:id', (req,res)=>{
     const {id} = req.params;
     const servicio = {
-        fechaServicio : req.body.Fecha_servicio,
+        fecha : req.body.Fecha,
         condicion: req.body.Condicion,
-        edad_ternero: req.body.Edad_ternero_gestante,
+        edad: req.body.Edad,
         comentario: req.body.comentario,
         idganado: req.body.id_ganado,
         tipo: req.body.id_tipo_servicio
     };
-    mysqlconexion.query(`UPDATE servicios SET Fecha_servicio=?, Condicion=?, Edad_ternero_gestante=?, comentario=?, id_ganado=?, id_tipo_servicio=? 
+    mysqlconexion.query(`UPDATE servicios SET Fecha=?, Condicion=?, Edad=?, comentario=?, id_ganado=?, id_tipo_servicio=? 
     WHERE id=?`,
-        [servicio.fechaServicio, servicio.condicion, servicio.edad_ternero, servicio.comentario, servicio.idganado, servicio.tipo, id], 
+        [servicio.fecha, servicio.condicion, servicio.edad, servicio.comentario, servicio.idganado, servicio.tipo, id], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);
