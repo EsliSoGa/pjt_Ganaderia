@@ -71,7 +71,7 @@ const Form =(props) =>{
             ...ganadoData,
             [field]:data
         })
-        console.log(ganadoData);
+        //console.log(ganadoData);
     };
 
     const clearSelected = () => {
@@ -136,6 +136,9 @@ const Form =(props) =>{
     function linkServicio (){
         navigate(`/servicio/${ganadoData.id}`)
     }
+    function linkTraslado (){
+        navigate(`/traslado/${ganadoData.id}`)
+    }
     //Formulario padres
     const padres=()=>{
         setIsVisibleButtonPadres(true)
@@ -146,7 +149,7 @@ const Form =(props) =>{
         <div className="ui-dialog-buttonpane p-clearfix">
             <Button className="p-button-rounded mb-3 p-button-info" 
                 icon="pi pi-times" label="Traslado" visible={isVisibleButton}
-                onClick={padres}/> 
+                onClick={linkTraslado}/> 
             <Button className="p-button-rounded mb-3 p-button-success"
                 label="Venta" icon="pi pi-tag" visible={isVisibleButton}
                 onClick={padres}/>

@@ -1,63 +1,58 @@
 import React, {useContext, useState, useEffect, useRef} from "react";
-import { ServicioContext } from "../../context/ServicioContext";
+import { TrasladoContext } from "../../context/TrasladoContext";
 import {Dialog} from "primereact/dialog";
 import { Button } from "primereact/button";
 import {InputText} from "primereact/inputtext";
-import { Dropdown } from 'primereact/dropdown';
 
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { InputNumber } from "primereact/inputnumber";
 import { Calendar } from "primereact/calendar";
 import moment from "moment";
 
-const ServicioForm =(props) =>{
-    const {idS, isVisible, setIsVisible} = props;
+const TrasladoForm =(props) =>{
+    const {idT, isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
     const {
-        createServicio,
-        deleteServicio,
-        editServicio,
-        updateServicio,
-        tipoServicios
-    } = useContext(ServicioContext);
+        createTraslado,
+        deleteTraslado,
+        editTraslado,
+        updateTraslado
+    } = useContext(TrasladoContext);
 
-    const inicialServiciosState ={
+    const inicialTrasladosState ={
         id:null,
+        Id_ganado:idT,
         Fecha:"",
-        Condicion:"",
-        Edad:0,
-        comentario:"",
-        id_ganado:idS,
-        tipo_servicio:0
+        Finca_origen:"",
+        Finca_destino:""
     };
 
-    const [servicioData, setServicioData] = useState(inicialServiciosState);
+    const [trasladoData, setTrasladoData] = useState(inicialTrasladosState);
 
     useEffect(() => {
-        if (editServicio) setServicioData(editServicio);
-    }, [editServicio]);
+        if (editTraslado) setTrasladoData(editTraslado);
+    }, [editTraslado]);
 
     const updateField = (data, field) =>{
-        setServicioData({
-            ...servicioData,
+        setTrasladoData({
+            ...trasladoData,
             [field]:data
         })
-        //console.log(servicioData);
+        //console.log(trasladoData);
     };
 
-    const saveServicio = () => {
-        if(servicioData.nombre==="" || servicioData.descripcion===""){
+    const saveTraslado = () => {
+        if(trasladoData.Finca_destino==="" || trasladoData.Finca_origen==="" || trasladoData.Fecha ===""){
             showInfo();
         }
         else{
-        if (!editServicio) {
-            servicioData.Fecha = moment(servicioData.Fecha).format("YYYY-MM-DD");
-            createServicio(servicioData);
+        if (!editTraslado) {
+            trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
+            createTraslado(trasladoData);
         } else {
-            servicioData.Fecha = moment(servicioData.Fecha).format("YYYY-MM-DD");
-            updateServicio(servicioData);
+            trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
+            updateTraslado(trasladoData);
         }
         retornar();}
     };
@@ -67,15 +62,15 @@ const ServicioForm =(props) =>{
         toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
     }
 
-    const _deleteServicio = () => {
-        if (editServicio) {
-            deleteServicio(servicioData.id);
+    const _deleteTraslado = () => {
+        if (editTraslado) {
+            deleteTraslado(trasladoData.id);
             showError();
         }
         retornar();
     };
     const retornar =()=>{
-        setServicioData(inicialServiciosState);
+        setTrasladoData(inicialTrasladosState);
         setIsVisible(false);
     };
 
@@ -86,7 +81,7 @@ const ServicioForm =(props) =>{
     const dialogFooter=(
         <div className="ui-dialog-buttonpane p-clearfix">
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteServicio} reject={retornar} 
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTraslado} reject={retornar} 
                 acceptClassName="p-button-danger"
                 />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
@@ -94,13 +89,13 @@ const ServicioForm =(props) =>{
                 onClick={() => setisVisibleDelete(true)}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"
-                onClick={saveServicio}/>
+                onClick={saveTraslado}/>
         </div>
     );
 
     const clearSelected = () => {
         setIsVisible(false);
-        setServicioData(inicialServiciosState);
+        setTrasladoData(inicialTrasladosState);
     };
 
     return(<div>
@@ -110,7 +105,7 @@ const ServicioForm =(props) =>{
             modal={true}
             style={{width:"420px"}}
             contentStyle={{overflow:"visible"}}
-            header = "Detalles de servicios"
+            header = "Detalles de traslado"
             onHide={()=>clearSelected()}
             footer={dialogFooter}
         >
@@ -118,7 +113,7 @@ const ServicioForm =(props) =>{
                 <br/>
                 <div className="p-float-label">
                     <Calendar
-                        value={servicioData.Fecha && new Date(servicioData.Fecha)}
+                        value={trasladoData.Fecha && new Date(trasladoData.Fecha)}
                         onChange={(e) => updateField(e.target.value.toISOString(), "Fecha")}
                         dateFormat="dd-mm-yy"
                     />
@@ -127,36 +122,22 @@ const ServicioForm =(props) =>{
                 <br/>
                 <div className="p-float-label">
                     <InputText
-                        value={servicioData.Condicion}
-                        onChange={(e)=>updateField(e.target.value, "Condicion")}
+                        value={trasladoData.Finca_origen}
+                        onChange={(e)=>updateField(e.target.value, "Finca_origen")}
                     />
-                    <label>Condicion</label>
-                </div>
-                <br />
-                <div className="p-float-label">
-                    <InputNumber
-                        value={servicioData.Edad}
-                        onChange={(e)=>updateField(e.value, "Edad")}
-                    />
-                    <label>Edad</label>
+                    <label>Finca origen*</label>
                 </div>
                 <br />
                 <div className="p-float-label">
                     <InputText
-                        value={servicioData.comentario}
-                        onChange={(e)=>updateField(e.target.value, "comentario")}
+                        value={trasladoData.Finca_destino}
+                        onChange={(e)=>updateField(e.target.value, "Finca_destino")}
                     />
-                    <label>Comentario</label>
-                </div>
-                <br />
-                <div className="p-float-label">
-                <Dropdown value={servicioData.id_tipo_servicio} options={tipoServicios} optionLabel="Nombre_tipo" optionValue="id" 
-                    onChange={(e) => updateField(e.target.value, "id_tipo_servicio")} filter showClear filterBy="Nombre_tipo" placeholder="Seleccione un tipo"/>
-                    <label>Tipo</label>
+                    <label>Finca destino*</label>
                 </div>
             </div>
         </Dialog>
     </div>);
 }
 
-export default ServicioForm;
+export default TrasladoForm;
