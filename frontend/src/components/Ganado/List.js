@@ -11,7 +11,6 @@ import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 //import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import FormTraslado from "./Traslado";
 
 const GanadoList = () =>{
     const {ganados, findGanado} = useContext(GanadoContext);
@@ -23,7 +22,6 @@ const GanadoList = () =>{
         return moment(ganados.fecha).format("DD/MM/YYYY");
     }
     const [isVisible, setIsVisible] = useState(false);
-    const [isVisibleButtonTraslado, setIsVisibleButtonTraslado] = useState(false);
 
     const saveGanado = (id) => {
         findGanado(id);
@@ -95,7 +93,7 @@ const GanadoList = () =>{
     const header1 = renderHeader1();
     return(
         <div>
-        <Toolbar className="mr-2" left={leftToolbarTemplate} /*right={rightToolbarTemplate}*/></Toolbar>
+        <Toolbar className="mr-2" start={leftToolbarTemplate} /*right={rightToolbarTemplate}*/></Toolbar>
         <Panel
             header="Listado del ganado" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
             style={{ textAlign: "justify" }}
@@ -104,9 +102,11 @@ const GanadoList = () =>{
             <DataTable 
                 value={ganados}
                 responsiveLayout="scroll"
+                /*scrollable 
+                scrollHeight="400px"*/
                 selectionMode="single"
                 onSelectionChange={(e) => saveGanado(e.value.id)}
-                paginator className="p-datatable-customers" showGridlines rows={10}
+                paginator className="p-datatable-customers" showGridlines rows={15}
                 dataKey="id" filters={filters1} filterDisplay="menu"
                 globalFilterFields={['nombre', 'numero', 'sexo', 'finca', 'tipo','peso', dateGanado]} header={header1} emptyMessage="No se encontraro el ganado."
                 >
@@ -124,7 +124,6 @@ const GanadoList = () =>{
             </DataTable>
             </div>
         </Panel>
-        <FormTraslado isVisibleButtonTraslado = {isVisibleButtonTraslado} setIsVisibleButtonTraslado={setIsVisibleButtonTraslado}/>
         <Form isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );

@@ -45,9 +45,8 @@ router.post('/', (req,res)=>{
         padre: req.body.Id_ganado_padre,
         hijo: req.body.Id_ganado_hijo
     };
-    mysqlconexion.query(`INSERT INTO relacion_padres (Id_ganado_madre, Tipo_nacimiento, Id_ganado_padre, Id_ganado_hijo)
-	VALUES (?, ?, ?, ?);`,
-        [relacion.madre, relacion.nacimiento, relacion.padre, relacion.hijo], 
+    mysqlconexion.query(`CALL sp_padres(?, ?, ?, ?);`,
+        [relacion.hijo, relacion.padre, relacion.madre, relacion.nacimiento], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);
@@ -68,17 +67,15 @@ router.post('/', (req,res)=>{
 });
 
 //put
-router.put('/:id', (req,res)=>{
-    const {id} = req.params;
+router.put('/', (req,res)=>{
     const relacion = {
         madre : req.body.Id_ganado_madre,
         nacimiento: req.body.Tipo_nacimiento,
         padre: req.body.Id_ganado_padre,
         hijo: req.body.Id_ganado_hijo
     };
-    mysqlconexion.query(`UPDATE relacion_padres SET Id_ganado_madre=?, Tipo_nacimiento=?, Id_ganado_padre=?, Id_ganado_hijo=?
-    WHERE id=?`,
-        [relacion.madre, relacion.nacimiento, relacion.padre, relacion.hijo, id], 
+    mysqlconexion.query(`CALL sp_padres(?, ?, ?, ?);`,
+        [relacion.hijo, relacion.padre, relacion.madre, relacion.nacimiento], 
         (error,rows,fields)=>{
             if(!error){
                 //res.json(rows);

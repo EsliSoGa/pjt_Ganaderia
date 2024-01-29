@@ -1,4 +1,5 @@
 import React, {useContext, useState, useEffect, useRef} from "react";
+import { useNavigate } from "react-router-dom";
 import { GanadoContext } from "../../context/GanadoContext";
 import {Dialog} from "primereact/dialog";
 import { Button } from "primereact/button";
@@ -8,15 +9,14 @@ import {Calendar} from 'primereact/calendar';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import moment from "moment";
-import FormTraslado from './Traslado';
-import { Divider } from 'primereact/divider';
+import FormPadres from "./Padres";
 
 
 const Form =(props) =>{
     const {isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
-    const [isVisibleButtonTraslado, setIsVisibleButtonTraslado] = useState(false);
     const [isVisibleButton, setIsVisibleButton] = useState(false);
+    const [isVisibleButtonPadres, setIsVisibleButtonPadres] = useState(false);
 
     const {
         createGanado,
@@ -51,7 +51,10 @@ const Form =(props) =>{
     ];
 
     const estadoTemplate = () => {
-        return <span >{"Detalle de ganado  "+ganadoData.numero}</span>;
+        return <div className="ui-dialog-buttonpane p-clearfix">
+            <p>{"Detalle de ganado  "+ganadoData.numero}</p>
+            {buttons}
+        </div>
     }
 
     const [ganadoData, setGanadoData] = useState(inicialGanadosState);
@@ -71,6 +74,12 @@ const Form =(props) =>{
         console.log(ganadoData);
     };
 
+    const clearSelected = () => {
+        setIsVisible(false);
+        setGanadoData(inicialGanadosState);
+        setIsVisibleButton(false);
+    };
+
     const saveGanado = () => {
         if(ganadoData.numero==="" || ganadoData.nombre===""){
             showInfo();
@@ -83,12 +92,8 @@ const Form =(props) =>{
                 ganadoData.fecha = moment(ganadoData.fecha).format("YYYY-MM-DD");
                 updateGanado(ganadoData);
             }
-            retornar();
+            clearSelected();
         }
-    };
-
-    const trasladoButton = () => {
-        setIsVisibleButtonTraslado(true);
     };
 
     const showInfo = () => {
@@ -102,13 +107,9 @@ const Form =(props) =>{
             deleteGanado(ganadoData.id);
             showError();
         }
-        retornar();
+        clearSelected();
     };
 
-    const retornar =()=>{
-        setGanadoData(inicialGanadosState);
-        setIsVisible(false);
-    };
 
     const showError = () => {
         toast.current.show({severity:'error', summary: 'Eliminado', detail:'Se ha eliminado con éxito', life: 3000});
@@ -117,7 +118,7 @@ const Form =(props) =>{
     const dialogFooter=(
         <div className="ui-dialog-buttonpane p-clearfix">
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteGanado} reject={retornar} 
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteGanado} reject={clearSelected} 
                 acceptClassName="p-button-danger"
                 />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
@@ -129,11 +130,37 @@ const Form =(props) =>{
         </div>
     );
 
-    const clearSelected = () => {
-        setIsVisible(false);
-        setGanadoData(inicialGanadosState);
-        setIsVisibleButton(false);
+
+    //Navegacion
+    const navigate = useNavigate();
+    function linkServicio (){
+        navigate(`/servicio/${ganadoData.id}`)
+    }
+    //Formulario padres
+    const padres=()=>{
+        setIsVisibleButtonPadres(true)
     };
+
+
+    const buttons = (
+        <div className="ui-dialog-buttonpane p-clearfix">
+            <Button className="p-button-rounded mb-3 p-button-info" 
+                icon="pi pi-times" label="Traslado" visible={isVisibleButton}
+                onClick={padres}/> 
+            <Button className="p-button-rounded mb-3 p-button-success"
+                label="Venta" icon="pi pi-tag" visible={isVisibleButton}
+                onClick={padres}/>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-help"
+                label="Servicio" icon="pi pi-check" visible={isVisibleButton}
+                onClick={linkServicio}/>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
+                label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
+                onClick={padres}/>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
+                label="Padres" icon="pi pi-check" visible={isVisibleButton}
+                onClick={padres}/>
+        </div>
+    );
 
     return(<div>
         <Toast ref={toast}></Toast>
@@ -146,22 +173,6 @@ const Form =(props) =>{
             onHide={()=>clearSelected()}
             footer={dialogFooter}
         >
-            <Button className="p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" label="Traslado" visible={isVisibleButton}
-                onClick={trasladoButton}/> 
-            <Button className="p-button-rounded mb-3 p-button-success"
-                label="Venta" icon="pi pi-tag" visible={isVisibleButton}
-                onClick={trasladoButton}/>
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-help"
-                label="Servicio" icon="pi pi-check" visible={isVisibleButton}
-                onClick={trasladoButton}/>
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
-                label="Padres" icon="pi pi-check" visible={isVisibleButton}
-                onClick={trasladoButton}/>
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
-                label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
-                onClick={trasladoButton}/>
-            <Divider/>
             <div className=" p-grid p-fluid">
                 <br/>
                 <div className="p-float-label">
@@ -248,7 +259,7 @@ const Form =(props) =>{
                 </div>
             </div>
         </Dialog>
-        <FormTraslado isVisibleButtonTraslado = {isVisibleButtonTraslado} setIsVisibleButtonTraslado={setIsVisibleButtonTraslado}/>
+        <FormPadres isVisibleButtonPadres = {isVisibleButtonPadres} setIsVisibleButtonPadres={setIsVisibleButtonPadres}/>
     </div>);
 }
 
