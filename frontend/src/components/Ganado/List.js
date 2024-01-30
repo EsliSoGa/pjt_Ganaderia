@@ -121,6 +121,9 @@ const GanadoList = () =>{
                 <Column field="finca" header="Finca" sortable/>
                 <Column field='estado' body={estadoTemplate} header="Estado" sortable/>
                 <Column field="comentarios" header="Comentario" sortable/>
+                <Column field="padre" header="Padre" sortable/>
+                <Column field="madre" header="Madre" sortable/>
+                <Column field="tipo_nacimiento" header="Tipo nacimiento" sortable/>
             </DataTable>
             </div>
         </Panel>

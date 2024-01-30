@@ -4,10 +4,15 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query(`SELECT id, nombre, numero, sexo,
-         color, peso, fecha, tipo, finca, estado,
-         imagen, comentarios, id_usuario 
-         FROM ganado;`,
+    mysqlconexion.query(`SELECT g.id, nombre, numero, sexo,
+    color, peso, fecha, tipo, finca, estado,
+    imagen, comentarios, id_usuario,
+    (SELECT numero from ganado where id = id_ganado_madre) as madre,
+    (SELECT numero from ganado where id = id_ganado_padre) as padre, 
+    tipo_nacimiento
+    FROM ganado as g
+    left JOIN relacion_padres as r
+    ON Id_ganado_hijo = g.id;`,
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
