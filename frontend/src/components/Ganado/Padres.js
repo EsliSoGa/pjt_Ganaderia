@@ -104,13 +104,13 @@ const FormPadres = (props) =>{
         >
             <div className="p-grid p-fluid">
                 <div className="p-float-label">
-                    <Dropdown value={padreData.Id_ganado_madre} options={ganados} optionLabel="numero" optionValue="id" 
+                    <Dropdown value={padreData.Id_ganado_madre} options={ganados.filter((p)=>p.sexo === "Femenino")} optionLabel="numero" optionValue="id" 
                     onChange={(e) => updateField(e.target.value, "Id_ganado_madre")} filter showClear filterBy="numero" placeholder="Seleccione a la madre"/>
                   <label>Madre</label>
                 </div>
                 <br />
                 <div className="p-float-label">
-                    <Dropdown value={padreData.Id_ganado_padre} options={ganados} optionLabel="numero" optionValue="id" 
+                    <Dropdown value={padreData.Id_ganado_padre} options={ganados.filter((p)=>p.sexo === "Masculino")} optionLabel="numero" optionValue="id" 
                     onChange={(e) => updateField(e.target.value, "Id_ganado_padre")} filter showClear filterBy="numero" placeholder="Seleccione al padre"/>
                     <label>Padre</label>
                 </div>
