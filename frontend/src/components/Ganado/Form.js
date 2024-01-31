@@ -22,7 +22,9 @@ const Form =(props) =>{
         createGanado,
         deleteGanado,
         editGanados,
-        updateGanado
+        updateGanado,
+        findPadre,
+        editPadres
     } = useContext(GanadoContext);
 
     const inicialGanadosState ={
@@ -140,7 +142,9 @@ const Form =(props) =>{
         navigate(`/traslado/${ganadoData.id}`)
     }
     //Formulario padres
-    const padres=()=>{
+    const padresForm=()=>{
+        findPadre(ganadoData.id);
+        console.log(editPadres);
         setIsVisibleButtonPadres(true)
     };
 
@@ -152,16 +156,16 @@ const Form =(props) =>{
                 onClick={linkTraslado}/> 
             <Button className="p-button-rounded mb-3 p-button-success"
                 label="Venta" icon="pi pi-tag" visible={isVisibleButton}
-                onClick={padres}/>
+                onClick={linkTraslado}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-help"
                 label="Servicio" icon="pi pi-check" visible={isVisibleButton}
                 onClick={linkServicio}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
                 label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
-                onClick={padres}/>
+                onClick={linkTraslado}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
                 label="Padres" icon="pi pi-check" visible={isVisibleButton}
-                onClick={padres}/>
+                onClick={padresForm}/>
         </div>
     );
 
@@ -262,7 +266,7 @@ const Form =(props) =>{
                 </div>
             </div>
         </Dialog>
-        <FormPadres isVisibleButtonPadres = {isVisibleButtonPadres} setIsVisibleButtonPadres={setIsVisibleButtonPadres}/>
+        <FormPadres idH={ganadoData.id} isVisibleButtonPadres = {isVisibleButtonPadres} setIsVisibleButtonPadres={setIsVisibleButtonPadres}/>
     </div>);
 }
 

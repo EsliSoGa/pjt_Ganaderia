@@ -1,47 +1,62 @@
 import React, {useContext, useState, useEffect, useRef} from "react";
-import { GanadoContext } from "../../context/GanadoContext";
 import { Dialog } from "primereact/dialog";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import {InputText} from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { GanadoContext } from "../../context/GanadoContext";
+import { Dropdown } from 'primereact/dropdown';
 
 const FormPadres = (props) =>{
-    const {isVisibleButtonPadres, setIsVisibleButtonPadres} = props;
+    const {idH, isVisibleButtonPadres, setIsVisibleButtonPadres} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
     
-    const {editGanados} = useContext(GanadoContext);
+    const {
+        editGanados,
+        createPadre,
+        deletePadre,
+        editPadres,
+        ganados
+    } = useContext(GanadoContext);
 
     const [ganadoData, setGanadoData] = useState([]);
+
+
+    const inicialPadresState = {
+        id:null,
+        Id_ganado_hijo: idH,
+        Id_ganado_madre: "",
+        Tipo_nacimiento: "",
+        Id_ganado_padre: "",
+    };
+
+    const [padreData, setPadreData] = useState(inicialPadresState);
+
     
     useEffect(() => {
-        if (editGanados) setGanadoData(editGanados);
-    }, [editGanados]);
+        setGanadoData(editGanados);
+        if (editPadres) setPadreData(editPadres);
+    }, [editPadres, editGanados]);
+
+    const updateField = (data, field) =>{
+        setPadreData({
+            ...padreData,
+            [field]:data
+        })
+    };
 
     const toast = useRef(null);
 
-    const saveGanado = () => {
-        if(ganadoData.numero==="" || ganadoData.nombre===""){
-            showInfo();
-        }
-        else{
-            if (!editGanados) {
-                /*ganadoData.fecha = moment(ganadoData.fecha).format("YYYY-MM-DD");
-                createGanado(ganadoData);*/
-            } else {
-                /*ganadoData.fecha = moment(ganadoData.fecha).format("YYYY-MM-DD");
-                updateGanado(ganadoData);*/
-            }
-            clearSelected();
-        }
+    const savePadre = () => {
+        padreData.Id_ganado_hijo = idH;
+        //console.log(padreData);
+        createPadre(padreData);
+        clearSelected();
     };
 
-    const showInfo = () => {
-        toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
-    }
-
-    const _deleteGanado = () => {
-        if (editGanados) {
-            //deleteGanado(ganadoData.id);
+    const _deletePadre = () => {
+        if (editPadres) {
+            deletePadre(padreData.id);
             showError();
         }
         clearSelected();
@@ -49,6 +64,8 @@ const FormPadres = (props) =>{
     
     const clearSelected = () => {
         setIsVisibleButtonPadres(false);
+        setPadreData(inicialPadresState);
+        setGanadoData([]);
     };
 
     const showError = () => {
@@ -58,7 +75,7 @@ const FormPadres = (props) =>{
     const dialogFooter=(
         <div className="ui-dialog-buttonpane p-clearfix">
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteGanado} reject={clearSelected} 
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deletePadre} reject={clearSelected} 
                 acceptClassName="p-button-danger"
                 />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
@@ -66,7 +83,7 @@ const FormPadres = (props) =>{
                 onClick={() => setisVisibleDelete(true)}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-save"
-                onClick={saveGanado}/>
+                onClick={savePadre}/>
         </div>
     );
 
@@ -86,8 +103,24 @@ const FormPadres = (props) =>{
             footer={dialogFooter}
         >
             <div className="p-grid p-fluid">
-                <p>Número de ganado: {ganadoData.numero}</p>
-                <br/>
+                <div className="p-float-label">
+                    <Dropdown value={padreData.Id_ganado_madre} options={ganados} optionLabel="numero" optionValue="id" 
+                    onChange={(e) => updateField(e.target.value, "Id_ganado_madre")} filter showClear filterBy="numero" placeholder="Seleccione a la madre"/>
+                  <label>Madre</label>
+                </div>
+                <div className="p-float-label">
+                    <Dropdown value={padreData.Id_ganado_padre} options={ganados} optionLabel="numero" optionValue="id" 
+                    onChange={(e) => updateField(e.target.value, "Id_ganado_padre")} filter showClear filterBy="numero" placeholder="Seleccione al padre"/>
+                    <label>Padre</label>
+                </div>
+                <br />
+                <div className="p-float-label">
+                    <InputText
+                        value={padreData.Tipo_nacimiento}
+                        onChange={(e)=>updateField(e.target.value, "Tipo_nacimiento")}
+                    />
+                    <label>Tipo nacimiento</label>
+                </div>
             </div>
         </Dialog>
     </div>);
