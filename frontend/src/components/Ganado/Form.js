@@ -174,7 +174,7 @@ const Form =(props) =>{
         <Dialog
             visible={isVisible}
             modal={true}
-            style={{width:"420px", overflow:"scroll"}}
+            style={{width:"550px", overflow:"scroll"}}
             contentStyle={{overflow:"visible"}}
             header = {estadoTemplate}
             onHide={()=>clearSelected()}

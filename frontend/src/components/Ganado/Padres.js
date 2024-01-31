@@ -96,7 +96,7 @@ const FormPadres = (props) =>{
         <Dialog
             visible={isVisibleButtonPadres}
             modal={true}
-            style={{width:"600px", overflow:"scroll"}}
+            style={{width:"600px"}}
             contentStyle={{overflow:"visible"}}
             header = {estadoTemplate}
             onHide={()=>clearSelected()}
@@ -108,6 +108,7 @@ const FormPadres = (props) =>{
                     onChange={(e) => updateField(e.target.value, "Id_ganado_madre")} filter showClear filterBy="numero" placeholder="Seleccione a la madre"/>
                   <label>Madre</label>
                 </div>
+                <br />
                 <div className="p-float-label">
                     <Dropdown value={padreData.Id_ganado_padre} options={ganados} optionLabel="numero" optionValue="id" 
                     onChange={(e) => updateField(e.target.value, "Id_ganado_padre")} filter showClear filterBy="numero" placeholder="Seleccione al padre"/>
