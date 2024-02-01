@@ -11,6 +11,7 @@ import GanadoScreen from './screens/GanadoScreen';
 import ServiciosScreen from './screens/ServicioScreen';
 import TrasladosScreen from './screens/TrasladoScreen';
 import TempVentaScreen from './screens/TempVentaScreen';
+import TempSalidaScreen from './screens/TempSalidaScreen';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/servicio/:idS" element={<ServiciosScreen/>}/>
         <Route path="/traslado/:idT" element={<TrasladosScreen/>}/>
         <Route path="/tventa/:idTV" element={<TempVentaScreen/>}/>
+        <Route path="/tsalida/:idTS" element={<TempSalidaScreen/>}/>
       </Routes>
     </div>
   );

@@ -7,7 +7,7 @@ import TempVentaList from '../components/TempVenta/List';
 
 function TempVentaScreen (){
     return (
-        <div className='TrasladoScreen'>
+        <div className='TempVentaScreen'>
             <TempVentaContextProvider>
                 <TempVentaList />
             </TempVentaContextProvider>

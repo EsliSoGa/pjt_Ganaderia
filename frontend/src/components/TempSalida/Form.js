@@ -5,60 +5,58 @@ import {InputText} from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Calendar } from "primereact/calendar";
-import { InputNumber } from "primereact/inputnumber";
 import moment from "moment";
 
-import { TempVentaContext } from "../../context/TempVentaContext";
+import { TempSalidaContext } from "../../context/TempSalidaContext";
 
-const TempVentaForm =(props) =>{
-    const {idTV, isVisible, setIsVisible} = props;
+const TempSalidaForm =(props) =>{
+    const {idTS, isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
     const {
-        createTempVenta,
-        deleteTempVenta,
-        editTempVenta,
-        updateTempVenta
-    } = useContext(TempVentaContext);
+        createTempSalida,
+        deleteTempSalida,
+        editTempSalida,
+        updateTempSalida
+    } = useContext(TempSalidaContext);
 
-    const inicialTempVentasState ={
+    const inicialTempSalidasState ={
         id:null,
         Fecha:"",
-        Comprador:"",
-        Precio:0,
-        Peso: "", 
-        Total:0,
-        Id_ganado:idTV
+        Motivo:"",
+        Imagen:"",
+        Comentarios: "",
+        Id_ganado:idTS
     };
 
-    const [tempVentaData, setTempVentaData] = useState(inicialTempVentasState);
+    const [tempSalidaData, setTempSalidaData] = useState(inicialTempSalidasState);
 
     useEffect(() => {
-        if (editTempVenta) setTempVentaData(editTempVenta);
-    }, [editTempVenta]);
+        if (editTempSalida) setTempSalidaData(editTempSalida);
+    }, [editTempSalida]);
 
     const updateField = (data, field) =>{
-        setTempVentaData({
-            ...tempVentaData,
+        setTempSalidaData({
+            ...tempSalidaData,
             [field]:data
         })
     };
 
     const clearSelected = () => {
         setIsVisible(false);
-        setTempVentaData(inicialTempVentasState);
+        setTempSalidaData(inicialTempSalidasState);
     };
 
-    const saveTempVenta = () => {
-        if(tempVentaData.Fecha==="" || tempVentaData.Comprador=== "" || tempVentaData.Peso === ""){
+    const saveTempSalida = () => {
+        if(tempSalidaData.Fecha==="" || tempSalidaData.Motivo=== "" || tempSalidaData.Comentarios === ""){
             showInfo();
         }
         else{
-            tempVentaData.Fecha = moment(tempVentaData.Fecha).format("YYYY-MM-DD");
-            if (!editTempVenta) {
-                createTempVenta(tempVentaData);
+            tempSalidaData.Fecha = moment(tempSalidaData.Fecha).format("YYYY-MM-DD");
+            if (!editTempSalida) {
+                createTempSalida(tempSalidaData);
             } else {
-                updateTempVenta(tempVentaData);
+                updateTempSalida(tempSalidaData);
             }
             clearSelected();
         }
@@ -70,9 +68,9 @@ const TempVentaForm =(props) =>{
         toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
     }
 
-    const _deleteTempVenta = () => {
-        if (editTempVenta) {
-            deleteTempVenta(tempVentaData.id);
+    const _deleteTempSalida = () => {
+        if (editTempSalida) {
+            deleteTempSalida(tempSalidaData.id);
             showError();
         }
         clearSelected();
@@ -85,7 +83,7 @@ const TempVentaForm =(props) =>{
     const dialogFooter=(
         <div className="ui-dialog-buttonpane p-clearfix">
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTempVenta} reject={clearSelected} 
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTempSalida} reject={clearSelected} 
                 acceptClassName="p-button-danger"
                 />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
@@ -93,7 +91,7 @@ const TempVentaForm =(props) =>{
                 onClick={() => setisVisibleDelete(true)}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"
-                onClick={saveTempVenta}/>
+                onClick={saveTempSalida}/>
         </div>
     );
 
@@ -104,7 +102,7 @@ const TempVentaForm =(props) =>{
             modal={true}
             style={{width:"420px"}}
             contentStyle={{overflow:"visible"}}
-            header = "Detalles de Venta"
+            header = "Detalles de salida"
             onHide={()=>clearSelected()}
             footer={dialogFooter}
         >
@@ -112,48 +110,38 @@ const TempVentaForm =(props) =>{
                 <br/>
                 <div className="p-float-label">
                     <Calendar
-                        value={tempVentaData.Fecha && new Date(tempVentaData.Fecha)}
+                        value={tempSalidaData.Fecha && new Date(tempSalidaData.Fecha)}
                         onChange={(e) => updateField(e.target.value.toISOString(), "Fecha")}
                         dateFormat="dd-mm-yy"
                     />
-                    <label>Fecha</label>
+                    <label>Fecha*</label>
                 </div>
                 <br/>
                 <div className="p-float-label">
                     <InputText
-                        value={tempVentaData.Comprador}
-                        onChange={(e)=>updateField(e.target.value, "Comprador")}
+                        value={tempSalidaData.Motivo}
+                        onChange={(e)=>updateField(e.target.value, "Motivo")}
                     />
-                    <label>Comprador*</label>
+                    <label>Motivo*</label>
                 </div>
                 <br />
-                <div className="p-float-label">
-                    <InputNumber
-                        value={tempVentaData.Precio}
-                        onChange={(e)=>updateField(e.value, "Precio")}
-                        mode="decimal" locale="en-US" minFractionDigits={2}
+                <div className="p-float-label"> 
+                    <InputText
+                        value={tempSalidaData.Imagen}
+                        onChange={(e)=>updateField(e.target.value, "Imagen")}
                     />
-                    <label>Precio*</label>
+                    <label>Imagen*</label>
                 </div><br />
                 <div className="p-float-label">
                     <InputText
-                        value={tempVentaData.Peso}
-                        onChange={(e)=>updateField(e.target.value, "Peso")}
+                        value={tempSalidaData.Comentarios}
+                        onChange={(e)=>updateField(e.target.value, "Comentarios")}
                     />
-                    <label>Peso*</label>
-                </div>
-                <br />
-                <div className="p-float-label">
-                    <InputNumber
-                        value={tempVentaData.Total}
-                        onChange={(e)=>updateField(e.value, "Total")}
-                        mode="decimal" locale="en-US" minFractionDigits={2}
-                    />
-                    <label>Total*</label>
+                    <label>Comentarios*</label>
                 </div>
             </div>
         </Dialog>
     </div>);
 }
 
-export default TempVentaForm;
+export default TempSalidaForm;

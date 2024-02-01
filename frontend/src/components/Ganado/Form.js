@@ -144,6 +144,9 @@ const Form =(props) =>{
     function linkTempVenta (){
         navigate(`/tventa/${ganadoData.id}`)
     }
+    function linkTempSalida (){
+        navigate(`/tsalida/${ganadoData.id}`)
+    }
     //Formulario padres
     const padresForm=()=>{
         findPadre(ganadoData.id);
@@ -165,7 +168,7 @@ const Form =(props) =>{
                 onClick={linkServicio}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
                 label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
-                onClick={linkTraslado}/>
+                onClick={linkTempSalida}/>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
                 label="Padres" icon="pi pi-check" visible={isVisibleButton}
                 onClick={padresForm}/>
