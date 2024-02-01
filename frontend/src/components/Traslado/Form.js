@@ -42,6 +42,11 @@ const TrasladoForm =(props) =>{
         //console.log(trasladoData);
     };
 
+    const clearSelected = () => {
+        setIsVisible(false);
+        setTrasladoData(inicialTrasladosState);
+    };
+
     const saveTraslado = () => {
         if(trasladoData.Finca_destino==="" || trasladoData.Finca_origen==="" || trasladoData.Fecha ===""){
             showInfo();
@@ -54,7 +59,7 @@ const TrasladoForm =(props) =>{
             trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
             updateTraslado(trasladoData);
         }
-        retornar();}
+        clearSelected();}
     };
 
     const toast = useRef(null);
@@ -67,11 +72,7 @@ const TrasladoForm =(props) =>{
             deleteTraslado(trasladoData.id);
             showError();
         }
-        retornar();
-    };
-    const retornar =()=>{
-        setTrasladoData(inicialTrasladosState);
-        setIsVisible(false);
+        clearSelected();
     };
 
     const showError = () => {
@@ -81,7 +82,7 @@ const TrasladoForm =(props) =>{
     const dialogFooter=(
         <div className="ui-dialog-buttonpane p-clearfix">
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTraslado} reject={retornar} 
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTraslado} reject={clearSelected} 
                 acceptClassName="p-button-danger"
                 />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
@@ -92,11 +93,6 @@ const TrasladoForm =(props) =>{
                 onClick={saveTraslado}/>
         </div>
     );
-
-    const clearSelected = () => {
-        setIsVisible(false);
-        setTrasladoData(inicialTrasladosState);
-    };
 
     return(<div>
         <Toast ref={toast}></Toast>

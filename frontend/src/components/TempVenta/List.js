@@ -1,5 +1,4 @@
 import React, {useContext, useState, useEffect} from "react";
-import { TrasladoContext } from "../../context/TrasladoContext";
 import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
 import { Column } from 'primereact/column';
@@ -8,30 +7,31 @@ import { Button } from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 import { useNavigate, useParams } from "react-router-dom";
-import TrasladoForm from './Form';
+import { TempVentaContext } from "../../context/TempVentaContext";
+import TempVentaForm from './Form';
 import moment from "moment";
 
-const TrasladoList = () =>{
-    const {traslados, findTraslado} = useContext(TrasladoContext);
+const TempVentaList = () =>{
+    const {tempVentas, findTempVenta} = useContext(TempVentaContext);
     
     const [isVisible, setIsVisible] = useState(false);
     
-    const dateTraslado = (traslado) => {
-        return moment(traslado.Fecha).format("DD/MM/YYYY");
+    const dateTempVenta = (tempVenta) => {
+        return moment(tempVenta.Fecha).format("DD/MM/YYYY");
     }
 
-    const saveTraslado = (id) => {
-        findTraslado(id);
+    const saveTempVenta = (id) => {
+        findTempVenta(id);
         setIsVisible(true);
     };
 
     const navigate = useNavigate();
-    const { idT } = useParams();
+    const { idTV } = useParams();
 
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar traslado" 
+                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar venta" 
                 onClick={()=>setIsVisible(true)}/>
             </React.Fragment>
         )
@@ -89,29 +89,31 @@ const TrasladoList = () =>{
         <div>
         <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
         <Panel
-            header="Listado de traslados" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
+            header="Listado de ventas" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
             style={{ textAlign: "justify" }}
         >
             <div>
             <DataTable 
-                value={traslados.filter((p)=>p.Id_ganado === parseInt(idT))}
+                value={tempVentas.filter((p)=>p.Id_ganado === parseInt(idTV))}
                 responsiveLayout="scroll"
                 selectionMode="single"
-                onSelectionChange={(e) => saveTraslado(e.value.id)}
+                onSelectionChange={(e) => saveTempVenta(e.value.id)}
                 paginator className="p-datatable-customers" showGridlines rows={10}
                 dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Fecha', 'Finca_origen', 'Finca_destino']} header={header1} emptyMessage="No se encontraron traslados."
+                globalFilterFields={['Fecha', 'Comprador', 'Precio', 'Peso', 'Total']} header={header1} emptyMessage="No se encontraron ventas."
                 >
                 <Column field="id" header="No." sortable/>
-                <Column field="Fecha" body={dateTraslado} header="Fecha de traslado" sortable/>
-                <Column field="Finca_origen" header="Finca origen" sortable/>
-                <Column field="Finca_destino" header="Finca destino" sortable/>
+                <Column field="Fecha" body={dateTempVenta} header="Fecha de venta" sortable/>
+                <Column field="Comprador" header="Comprador" sortable/>
+                <Column field="Precio" header="Precio" sortable/>
+                <Column field="Peso" header="Peso" sortable/>
+                <Column field="Total" header="Total" sortable/>
             </DataTable>
             </div>
         </Panel>
-        <TrasladoForm idT={idT} isVisible={isVisible} setIsVisible={setIsVisible}/>
+        <TempVentaForm idTV={idTV} isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );
 }
 
-export default TrasladoList;
+export default TempVentaList;

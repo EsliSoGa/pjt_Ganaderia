@@ -10,6 +10,7 @@ import 'primeicons/primeicons.css';
 import GanadoScreen from './screens/GanadoScreen';
 import ServiciosScreen from './screens/ServicioScreen';
 import TrasladosScreen from './screens/TrasladoScreen';
+import TempVentaScreen from './screens/TempVentaScreen';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/ganado" element={<GanadoScreen />}/>
         <Route path="/servicio/:idS" element={<ServiciosScreen/>}/>
         <Route path="/traslado/:idT" element={<TrasladosScreen/>}/>
+        <Route path="/tventa/:idTV" element={<TempVentaScreen/>}/>
       </Routes>
     </div>
   );
