@@ -15,6 +15,13 @@ import moment from "moment";
 const GanadoList = () =>{
     const {ganados, findGanado} = useContext(GanadoContext);
     
+    let cont = 0;
+
+    const numero = () => {
+        cont = cont+0.5;
+        return cont;
+    }
+
     const estadoTemplate = (ganados) => {
         return <span className={`${ganados.estado ? "activo" : "inactivo"}`}>{ganados.estado ? " Activo " : " Inactivo "}</span>;
     }
@@ -25,10 +32,8 @@ const GanadoList = () =>{
 
     const saveGanado = (id) => {
         findGanado(id);
-        //setIsVisibleButton(true);
         setIsVisible(true);
     };
-
 
     const leftToolbarTemplate = () => {
         return (
@@ -108,9 +113,9 @@ const GanadoList = () =>{
                 onSelectionChange={(e) => saveGanado(e.value.id)}
                 paginator className="p-datatable-customers" showGridlines rows={15}
                 dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['nombre', 'numero', 'sexo', 'finca', 'tipo','peso', dateGanado]} header={header1} emptyMessage="No se encontraro el ganado."
+                globalFilterFields={['nombre', 'numero', 'sexo', 'estado', 'finca', 'tipo','peso', dateGanado, 'tipo_nacimiento']} header={header1} emptyMessage="No se encontraro el ganado."
                 >
-                <Column field="id" header="No." sortable/>
+                <Column body={numero} header="No." sortable/>
                 <Column field="nombre" header="Nombre" sortable/>
                 <Column field="numero" header="Número" sortable/>
                 <Column field="sexo" header="Sexo" sortable/>

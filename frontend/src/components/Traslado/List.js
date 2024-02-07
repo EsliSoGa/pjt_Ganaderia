@@ -15,7 +15,14 @@ const TrasladoList = () =>{
     const {traslados, findTraslado} = useContext(TrasladoContext);
     
     const [isVisible, setIsVisible] = useState(false);
-    
+
+    let cont = 0;
+
+    const numero = () => {
+        cont = cont+0.5;
+        return cont;
+    }
+
     const dateTraslado = (traslado) => {
         return moment(traslado.Fecha).format("DD/MM/YYYY");
     }
@@ -102,7 +109,7 @@ const TrasladoList = () =>{
                 dataKey="id" filters={filters1} filterDisplay="menu"
                 globalFilterFields={['Fecha', 'Finca_origen', 'Finca_destino']} header={header1} emptyMessage="No se encontraron traslados."
                 >
-                <Column field="id" header="No." sortable/>
+                <Column body={numero} header="No." sortable/>
                 <Column field="Fecha" body={dateTraslado} header="Fecha de traslado" sortable/>
                 <Column field="Finca_origen" header="Finca origen" sortable/>
                 <Column field="Finca_destino" header="Finca destino" sortable/>

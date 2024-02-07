@@ -20,6 +20,13 @@ const TempSalidaList = () =>{
         return moment(tempSalida.Fecha).format("DD/MM/YYYY");
     }
 
+    let cont = 0;
+
+    const numero = () => {
+        cont = cont+0.5;
+        return cont;
+    }
+    
     const saveTempSalida = (id) => {
         findTempSalida(id);
         setIsVisible(true);
@@ -102,7 +109,7 @@ const TempSalidaList = () =>{
                 dataKey="id" filters={filters1} filterDisplay="menu"
                 globalFilterFields={['Fecha', 'Motivo']} header={header1} emptyMessage="No se encontraron salidas."
                 >
-                <Column field="id" header="No." sortable/>
+                <Column body={numero} header="No." sortable/>
                 <Column field="Fecha" body={dateTempSalida} header="Fecha de venta" sortable/>
                 <Column field="Motivo" header="Motivo" sortable/>
                 <Column field="Imagen" header="Imagen" sortable/>

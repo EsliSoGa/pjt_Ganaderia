@@ -15,6 +15,13 @@ const ServicioList = () =>{
     const {servicios, findServicio} = useContext(ServicioContext);
     
     const [isVisible, setIsVisible] = useState(false);
+
+    let cont = 0;
+
+    const numero = () => {
+        cont = cont+0.5;
+        return cont;
+    }
     
     const dateServicio = (servicios) => {
         return moment(servicios.fecha).format("DD/MM/YYYY");
@@ -99,9 +106,9 @@ const ServicioList = () =>{
                 onSelectionChange={(e) => saveServicio(e.value.id)}
                 paginator className="p-datatable-customers" showGridlines rows={10}
                 dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Fecha', 'Condicion', 'estado']} header={header1} emptyMessage="No se encontraron servicios."
+                globalFilterFields={['Nombre_tipo','Fecha', 'Condicion', 'Edad']} header={header1} emptyMessage="No se encontraron servicios."
                 >
-                <Column field="id" header="No." sortable/>
+                <Column body={numero} header="No." sortable/>
                 <Column field="Nombre_tipo" header="Tipo" sortable/>
                 <Column field="Fecha" body={dateServicio} header="Fecha de servicio" sortable/>
                 <Column field="Condicion" header="Condición" sortable/>

@@ -15,6 +15,13 @@ const TempVentaList = () =>{
     const {tempVentas, findTempVenta} = useContext(TempVentaContext);
     
     const [isVisible, setIsVisible] = useState(false);
+
+    let cont = 0;
+
+    const numero = () => {
+        cont = cont+0.5;
+        return cont;
+    }
     
     const dateTempVenta = (tempVenta) => {
         return moment(tempVenta.Fecha).format("DD/MM/YYYY");
@@ -102,7 +109,7 @@ const TempVentaList = () =>{
                 dataKey="id" filters={filters1} filterDisplay="menu"
                 globalFilterFields={['Fecha', 'Comprador', 'Precio', 'Peso', 'Total']} header={header1} emptyMessage="No se encontraron ventas."
                 >
-                <Column field="id" header="No." sortable/>
+                <Column body={numero} header="No." sortable/>
                 <Column field="Fecha" body={dateTempVenta} header="Fecha de venta" sortable/>
                 <Column field="Comprador" header="Comprador" sortable/>
                 <Column field="Precio" header="Precio" sortable/>
