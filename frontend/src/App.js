@@ -14,6 +14,8 @@ import TempVentaScreen from './screens/TempVentaScreen';
 import TempSalidaScreen from './screens/TempSalidaScreen';
 import TempSalidaTodosScreen from './screens/TempSalidaTodosScreen';
 import TempVentaTotalScreen from './screens/TempVentaTotalScreen';
+import SalidaScreen from './screens/SalidaScreen';
+import VentaScreen from './screens/VentaScreen';
 
 function App() {
   return (
@@ -29,6 +31,10 @@ function App() {
         
         <Route path="/aprobarsalida" element={<TempSalidaTodosScreen />}/>
         <Route path="/aprobarventa" element={<TempVentaTotalScreen />}/>
+
+        <Route path="/salida" element={<SalidaScreen />}/>
+        <Route path="/venta" element={<VentaScreen />}/>
+        
       </Routes>
     </div>
   );
