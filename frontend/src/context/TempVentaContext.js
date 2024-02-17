@@ -1,18 +1,22 @@
 import React, {createContext, useState, useEffect, useMemo } from "react";
 import {TempVentaService} from "../services/TempVentaServices"
+import {GanadoService} from "../services/GanadoServices"
 
 export const TempVentaContext = createContext();
 
 const TempVentaContextProvider = (props)=>{
     const ventaService = useMemo(() => new TempVentaService(), []);
+    const ganadoService = useMemo(() => new GanadoService(), []);
     
     const [tempVentas, setTempVentas] = useState([]);
+    const [ganados, setGanados] = useState([]);
 
     const [editTempVenta, setEditTempVenta] = useState(null);
 
     useEffect(() => {
         ventaService.readAll().then((data) => setTempVentas(data));
-    }, [ventaService, tempVentas]);
+        ganadoService.readAll().then((data) => setGanados(data));
+    }, [ventaService, tempVentas, ganadoService, ganados]);
 
     const createTempVenta =(venta)=>{
         ventaService
@@ -49,7 +53,8 @@ const TempVentaContextProvider = (props)=>{
                 findTempVenta,
                 updateTempVenta,
                 editTempVenta,
-                tempVentas
+                tempVentas,
+                ganados
             }}>
             {props.children}
         </TempVentaContext.Provider>

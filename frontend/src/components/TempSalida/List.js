@@ -110,6 +110,7 @@ const TempSalidaList = () =>{
                 globalFilterFields={['Fecha', 'Motivo']} header={header1} emptyMessage="No se encontraron salidas."
                 >
                 <Column body={numero} header="No." sortable/>
+                <Column field="Numero" header="Ganado" sortable/>
                 <Column field="Fecha" body={dateTempSalida} header="Fecha de venta" sortable/>
                 <Column field="Motivo" header="Motivo" sortable/>
                 <Column field="Imagen" header="Imagen" sortable/>

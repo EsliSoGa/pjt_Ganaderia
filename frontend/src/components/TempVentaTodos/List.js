@@ -6,7 +6,6 @@ import { InputText } from "primereact/inputtext";
 import { Button } from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
-import { useNavigate, useParams } from "react-router-dom";
 import { TempVentaContext } from "../../context/TempVentaContext";
 import TempVentaForm from './Form';
 import moment from "moment";
@@ -17,7 +16,6 @@ const TempVentaList = () =>{
     const [isVisible, setIsVisible] = useState(false);
 
     let cont = 0;
-
     const numero = () => {
         cont = cont+0.5;
         return cont;
@@ -32,26 +30,11 @@ const TempVentaList = () =>{
         setIsVisible(true);
     };
 
-    const navigate = useNavigate();
-    const { idTV } = useParams();
-
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
                 <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar venta" 
                 onClick={()=>setIsVisible(true)}/>
-            </React.Fragment>
-        )
-    }
-
-    function linkGanado (){
-        navigate('/ganado')
-    }
-
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <Button label="Regresar a ganado" icon="pi pi-angle-double-left" className="p-button-rounded mr-2" onClick={linkGanado}/>
             </React.Fragment>
         )
     }
@@ -94,14 +77,14 @@ const TempVentaList = () =>{
 
     return(
         <div>
-        <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+        <Toolbar className="mr-2" start={leftToolbarTemplate} ></Toolbar>
         <Panel
             header="Listado de ventas" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
             style={{ textAlign: "justify" }}
         >
             <div>
             <DataTable 
-                value={tempVentas.filter((p)=>p.Id_ganado === parseInt(idTV))}
+                value={tempVentas}
                 responsiveLayout="scroll"
                 selectionMode="single"
                 onSelectionChange={(e) => saveTempVenta(e.value.id)}
@@ -119,7 +102,7 @@ const TempVentaList = () =>{
             </DataTable>
             </div>
         </Panel>
-        <TempVentaForm idTV={idTV} isVisible={isVisible} setIsVisible={setIsVisible}/>
+        <TempVentaForm isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );
 }

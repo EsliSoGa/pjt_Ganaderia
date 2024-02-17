@@ -110,6 +110,7 @@ const TrasladoList = () =>{
                 globalFilterFields={['Fecha', 'Finca_origen', 'Finca_destino']} header={header1} emptyMessage="No se encontraron traslados."
                 >
                 <Column body={numero} header="No." sortable/>
+                <Column field="Numero" header="Ganado" sortable/>
                 <Column field="Fecha" body={dateTraslado} header="Fecha de traslado" sortable/>
                 <Column field="Finca_origen" header="Finca origen" sortable/>
                 <Column field="Finca_destino" header="Finca destino" sortable/>

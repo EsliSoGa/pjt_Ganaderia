@@ -6,15 +6,18 @@ import { InputText } from "primereact/inputtext";
 import { Button } from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
-import { useNavigate, useParams } from "react-router-dom";
-import { TempVentaContext } from "../../context/TempVentaContext";
-import TempVentaForm from './Form';
 import moment from "moment";
+import { TempSalidaContext } from "../../context/TempSalidaContext";
+import TempSalidaForm from './Form';
 
-const TempVentaList = () =>{
-    const {tempVentas, findTempVenta} = useContext(TempVentaContext);
+const TempSalidaList = () =>{
+    const {tempSalidas, findTempSalida} = useContext(TempSalidaContext);
     
     const [isVisible, setIsVisible] = useState(false);
+    
+    const dateTempSalida = (tempSalida) => {
+        return moment(tempSalida.Fecha).format("DD/MM/YYYY");
+    }
 
     let cont = 0;
 
@@ -23,35 +26,16 @@ const TempVentaList = () =>{
         return cont;
     }
     
-    const dateTempVenta = (tempVenta) => {
-        return moment(tempVenta.Fecha).format("DD/MM/YYYY");
-    }
-
-    const saveTempVenta = (id) => {
-        findTempVenta(id);
+    const saveTempSalida = (id) => {
+        findTempSalida(id);
         setIsVisible(true);
     };
-
-    const navigate = useNavigate();
-    const { idTV } = useParams();
 
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar venta" 
+                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar salida" 
                 onClick={()=>setIsVisible(true)}/>
-            </React.Fragment>
-        )
-    }
-
-    function linkGanado (){
-        navigate('/ganado')
-    }
-
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <Button label="Regresar a ganado" icon="pi pi-angle-double-left" className="p-button-rounded mr-2" onClick={linkGanado}/>
             </React.Fragment>
         )
     }
@@ -94,34 +78,33 @@ const TempVentaList = () =>{
 
     return(
         <div>
-        <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+        <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
         <Panel
-            header="Listado de ventas" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
+            header="Listado de salida" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
             style={{ textAlign: "justify" }}
         >
             <div>
             <DataTable 
-                value={tempVentas.filter((p)=>p.Id_ganado === parseInt(idTV))}
+                value={tempSalidas}
                 responsiveLayout="scroll"
                 selectionMode="single"
-                onSelectionChange={(e) => saveTempVenta(e.value.id)}
+                onSelectionChange={(e) => saveTempSalida(e.value.id)}
                 paginator className="p-datatable-customers" showGridlines rows={10}
                 dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Fecha', 'Comprador', 'Precio', 'Peso', 'Total']} header={header1} emptyMessage="No se encontraron ventas."
+                globalFilterFields={['Fecha', 'Motivo']} header={header1} emptyMessage="No se encontraron salidas por aprobar."
                 >
                 <Column body={numero} header="No." sortable/>
                 <Column field="Numero" header="Ganado" sortable/>
-                <Column field="Fecha" body={dateTempVenta} header="Fecha de venta" sortable/>
-                <Column field="Comprador" header="Comprador" sortable/>
-                <Column field="Precio" header="Precio" sortable/>
-                <Column field="Peso" header="Peso" sortable/>
-                <Column field="Total" header="Total" sortable/>
+                <Column field="Fecha" body={dateTempSalida} header="Fecha de venta" sortable/>
+                <Column field="Motivo" header="Motivo" sortable/>
+                <Column field="Imagen" header="Imagen" sortable/>
+                <Column field="Comentarios" header="Comentarios" sortable/>
             </DataTable>
             </div>
         </Panel>
-        <TempVentaForm idTV={idTV} isVisible={isVisible} setIsVisible={setIsVisible}/>
+        <TempSalidaForm isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );
 }
 
-export default TempVentaList;
+export default TempSalidaList;

@@ -4,7 +4,10 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT id, Finca_origen, Finca_destino, Fecha, Id_ganado FROM traslado',
+    mysqlconexion.query(`SELECT t.id, Finca_origen, Finca_destino, t.Fecha, Id_ganado, Numero
+	FROM traslado as t
+    INNER JOIN ganado as g
+    on t.Id_ganado = t.id`,
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +25,11 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT id, Finca_origen, Finca_destino, Fecha, Id_ganado FROM traslado WHERE id=?', 
+    mysqlconexion.query(`SELECT t.id, Finca_origen, Finca_destino, t.Fecha, Id_ganado, Numero
+	FROM traslado as t
+    INNER JOIN ganado as g
+    on t.Id_ganado = t.id
+    WHERE t.id=1;`, 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
