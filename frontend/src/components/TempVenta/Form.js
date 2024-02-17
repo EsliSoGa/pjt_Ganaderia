@@ -25,9 +25,9 @@ const TempVentaForm =(props) =>{
         id:null,
         Fecha:"",
         Comprador:"",
-        Precio:0,
+        Precio:"",
         Peso: "", 
-        Total:0,
+        Total:"",
         Id_ganado:idTV
     };
 

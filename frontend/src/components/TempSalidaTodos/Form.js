@@ -28,7 +28,7 @@ const TempSalidaForm =(props) =>{
         Motivo:"",
         Imagen:"",
         Comentarios: "",
-        Id_ganado:0
+        Id_ganado:""
     };
 
     const [tempSalidaData, setTempSalidaData] = useState(inicialTempSalidasState);

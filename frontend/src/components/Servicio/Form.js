@@ -27,10 +27,10 @@ const ServicioForm =(props) =>{
         id:null,
         Fecha:"",
         Condicion:"",
-        Edad:0,
+        Edad:"",
         comentario:"",
         id_ganado:idS,
-        tipo_servicio:0
+        tipo_servicio:""
     };
 
     const [servicioData, setServicioData] = useState(inicialServiciosState);
