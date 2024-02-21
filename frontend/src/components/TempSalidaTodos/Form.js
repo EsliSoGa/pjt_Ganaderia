@@ -13,6 +13,8 @@ import { TempSalidaContext } from "../../context/TempSalidaContext";
 const TempSalidaForm =(props) =>{
     const {isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleBtnAprobado, setIsVisibleBtnAprobado] = useState(false);
+    const [isVisibleMsgAprobado, setisVisibleMsgAprobado] = useState(false);
 
     const {
         createTempSalida,
@@ -34,7 +36,10 @@ const TempSalidaForm =(props) =>{
     const [tempSalidaData, setTempSalidaData] = useState(inicialTempSalidasState);
 
     useEffect(() => {
-        if (editTempSalida) setTempSalidaData(editTempSalida);
+        if (editTempSalida) {
+            setTempSalidaData(editTempSalida);
+            setIsVisibleBtnAprobado(true);
+        }
     }, [editTempSalida]);
 
     const updateField = (data, field) =>{
@@ -47,6 +52,7 @@ const TempSalidaForm =(props) =>{
     const clearSelected = () => {
         setIsVisible(false);
         setTempSalidaData(inicialTempSalidasState);
+        setIsVisibleBtnAprobado(false);
     };
 
     const saveTempSalida = () => {
@@ -97,6 +103,37 @@ const TempSalidaForm =(props) =>{
         </div>
     );
 
+    //Aprobar
+    const estadoTemplate = () => {
+        return <div className="ui-dialog-buttonpane p-clearfix">
+            <p>{"Detalle de salida"}</p>
+            {buttons}
+        </div>
+    }
+    const showAprobado = () => {
+        toast.current.show({severity:'success', summary: 'Aprobado', detail:'Se ha aprobado con éxito', life: 3000});
+    }
+
+    const _aprobarSalida =()=>{
+        if(editTempSalida){
+            //cod aprobar
+            showAprobado();
+        }
+        clearSelected();
+    }
+    
+    const buttons = (
+        <div className="card flex justify-content-center">
+            <ConfirmDialog visible={isVisibleMsgAprobado} onHide={() => setisVisibleMsgAprobado(false)} message="¿Está seguro de aprobar?"
+                header="Confirmación de aprobación" icon="pi pi-info-circle" accept={_aprobarSalida} reject={clearSelected} 
+                acceptClassName="p-button-danger"
+                />
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-danger" 
+                icon="pi pi-check" label="Aprobar salida" visible={isVisibleBtnAprobado}
+                onClick={() => setisVisibleMsgAprobado(true)}/>
+        </div>
+    );
+
     return(<div>
         <Toast ref={toast}></Toast>
         <Dialog
@@ -104,7 +141,7 @@ const TempSalidaForm =(props) =>{
             modal={true}
             style={{width:"420px"}}
             contentStyle={{overflow:"visible"}}
-            header = "Detalles de salida"
+            header =  {estadoTemplate}
             onHide={()=>clearSelected()}
             footer={dialogFooter}
         >

@@ -14,6 +14,8 @@ import { TempVentaContext } from "../../context/TempVentaContext";
 const TempVentaForm =(props) =>{
     const {isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleBtnAprobado, setIsVisibleBtnAprobado] = useState(false);
+    const [isVisibleMsgAprobado, setisVisibleMsgAprobado] = useState(false);
 
     const {
         createTempVenta,
@@ -36,7 +38,10 @@ const TempVentaForm =(props) =>{
     const [tempVentaData, setTempVentaData] = useState(inicialTempVentasState);
 
     useEffect(() => {
-        if (editTempVenta) setTempVentaData(editTempVenta);
+        if (editTempVenta) {
+            setTempVentaData(editTempVenta);
+            setIsVisibleBtnAprobado(true);
+        }
     }, [editTempVenta]);
 
     const updateField = (data, field) =>{
@@ -49,6 +54,7 @@ const TempVentaForm =(props) =>{
     const clearSelected = () => {
         setIsVisible(false);
         setTempVentaData(inicialTempVentasState);
+        setIsVisibleBtnAprobado(false);
     };
 
     const saveTempVenta = () => {
@@ -72,6 +78,11 @@ const TempVentaForm =(props) =>{
         toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
     }
 
+    //Eliminar
+    const showError = () => {
+        toast.current.show({severity:'error', summary: 'Eliminado', detail:'Se ha eliminado con éxito', life: 3000});
+    }
+
     const _deleteTempVenta = () => {
         if (editTempVenta) {
             deleteTempVenta(tempVentaData.id);
@@ -79,10 +90,6 @@ const TempVentaForm =(props) =>{
         }
         clearSelected();
     };
-
-    const showError = () => {
-        toast.current.show({severity:'error', summary: 'Eliminado', detail:'Se ha eliminado con éxito', life: 3000});
-    }
 
     const dialogFooter=(
         <div className="ui-dialog-buttonpane p-clearfix">
@@ -98,6 +105,38 @@ const TempVentaForm =(props) =>{
                 onClick={saveTempVenta}/>
         </div>
     );
+    
+    //Aprobar
+    const estadoTemplate = () => {
+        return <div className="ui-dialog-buttonpane p-clearfix">
+            <p>{"Detalle de venta"}</p>
+            {buttons}
+        </div>
+    }
+    const showAprobado = () => {
+        toast.current.show({severity:'success', summary: 'Aprobado', detail:'Se ha aprobado con éxito', life: 3000});
+    }
+
+    const _aprobarVenta =()=>{
+        if(editTempVenta){
+            //cod aprobar
+            showAprobado();
+        }
+        clearSelected();
+    }
+
+    
+    const buttons = (
+        <div className="card flex justify-content-center">
+            <ConfirmDialog visible={isVisibleMsgAprobado} onHide={() => setisVisibleMsgAprobado(false)} message="¿Está seguro de aprobar?"
+                header="Confirmación de aprobación" icon="pi pi-info-circle" accept={_aprobarVenta} reject={clearSelected} 
+                acceptClassName="p-button-danger"
+                />
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-danger" 
+                icon="pi pi-check" label="Aprobar venta" visible={isVisibleBtnAprobado}
+                onClick={() => setisVisibleMsgAprobado(true)}/>
+        </div>
+    );
 
     return(<div>
         <Toast ref={toast}></Toast>
@@ -106,7 +145,7 @@ const TempVentaForm =(props) =>{
             modal={true}
             style={{width:"420px"}}
             contentStyle={{overflow:"visible"}}
-            header = "Detalles de Venta"
+            header = {estadoTemplate}
             onHide={()=>clearSelected()}
             footer={dialogFooter}
         >
