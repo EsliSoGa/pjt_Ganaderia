@@ -92,7 +92,7 @@ const FormPadres = (props) =>{
     }
 
     return(<div>
-        <Toast ref={toast}></Toast>
+        <Toast ref={toast} position="top-center"></Toast>
         <Dialog
             visible={isVisibleButtonPadres}
             modal={true}

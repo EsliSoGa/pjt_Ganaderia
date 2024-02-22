@@ -104,7 +104,7 @@ const ServicioForm =(props) =>{
     };
 
     return(<div>
-        <Toast ref={toast}></Toast>
+        <Toast ref={toast} position="top-center"></Toast>
         <Dialog
             visible={isVisible}
             modal={true}

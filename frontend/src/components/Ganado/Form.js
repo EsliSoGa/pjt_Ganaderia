@@ -157,18 +157,20 @@ const Form =(props) =>{
 
     const buttons = (
         <div className="ui-dialog-buttonpane p-clearfix">
-            <Button className="p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" label="Traslado" visible={isVisibleButton}
-                onClick={linkTraslado}/> 
-            <Button className="p-button-rounded mb-3 p-button-success"
-                label="Venta" icon="pi pi-tag" visible={isVisibleButton}
-                onClick={linkTempVenta}/>
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-help"
-                label="Servicio" icon="pi pi-check" visible={isVisibleButton}
-                onClick={linkServicio}/>
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
-                label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
-                onClick={linkTempSalida}/>
+            <span className="p-buttonset">
+                <Button className="p-button-rounded mb-3 p-button-info" 
+                    icon="pi pi-times" label="Traslado" visible={isVisibleButton}
+                    onClick={linkTraslado}/> 
+                <Button className="p-button-rounded mb-3 p-button-success"
+                    label="Venta" icon="pi pi-tag" visible={isVisibleButton}
+                    onClick={linkTempVenta}/>
+                <Button className="p-button-raised p-button-rounded mb-3 p-button-help"
+                    label="Servicio" icon="pi pi-check" visible={isVisibleButton}
+                    onClick={linkServicio}/>
+                <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
+                    label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
+                    onClick={linkTempSalida}/>
+            </span>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
                 label="Padres" icon="pi pi-check" visible={isVisibleButton}
                 onClick={padresForm}/>
@@ -176,7 +178,7 @@ const Form =(props) =>{
     );
 
     return(<div>
-        <Toast ref={toast}></Toast>
+        <Toast ref={toast} position="top-center"></Toast>
         <Dialog
             visible={isVisible}
             modal={true}
@@ -187,7 +189,6 @@ const Form =(props) =>{
             footer={dialogFooter}
         >
             <div className=" p-grid p-fluid">
-                <br/>
                 <div className="p-float-label">
                     <InputText
                         value={ganadoData.nombre}
