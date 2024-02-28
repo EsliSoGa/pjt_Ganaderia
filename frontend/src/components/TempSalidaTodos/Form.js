@@ -21,7 +21,8 @@ const TempSalidaForm =(props) =>{
         deleteTempSalida,
         editTempSalida,
         updateTempSalida,
-        ganados
+        ganados,
+        aprobarSalida
     } = useContext(TempSalidaContext);
 
     const inicialTempSalidasState ={
@@ -116,7 +117,8 @@ const TempSalidaForm =(props) =>{
 
     const _aprobarSalida =()=>{
         if(editTempSalida){
-            //cod aprobar
+            //console.log(tempSalidaData.id);
+            aprobarSalida(tempSalidaData);
             showAprobado();
         }
         clearSelected();

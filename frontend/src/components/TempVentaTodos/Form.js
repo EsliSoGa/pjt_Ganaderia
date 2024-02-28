@@ -22,7 +22,8 @@ const TempVentaForm =(props) =>{
         deleteTempVenta,
         editTempVenta,
         updateTempVenta,
-        ganados
+        ganados,
+        aprobarVenta
     } = useContext(TempVentaContext);
 
     const inicialTempVentasState ={
@@ -119,7 +120,7 @@ const TempVentaForm =(props) =>{
 
     const _aprobarVenta =()=>{
         if(editTempVenta){
-            //cod aprobar
+            aprobarVenta(tempVentaData);
             showAprobado();
         }
         clearSelected();

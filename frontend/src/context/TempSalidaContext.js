@@ -45,6 +45,14 @@ const TempSalidaContextProvider = (props)=>{
         );
         setEditTempSalida(null);
     };
+
+    //Aprovar Salida
+    const aprobarSalida =(id)=>{
+        salidaService
+            .aprobar(id)
+            .then(()=>setTempSalidas(tempSalidas.filter((p)=>p.id !== id)));
+    };
+
     return(
         <TempSalidaContext.Provider 
             value={{
@@ -54,7 +62,8 @@ const TempSalidaContextProvider = (props)=>{
                 updateTempSalida,
                 editTempSalida,
                 tempSalidas,
-                ganados
+                ganados,
+                aprobarSalida
             }}>
             {props.children}
         </TempSalidaContext.Provider>

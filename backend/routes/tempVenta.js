@@ -129,3 +129,24 @@ router.delete('/:id', (req,res)=>{
 });
 
 module.exports = router;
+
+//Aprobación de venta
+router.post('/aprobar', (req,res)=>{
+    const id = req.body.id;
+    mysqlconexion.query(`CALL sp_ventaAprobadas(?);`,
+        [id], 
+        (error,rows,fields)=>{
+            if(!error){
+                res.json(rows[0][0]);
+            }
+            else{
+                console.log(error);
+                res.send({
+                    code:400,
+                    failed:"error occurred",
+                    error : error});
+            }
+    })
+});
+
+module.exports = router;

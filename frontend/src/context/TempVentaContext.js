@@ -45,6 +45,14 @@ const TempVentaContextProvider = (props)=>{
         );
         setEditTempVenta(null);
     };
+
+    //Aprovar Venta
+    const aprobarVenta =(id)=>{
+        ventaService
+            .aprobar(id)
+            .then(()=>setTempVentas(tempVentas.filter((p)=>p.id !== id)));
+    };
+
     return(
         <TempVentaContext.Provider 
             value={{
@@ -54,7 +62,8 @@ const TempVentaContextProvider = (props)=>{
                 updateTempVenta,
                 editTempVenta,
                 tempVentas,
-                ganados
+                ganados,
+                aprobarVenta
             }}>
             {props.children}
         </TempVentaContext.Provider>

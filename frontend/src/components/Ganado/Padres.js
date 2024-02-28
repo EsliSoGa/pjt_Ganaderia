@@ -49,7 +49,6 @@ const FormPadres = (props) =>{
 
     const savePadre = () => {
         padreData.Id_ganado_hijo = idH;
-        //console.log(padreData);
         createPadre(padreData);
         clearSelected();
     };

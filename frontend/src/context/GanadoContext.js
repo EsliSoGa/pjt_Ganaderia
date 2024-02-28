@@ -65,7 +65,6 @@ const GanadoContextProvider = (props)=>{
     };
     
     const findPadre =(id)=>{
-        //console.log(id);
         padreService.readId(id).then((data) => setEditPadres(data));
     };
 
