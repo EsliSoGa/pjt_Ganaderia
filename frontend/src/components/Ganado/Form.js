@@ -106,7 +106,7 @@ const Form =(props) =>{
 
     const _deleteGanado = () => {
         if (editGanados) {
-            deleteGanado(ganadoData.id);
+            deleteGanado(ganadoData);
             showError();
         }
         clearSelected();

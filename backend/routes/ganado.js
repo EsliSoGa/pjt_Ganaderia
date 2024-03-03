@@ -106,8 +106,19 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM ganado WHERE id=?',[id], (error,rows,fields)=>{
+    const ganado = {
+        descripcion: "Nombre: "+req.body.nombre+" Numero: "+req.body.numero,
+        id_usuario: req.body.id_usuario
+    };
+    mysqlconexion.query(`DELETE FROM ganado WHERE id=?;`,
+    [id], (error,rows,fields)=>{
         if(!error){
+            mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) VALUES ('Eliminar ganado', ?, now(), ?);`,
+            [ganado.descripcion, ganado.id_usuario], (error2,rows2,fields2)=>{
+                if(error2){
+                    console.log(error2);
+                }
+            })
             res.json(rows);
         }
         else{
