@@ -47,10 +47,10 @@ const TempSalidaContextProvider = (props)=>{
     };
 
     //Aprovar Salida
-    const aprobarSalida =(id)=>{
+    const aprobarSalida =(salida)=>{
         salidaService
-            .aprobar(id)
-            .then(()=>setTempSalidas(tempSalidas.filter((p)=>p.id !== id)));
+            .aprobar(salida)
+            .then(()=>setTempSalidas(tempSalidas.filter((p)=>p.id !== salida.id)));
     };
 
     return(

@@ -31,7 +31,8 @@ const TempSalidaForm =(props) =>{
         Motivo:"",
         Imagen:"",
         Comentarios: "",
-        Id_ganado:""
+        Id_ganado:"",
+        id_usuario: 2
     };
 
     const [tempSalidaData, setTempSalidaData] = useState(inicialTempSalidasState);
@@ -117,7 +118,7 @@ const TempSalidaForm =(props) =>{
 
     const _aprobarSalida =()=>{
         if(editTempSalida){
-            //console.log(tempSalidaData.id);
+            tempSalidaData.id_usuario = 2;
             aprobarSalida(tempSalidaData);
             showAprobado();
         }

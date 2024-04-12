@@ -15,8 +15,7 @@ export class TempSalidaService {
     delete(id){
         return axios.delete(this.url+id).then(res=> res.data);
     }
-    aprobar(id){
-        console.log("Entra en service");
-        return axios.post(this.url+'aprobar', id).then(res=> res.data);
+    aprobar(salida){
+        return axios.post(this.url+'aprobar', salida).then(res=> res.data);
     }
 }

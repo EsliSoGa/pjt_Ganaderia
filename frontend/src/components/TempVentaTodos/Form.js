@@ -33,7 +33,8 @@ const TempVentaForm =(props) =>{
         Precio:"",
         Peso: "", 
         Total:"",
-        Id_ganado:""
+        Id_ganado:"",
+        id_usuario: 2
     };
 
     const [tempVentaData, setTempVentaData] = useState(inicialTempVentasState);
@@ -120,6 +121,7 @@ const TempVentaForm =(props) =>{
 
     const _aprobarVenta =()=>{
         if(editTempVenta){
+            tempVentaData.id_usuario = 2;
             aprobarVenta(tempVentaData);
             showAprobado();
         }

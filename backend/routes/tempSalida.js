@@ -128,9 +128,12 @@ router.delete('/:id', (req,res)=>{
 
 //Aprobación de salida
 router.post('/aprobar', (req,res)=>{
-    const id = req.body.id;
-    mysqlconexion.query(`CALL sp_salidasAprobadas(?);`,
-        [id], 
+    const salida = {
+        id: req.body.id,
+        idUsuario: req.body.id_usuario
+    };
+    mysqlconexion.query(`CALL sp_salidasAprobadas(?, ?);`,
+        [salida.id, salida.idUsuario], 
         (error,rows,fields)=>{
             if(!error){
                 res.json(rows[0][0]);

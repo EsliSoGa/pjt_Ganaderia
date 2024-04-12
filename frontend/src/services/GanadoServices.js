@@ -13,6 +13,6 @@ export class GanadoService {
         return axios.put(this.url+ganado.id, ganado).then(res=> res.data);
     }
     delete(ganado){
-        return axios.delete(this.url+ganado.id, ganado).then(res=> res.data);
+        return axios.delete(this.url+ganado.id, {data: ganado}).then(res=> res.data);
     }
 }

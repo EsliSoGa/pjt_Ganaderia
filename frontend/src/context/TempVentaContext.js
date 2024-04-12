@@ -47,10 +47,10 @@ const TempVentaContextProvider = (props)=>{
     };
 
     //Aprovar Venta
-    const aprobarVenta =(id)=>{
+    const aprobarVenta =(venta)=>{
         ventaService
-            .aprobar(id)
-            .then(()=>setTempVentas(tempVentas.filter((p)=>p.id !== id)));
+            .aprobar(venta)
+            .then(()=>setTempVentas(tempVentas.filter((p)=>p.id !== venta.id)));
     };
 
     return(

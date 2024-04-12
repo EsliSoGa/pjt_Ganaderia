@@ -132,9 +132,12 @@ module.exports = router;
 
 //Aprobación de venta
 router.post('/aprobar', (req,res)=>{
-    const id = req.body.id;
-    mysqlconexion.query(`CALL sp_ventaAprobadas(?);`,
-        [id], 
+    const venta = {
+        id: req.body.id,
+        idUsuario: req.body.id_usuario
+    };
+    mysqlconexion.query(`CALL sp_ventaAprobadas(?, ?);`,
+        [venta.id, venta.idUsuario], 
         (error,rows,fields)=>{
             if(!error){
                 res.json(rows[0][0]);
