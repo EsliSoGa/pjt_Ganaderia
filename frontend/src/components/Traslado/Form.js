@@ -13,11 +13,14 @@ const TrasladoForm =(props) =>{
     const {idT, isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
+    const [ganadoData, setGanadoData] = useState([]);
+
     const {
         createTraslado,
         deleteTraslado,
         editTraslado,
-        updateTraslado
+        updateTraslado, 
+        ganados
     } = useContext(TrasladoContext);
 
     const inicialTrasladosState ={
@@ -25,7 +28,10 @@ const TrasladoForm =(props) =>{
         Id_ganado:idT,
         Fecha:"",
         Finca_origen:"",
-        Finca_destino:""
+        Finca_destino:"",
+        Nombre: "",
+        Numero: "", 
+        id_usuario: 2
     };
 
     const [trasladoData, setTrasladoData] = useState(inicialTrasladosState);
@@ -52,14 +58,22 @@ const TrasladoForm =(props) =>{
             showInfo();
         }
         else{
-        if (!editTraslado) {
-            trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
-            createTraslado(trasladoData);
-        } else {
-            trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
-            updateTraslado(trasladoData);
+            if (!editTraslado) {
+                const ganado = ganados.find((p)=>p.id === parseInt(idT));
+                setGanadoData(ganado);
+                //console.log(ganadoData);
+                trasladoData.Nombre = ganadoData.nombre;
+                trasladoData.Numero = ganadoData.numero;
+                trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
+                //console.log(trasladoData);
+                createTraslado(trasladoData);
+            } else {
+                trasladoData.id_usuario =2;
+                trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
+                updateTraslado(trasladoData);
+            }
+            clearSelected();
         }
-        clearSelected();}
     };
 
     const toast = useRef(null);
@@ -69,7 +83,8 @@ const TrasladoForm =(props) =>{
 
     const _deleteTraslado = () => {
         if (editTraslado) {
-            deleteTraslado(trasladoData.id);
+            trasladoData.id_usuario = 2;
+            deleteTraslado(trasladoData);
             showError();
         }
         clearSelected();

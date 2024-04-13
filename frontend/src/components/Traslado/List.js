@@ -15,10 +15,9 @@ const TrasladoList = () =>{
     const {traslados, findTraslado} = useContext(TrasladoContext);
     
     const [isVisible, setIsVisible] = useState(false);
-
     let cont = 0;
 
-    const numero = () => {
+    const numeroCont = () => {
         cont = cont+0.5;
         return cont;
     }
@@ -92,11 +91,15 @@ const TrasladoList = () =>{
     }
     const header1 = renderHeader1();
 
+    const titulo =()=>{
+        return <span>{'Listado de traslados '}</span>;
+    };
+
     return(
         <div>
         <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
         <Panel
-            header="Listado de traslados" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
+            header={titulo} sortField="category" sortOrder={-1} responsiveLayout="scroll" 
             style={{ textAlign: "justify" }}
         >
             <div>
@@ -109,8 +112,7 @@ const TrasladoList = () =>{
                 dataKey="id" filters={filters1} filterDisplay="menu"
                 globalFilterFields={['Fecha', 'Finca_origen', 'Finca_destino']} header={header1} emptyMessage="No se encontraron traslados."
                 >
-                <Column body={numero} header="No." sortable/>
-                <Column field="Numero" header="Ganado" sortable/>
+                <Column body={numeroCont} header="No." sortable/>
                 <Column field="Fecha" body={dateTraslado} header="Fecha de traslado" sortable/>
                 <Column field="Finca_origen" header="Finca origen" sortable/>
                 <Column field="Finca_destino" header="Finca destino" sortable/>
