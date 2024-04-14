@@ -59,7 +59,8 @@ router.post('/', (req,res)=>{
         [traslado.Finca_origen, traslado.Finca_destino, traslado.Fecha, traslado.Id_ganado], 
         (error,rows,fields)=>{
             if(!error){
-                mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) VALUES ('Crear traslado', ?, now(), ?);`,
+                mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+                VALUES ('Crear traslado', ?, now(), ?);`,
                 [traslado.descripcion, traslado.id_usuario], (error2,rows2,fields2)=>{
                     if(error2){
                         console.log(error2);
@@ -98,7 +99,8 @@ router.put('/:id', (req,res)=>{
     [traslado.Finca_origen, traslado.Finca_destino, traslado.Fecha, traslado.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
-                mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) VALUES ('Editar traslado', ?, now(), ?);`,
+                mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+                VALUES ('Actualización de traslado', ?, now(), ?);`,
                 [traslado.descripcion, traslado.id_usuario], (error2,rows2,fields2)=>{
                     if(error2){
                         console.log(error2);
@@ -129,7 +131,8 @@ router.delete('/:id', (req,res)=>{
     }
     mysqlconexion.query('DELETE FROM traslado WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
-            mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) VALUES ('Eliminar traslado', ?, now(), ?);`,
+            mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+            VALUES ('Eliminar traslado', ?, now(), ?);`,
             [traslado.descripcion, traslado.id_usuario], (error2,rows2,fields2)=>{
                 if(error2){
                     console.log(error2);

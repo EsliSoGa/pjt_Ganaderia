@@ -24,10 +24,10 @@ const SalidaContextProvider = (props)=>{
             .then((data)=>setSalidas([...salidas, data]));
     };
 
-    const deleteSalida =(id)=>{
+    const deleteSalida =(salida)=>{
         salidaService
-            .delete(id)
-            .then(()=>setSalidas(salidas.filter((p)=>p.id !== id)));
+            .delete(salida)
+            .then(()=>setSalidas(salidas.filter((p)=>p.id !== salida.id)));
     };
     
     const findSalida =(id)=>{

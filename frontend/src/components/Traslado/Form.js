@@ -45,7 +45,6 @@ const TrasladoForm =(props) =>{
             ...trasladoData,
             [field]:data
         })
-        //console.log(trasladoData);
     };
 
     const clearSelected = () => {

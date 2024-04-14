@@ -14,6 +14,8 @@ const SalidaForm =(props) =>{
     const {isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
+    const [ganadoData, setGanadoData] = useState([]);
+
     const {
         createSalida,
         deleteSalida,
@@ -28,7 +30,10 @@ const SalidaForm =(props) =>{
         Motivo:"",
         Imagen:"",
         Comentarios: "",
-        Id_ganado:""
+        Id_ganado:"",
+        Nombre: "",
+        Numero: "", 
+        id_usuario: 2
     };
 
     const [salidaData, setSalidaData] = useState(inicialSalidasState);
@@ -56,8 +61,14 @@ const SalidaForm =(props) =>{
         else{
             salidaData.Fecha = moment(salidaData.Fecha).format("YYYY-MM-DD");
             if (!editSalida) {
+                const ganado = ganados.find((p)=>p.id === parseInt(salidaData.Id_ganado));
+                setGanadoData(ganado);
+                salidaData.Nombre = ganadoData.nombre;
+                salidaData.Numero = ganadoData.numero;
+                //console.log(salidaData);
                 createSalida(salidaData);
             } else {
+                salidaData.id_usuario = 2;
                 updateSalida(salidaData);
             }
             clearSelected();
@@ -72,7 +83,8 @@ const SalidaForm =(props) =>{
 
     const _deleteSalida = () => {
         if (editSalida) {
-            deleteSalida(salidaData.id);
+            salidaData.id_usuario = 2;
+            deleteSalida(salidaData);
             showError();
         }
         clearSelected();

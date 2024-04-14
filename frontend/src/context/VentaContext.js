@@ -24,10 +24,10 @@ const VentaContextProvider = (props)=>{
             .then((data)=>setVentas([...ventas, data]));
     };
 
-    const deleteVenta =(id)=>{
+    const deleteVenta =(venta)=>{
         ventaService
-            .delete(id)
-            .then(()=>setVentas(ventas.filter((p)=>p.id !== id)));
+            .delete(venta)
+            .then(()=>setVentas(ventas.filter((p)=>p.id !== venta.id)));
     };
     
     const findVenta =(id)=>{

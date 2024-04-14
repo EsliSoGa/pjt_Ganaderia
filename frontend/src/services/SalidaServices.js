@@ -12,7 +12,7 @@ export class SalidaService {
     update(salidas){
         return axios.put(this.url+salidas.id, salidas).then(res=> res.data);
     }
-    delete(id){
-        return axios.delete(this.url+id).then(res=> res.data);
+    delete(salida){
+        return axios.delete(this.url+salida.id, {data:salida}).then(res=> res.data);
     }
 }

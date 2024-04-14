@@ -15,6 +15,8 @@ const VentaForm =(props) =>{
     const {isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
+    const [ganadoData, setGanadoData] = useState([]);
+
     const {
         createVenta,
         deleteVenta,
@@ -30,7 +32,10 @@ const VentaForm =(props) =>{
         Precio:"",
         Peso: "", 
         Total:"",
-        Id_ganado:""
+        Id_ganado:"",
+        Nombre: "",
+        Numero: "", 
+        id_usuario: 2
     };
 
     const [ventaData, setVentaData] = useState(inicialVentasState);
@@ -58,8 +63,13 @@ const VentaForm =(props) =>{
         else{
             ventaData.Fecha = moment(ventaData.Fecha).format("YYYY-MM-DD");
             if (!editVenta) {
+                const ganado = ganados.find((p)=>p.id === parseInt(ventaData.Id_ganado));
+                setGanadoData(ganado);
+                ventaData.Nombre = ganadoData.nombre;
+                ventaData.Numero = ganadoData.numero;
                 createVenta(ventaData);
             } else {
+                ventaData.id_usuario = 2;
                 updateVenta(ventaData);
             }
             clearSelected();
@@ -74,7 +84,8 @@ const VentaForm =(props) =>{
 
     const _deleteVenta = () => {
         if (editVenta) {
-            deleteVenta(ventaData.id);
+            ventaData.id_usuario = 2;
+            deleteVenta(ventaData);
             showError();
         }
         clearSelected();

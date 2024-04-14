@@ -12,7 +12,7 @@ export class VentaService {
     update(ventas){
         return axios.put(this.url+ventas.id, ventas).then(res=> res.data);
     }
-    delete(id){
-        return axios.delete(this.url+id).then(res=> res.data);
+    delete(venta){
+        return axios.delete(this.url+venta.id, {data: venta}).then(res=> res.data);
     }
 }
