@@ -24,7 +24,7 @@ const ServicioList = () =>{
     }
     
     const dateServicio = (servicios) => {
-        return moment(servicios.fecha).format("DD/MM/YYYY");
+        return moment(servicios.Fecha).format("DD/MM/YYYY");
     }
 
     const saveServicio = (id) => {

@@ -15,12 +15,16 @@ const ServicioForm =(props) =>{
     const {idS, isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
+    const [ganadoData, setGanadoData] = useState([]);
+    const [tipoData, setTipoData] = useState([]);
+
     const {
         createServicio,
         deleteServicio,
         editServicio,
         updateServicio,
-        tipoServicios
+        tipoServicios,
+        ganados
     } = useContext(ServicioContext);
 
     const inicialServiciosState ={
@@ -30,7 +34,11 @@ const ServicioForm =(props) =>{
         Edad:"",
         comentario:"",
         id_ganado:idS,
-        tipo_servicio:""
+        //tipo_servicio:"",
+        Nombre_tipo: "",
+        Nombre: "",
+        Numero: "", 
+        id_usuario: 2
     };
 
     const [servicioData, setServicioData] = useState(inicialServiciosState);
@@ -52,13 +60,25 @@ const ServicioForm =(props) =>{
             showInfo();
         }
         else{
-        if (!editServicio) {
             servicioData.Fecha = moment(servicioData.Fecha).format("YYYY-MM-DD");
-            createServicio(servicioData);
-        } else {
-            servicioData.Fecha = moment(servicioData.Fecha).format("YYYY-MM-DD");
-            updateServicio(servicioData);
-        }
+            
+            if (!editServicio) {
+                const nombreTipo = tipoServicios.find((p)=>p.id === parseInt(servicioData.id_tipo_servicio));
+                setTipoData(nombreTipo);
+                servicioData.Nombre_tipo = tipoData.Nombre_tipo;
+                const ganado = ganados.find((p)=>p.id === parseInt(idS));
+                setGanadoData(ganado);
+                servicioData.Nombre = ganadoData.nombre;
+                servicioData.Numero = ganadoData.numero;
+                //console.log(servicioData);
+                createServicio(servicioData);
+            } else {
+                servicioData.id_usuario =2;
+                const nombreTipo = tipoServicios.find((p)=>p.id === parseInt(servicioData.id_tipo_servicio));
+                setTipoData(nombreTipo);
+                servicioData.Nombre_tipo = tipoData.Nombre_tipo;
+                updateServicio(servicioData);
+            }
         retornar();}
     };
 
@@ -69,7 +89,8 @@ const ServicioForm =(props) =>{
 
     const _deleteServicio = () => {
         if (editServicio) {
-            deleteServicio(servicioData.id);
+            servicioData.id_usuario = 2;
+            deleteServicio(servicioData);
             showError();
         }
         retornar();
@@ -115,6 +136,12 @@ const ServicioForm =(props) =>{
             footer={dialogFooter}
         >
             <div className="p-grid p-fluid">
+                <br />
+                <div className="p-float-label">
+                <Dropdown value={servicioData.id_tipo_servicio} options={tipoServicios} optionLabel="Nombre_tipo" optionValue="id" 
+                    onChange={(e) => updateField(e.target.value, "id_tipo_servicio")} filter showClear filterBy="Nombre_tipo" placeholder="Seleccione un tipo"/>
+                    <label>Tipo</label>
+                </div>
                 <br/>
                 <div className="p-float-label">
                     <Calendar
@@ -147,12 +174,6 @@ const ServicioForm =(props) =>{
                         onChange={(e)=>updateField(e.target.value, "comentario")}
                     />
                     <label>Comentario</label>
-                </div>
-                <br />
-                <div className="p-float-label">
-                <Dropdown value={servicioData.id_tipo_servicio} options={tipoServicios} optionLabel="Nombre_tipo" optionValue="id" 
-                    onChange={(e) => updateField(e.target.value, "id_tipo_servicio")} filter showClear filterBy="Nombre_tipo" placeholder="Seleccione un tipo"/>
-                    <label>Tipo</label>
                 </div>
             </div>
         </Dialog>
