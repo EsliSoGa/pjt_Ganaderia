@@ -13,6 +13,7 @@ var tmpventasRoute = require('./routes/tempVenta');
 var salidaRoute = require('./routes/salida');
 var tmpsalidaRoute = require('./routes/tempSalida');
 var trasladoRoute = require('./routes/traslado');
+var bitacoraRoute = require('./routes/bitacora');
 
 const cookieSession = require("cookie-session");
 
@@ -52,6 +53,7 @@ app.use('/tmpVenta', tmpventasRoute);
 app.use('/salida', salidaRoute);
 app.use('/tmpSalida', tmpsalidaRoute);
 app.use('/traslado', trasladoRoute);
+app.use('/bitacora', bitacoraRoute);
 
 app.listen(app.get('port'), () => {
     console.log('Port:', app.get('port'));

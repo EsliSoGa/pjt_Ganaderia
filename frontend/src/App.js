@@ -16,6 +16,7 @@ import TempSalidaTodosScreen from './screens/TempSalidaTodosScreen';
 import TempVentaTotalScreen from './screens/TempVentaTotalScreen';
 import SalidaScreen from './screens/SalidaScreen';
 import VentaScreen from './screens/VentaScreen';
+import BitacoraScreen from './screens/BitacoraScreen';
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
 
         <Route path="/salida" element={<SalidaScreen />}/>
         <Route path="/venta" element={<VentaScreen />}/>
+        
+        <Route path="/bitacora" element={<BitacoraScreen />}/>
         
       </Routes>
     </div>
