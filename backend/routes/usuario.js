@@ -6,16 +6,16 @@ const expressAsyncHandler = require('express-async-handler');
 const utils = require('../utils');
 
 router.post('/signup', expressAsyncHandler(async(req, res) => {
-    const password = req.body.contrasena;    
+    const password = req.body.Contrasena;    
     const encryptedPassword = bcrypt.hashSync(password, 10);
     const nuevo = {
-        idRol: req.body.id_rol,
-        nombre: req.body.nombre,
-        correo: req.body.correo,
+        idRol: req.body.Id_rol,
+        Nombre: req.body.Nombre,
+        Correo: req.body.Correo,
         password: encryptedPassword
     };
-    mysql.query('INSERT INTO usuario(nombre, contrasena, id_rol, correo)  VALUES (?, ?, ?, ?)', 
-    [ nuevo.nombre, nuevo.password, nuevo.idRol, nuevo.correo], 
+    mysql.query('INSERT INTO usuario(Nombre, Contrasena, Id_rol, Correo)  VALUES (?, ?, ?, ?)', 
+    [ nuevo.Nombre, nuevo.password, nuevo.idRol, nuevo.Correo], 
     async function(error, results, fields) {
         if (error) {        
             res.send({          
@@ -26,21 +26,21 @@ router.post('/signup', expressAsyncHandler(async(req, res) => {
             res.send({          
                 code:200,          
                 success:"Usuario registrado correctamente",
-                nombre: nuevo.idRol,
-                correo: nuevo.correo
+                Nombre: nuevo.idRol,
+                Correo: nuevo.Correo
             });
         }
     });
 }));
 
-router.post('/in', expressAsyncHandler(async(req, res) => {
-    const correo = req.body.correo;
-    const contrasena = req.body.contrasena;
-    mysql.query("SELECT id, rol, nombre, correo, contrasena"
+router.post('/signin', expressAsyncHandler(async(req, res) => {
+    const Correo = req.body.Correo;
+    const Contrasena = req.body.Contrasena;
+    mysql.query("SELECT u.id, rol, Nombre, Correo, Contrasena"
     + " FROM usuario as u"  
     + " INNER JOIN roles as r " 
-    + "ON u.id_rol = r.id "
-    + "WHERE u.correo = ?; ", [correo], async function(error, results, fields){
+    + "ON u.Id_rol = r.id "
+    + "WHERE u.Correo = ?; ", [Correo], async function(error, results, fields){
         if (error) {        
                 res.send({
                 code:400,          
@@ -49,13 +49,13 @@ router.post('/in', expressAsyncHandler(async(req, res) => {
                 });      
         }else{        
             if(results.length > 0){
-                const compare = await bcrypt.compare(contrasena, results[0].contrasena)
+                const compare = await bcrypt.compare(Contrasena, results[0].Contrasena)
                 if(compare){
                     const user = {
                         id: results[0].id,
                         rol: results[0].rol,
-                        nombre: results[0].nombre,
-                        correo: results[0].correo
+                        Nombre: results[0].Nombre,
+                        Correo: results[0].Correo
                     };
                     const token = utils(user);
                     req.session.token = token;
@@ -64,8 +64,8 @@ router.post('/in', expressAsyncHandler(async(req, res) => {
                         success:"Inicio de sesión correctamente",
                         id: results[0].id,
                         rol: results[0].rol,
-                        nombre: results[0].nombre,
-                        correo: results[0].correo,
+                        Nombre: results[0].Nombre,
+                        Correo: results[0].Correo,
                         token: token
                     });
                 }else{
@@ -79,16 +79,16 @@ router.post('/in', expressAsyncHandler(async(req, res) => {
 }));
 
 router.post('/create', expressAsyncHandler(async(req, res) => {
-    const contrasena = req.body.contrasena;    
-    const encryptedPassword = bcrypt.hashSync(contrasena, 10);
+    const Contrasena = req.body.Contrasena;    
+    const encryptedPassword = bcrypt.hashSync(Contrasena, 10);
     const nuevo = {
-        id_rol: req.body.id_rol,
-        nombre: req.body.nombre,
-        correo: req.body.correo,
-        contrasena: encryptedPassword
+        Id_rol: req.body.Id_rol,
+        Nombre: req.body.Nombre,
+        Correo: req.body.Correo,
+        Contrasena: encryptedPassword
     };
-    mysql.query('INSERT INTO usuario(nombre, contrasena, id_rol, correo) VALUES (?, ?, ?, ?)', 
-    [nuevo.nombre, nuevo.contrasena, nuevo.id_rol, nuevo.correo], 
+    mysql.query('INSERT INTO usuario(Nombre, Contrasena, Id_rol, Correo) VALUES (?, ?, ?, ?)', 
+    [nuevo.Nombre, nuevo.Contrasena, nuevo.Id_rol, nuevo.Correo], 
     async function(error, results, fields) {
         if (error) {        
                 res.send({          
@@ -99,17 +99,17 @@ router.post('/create', expressAsyncHandler(async(req, res) => {
                 res.send({          
                     code:200,          
                     success:"Usuario registrado correctamente",
-                    nombre: nuevo.idRol,
-                    correo: nuevo.correo
+                    Nombre: nuevo.idRol,
+                    Correo: nuevo.Correo
                 });
             }});
 }));
 
 router.get('/', expressAsyncHandler(async(req, res) => {
-    mysql.query(`SELECT id, nombre, contrasena, correo, rol 
+    mysql.query(`SELECT id, Nombre, Contrasena, Correo, rol 
     FROM usuario u 
     INNER JOIN roles AS r 
-    ON U.id_rol = R.id`, async (error, rows, fields) => {
+    ON U.Id_rol = R.id`, async (error, rows, fields) => {
         if(error){
             res.send({message: "Error"});
         } else {
@@ -120,10 +120,10 @@ router.get('/', expressAsyncHandler(async(req, res) => {
 
 router.get('/:id', expressAsyncHandler(async(req, res) => {
     const { id } = req.params; 
-    mysql.query(`SELECT id, nombre, contrasena, correo, rol 
+    mysql.query(`SELECT id, Nombre, Contrasena, Correo, rol 
     FROM usuario u 
     INNER JOIN roles AS r 
-    ON U.id_rol = R.id WHERE id = ?`, [id] ,async (error, rows, fields) => {
+    ON U.Id_rol = R.id WHERE id = ?`, [id] ,async (error, rows, fields) => {
         if(error){
             res.send({message: "Error"});
         } else {
@@ -132,19 +132,19 @@ router.get('/:id', expressAsyncHandler(async(req, res) => {
     })
 }));
 
-router.put('/:id', expressAsyncHandler(async(req, res) => {
+router.put('/update/:id', expressAsyncHandler(async(req, res) => {
     const { id } = req.params;
-    const contrasena = req.body.contrasena;    
-    const encryptedPassword = bcrypt.hashSync(contrasena, 10)
+    const Contrasena = req.body.Contrasena;    
+    const encryptedPassword = bcrypt.hashSync(Contrasena, 10)
     const nuevo = {
-        idRol: req.body.id_rol,
-        nombre: req.body.nombre,
-        correo: req.body.correo,
+        idRol: req.body.Id_rol,
+        Nombre: req.body.Nombre,
+        Correo: req.body.Correo,
         password: encryptedPassword
     };
-    mysql.query(`UPDATE usuario SET id_rol = ?, nombre = ?, correo=?, contrasena=?
+    mysql.query(`UPDATE usuario SET Id_rol = ?, Nombre = ?, Correo=?, Contrasena=?
                 WHERE id = ?`, 
-    [nuevo.idRol, nuevo.nombre, nuevo.correo, nuevo.password, id], async function(error, rows, fields){
+    [nuevo.idRol, nuevo.Nombre, nuevo.Correo, nuevo.password, id], async function(error, rows, fields){
         if (error) {        
             res.send({          
             code:400,          
@@ -168,7 +168,7 @@ router.delete('/:id', expressAsyncHandler(async(req, res) => {
     })
 }));
 
-router.post('/out', expressAsyncHandler(async(req, res) => {
+router.post('/signout', expressAsyncHandler(async(req, res) => {
     req.session = null;
     res.redirect('/'); 
 }));
