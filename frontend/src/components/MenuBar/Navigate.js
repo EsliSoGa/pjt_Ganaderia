@@ -5,7 +5,7 @@ import { Menubar } from 'primereact/menubar';
 import { SplitButton } from 'primereact/splitbutton';
 import { logout } from "../../actions/auth";
 import { clearMessage } from "../../actions/message";
-import logo from "../../images/fondo2.ico";
+//import logo from "../../images/fondo2.ico";
 const Navigation = () => {
     const dispatch = useDispatch();
     const { user: currentUser } = useSelector((state) => state.auth);
@@ -15,7 +15,7 @@ const Navigation = () => {
     let location = useLocation();
     useEffect(() => {
         if (["/login", "/register"].includes(location.pathname)) {
-            dispatch(clearMessage());
+            dispatch(clearMessage()); // clear message when changing location
         }
     }, [dispatch, location]);
     useEffect(() => {
