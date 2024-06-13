@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "./components/ProtectedRouted"; // Asegúrate de que ProtectedRoute esté bien implementado
+import { ProtectedRoute } from "./components/ProtectedRouted";
 
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import 'primereact/resources/primereact.min.css';
 import Navigation from "./components/MenuBar/Navigate";
@@ -25,7 +24,13 @@ import BitacoraScreen from './screens/BitacoraScreen';
 
 function App() {
   const { user: currentUser } = useSelector((state) => state.auth);
+  useEffect(() => {
+    if (currentUser) {
 
+    } else {
+
+    }
+  }, [currentUser]);
   return (
     <div className="App">
       <Navigation />
@@ -38,75 +43,86 @@ function App() {
             <Route path="/login" element={<Login />} />
           </Route>
           <Route path="/profile" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
+            <ProtectedRoute
+              isAllowed={!!currentUser
+              }
+            >
               <Profile />
             </ProtectedRoute>
           }
           />
           <Route path="/ganado" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol ==="Vaquero")
+              }
+            >
               <GanadoScreen />
             </ProtectedRoute>
-          }
-          />
-          <Route path="/servicios" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
+          } />
+          <Route path="/servicio/:idS" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol ==="Vaquero")
+              }
+            >
               <ServiciosScreen />
             </ProtectedRoute>
-          }
-          />
-          <Route path="/traslados" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
-              <TrasladosScreen />
-            </ProtectedRoute>
-          }
-          />
-          <Route path="/tempventa" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
+          } />
+          <Route path="/traslado/:idT" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol ==="Vaquero")
+              }
+            ><TrasladosScreen />
+            </ProtectedRoute>} />
+          <Route path="/tventa/:idTV" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol ==="Vaquero")
+              }
+            >
               <TempVentaScreen />
-            </ProtectedRoute>
-          }
-          />
-          <Route path="/tempsalida" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
-              <TempSalidaScreen />
-            </ProtectedRoute>
-          }
-          />
-          <Route path="/tempsalidas" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
-              <TempSalidaTodosScreen />
-            </ProtectedRoute>
-          }
-          />
-          <Route path="/tempventatotal" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
-              <TempVentaTotalScreen />
-            </ProtectedRoute>
-          }
-          />
-          <Route path="/salidas" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
-              <SalidaScreen />
-            </ProtectedRoute>
-          }
-          />
-          <Route path="/ventas" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
-              <VentaScreen />
-            </ProtectedRoute>
-          }
-          />
+            </ProtectedRoute>} />
+          <Route path="/tsalida/:idTS" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol ==="Vaquero")
+              }
+            ><TempSalidaScreen />
+            </ProtectedRoute>} />
+
+          <Route path="/aprobarsalida" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" )
+              }
+            ><TempSalidaTodosScreen />
+            </ProtectedRoute>} />
+          <Route path="/aprobarventa" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
+              }
+            ><TempVentaTotalScreen />
+            </ProtectedRoute>} />
+
+          <Route path="/salida" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
+              }
+            ><SalidaScreen />
+            </ProtectedRoute>} />
+          <Route path="/venta" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
+              }
+            ><VentaScreen />
+            </ProtectedRoute>} />
+
           <Route path="/bitacora" element={
-            <ProtectedRoute isAllowed={!!currentUser}>
-              <BitacoraScreen />
-            </ProtectedRoute>
-          }
-          />
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
+              }
+            ><BitacoraScreen />
+            </ProtectedRoute>} />
         </Routes>
       </div>
     </div>
   );
 }
 
-export default App;
+export default App;
