@@ -18,7 +18,7 @@ const TrasladoList = () =>{
     let cont = 0;
 
     const numeroCont = () => {
-        cont = cont+0.5;
+        cont = cont++;
         return cont;
     }
 

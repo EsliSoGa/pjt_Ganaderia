@@ -21,7 +21,7 @@ const SalidaList = () =>{
 
     let cont = 0;
     const numero = () => {
-        cont = cont+1;
+        cont = cont++;
         return cont;
     }
     
