@@ -1,0 +1,50 @@
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem;
+  }
+  
+  .nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .nav-wrapper .brand-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .nav-wrapper ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .nav-wrapper ul li {
+    position: relative;
+  }
+  
+  .nav-wrapper ul li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #444;
+    padding: 0.5rem;
+    list-style: none;
+  }
+  
+  .nav-wrapper ul li:hover ul {
+    display: block;
+  }
+  
+  .nav-wrapper ul li ul li {
+    padding: 0.5rem 1rem;
+  }
+  
+  .nav-wrapper a {
+    color: #fff;
+    text-decoration: none;
+  }
+  

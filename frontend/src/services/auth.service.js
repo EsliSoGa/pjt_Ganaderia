@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 import axios from "axios";
 
 const API_URL = "http://localhost:8080/usuario/";
@@ -27,30 +26,23 @@ const login = (Correo, Contrasena) => {
 };
 
 const logout = () => {
- return localStorage.removeItem("user");
+  localStorage.removeItem("user");
 };
 
 const signout = () => {
-  return axios
-  .get(API_URL + 'signout')
-  .then((response) => {
+  return axios.get(API_URL + 'signout').then((response) => {
     return response.data;
   });
- };
+};
 
-const update = (
-  id,
-  Id_rol, 
-  Nombre, 
-  Correo, 
-  Contrasena) => {
+const update = (id, Id_rol, Nombre, Correo, Contrasena) => {
   return axios.put(API_URL + `${id}`, {
     Id_rol, 
     Nombre, 
     Correo, 
     Contrasena
   });
-}
+};
 
 export default {
   login, 
