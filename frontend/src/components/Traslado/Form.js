@@ -3,13 +3,12 @@ import { TrasladoContext } from "../../context/TrasladoContext";
 import {Dialog} from "primereact/dialog";
 import { Button } from "primereact/button";
 import {InputText} from "primereact/inputtext";
-
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Calendar } from "primereact/calendar";
 import moment from "moment";
 
-const TrasladoForm =(props) =>{
+const TrasladoForm = (props) => {
     const {idT, isVisible, setIsVisible} = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
@@ -23,12 +22,12 @@ const TrasladoForm =(props) =>{
         ganados
     } = useContext(TrasladoContext);
 
-    const inicialTrasladosState ={
-        id:null,
-        Id_ganado:idT,
-        Fecha:"",
-        Finca_origen:"",
-        Finca_destino:"",
+    const inicialTrasladosState = {
+        id: null,
+        Id_ganado: idT,
+        Fecha: "",
+        Finca_origen: "",
+        Finca_destino: "",
         Nombre: "",
         Numero: "", 
         id_usuario: 2
@@ -40,11 +39,11 @@ const TrasladoForm =(props) =>{
         if (editTraslado) setTrasladoData(editTraslado);
     }, [editTraslado]);
 
-    const updateField = (data, field) =>{
+    const updateField = (data, field) => {
         setTrasladoData({
             ...trasladoData,
-            [field]:data
-        })
+            [field]: data
+        });
     };
 
     const clearSelected = () => {
@@ -53,21 +52,18 @@ const TrasladoForm =(props) =>{
     };
 
     const saveTraslado = () => {
-        if(trasladoData.Finca_destino==="" || trasladoData.Finca_origen==="" || trasladoData.Fecha ===""){
+        if (trasladoData.Finca_destino === "" || trasladoData.Finca_origen === "" || trasladoData.Fecha === "") {
             showInfo();
-        }
-        else{
+        } else {
             if (!editTraslado) {
-                const ganado = ganados.find((p)=>p.id === parseInt(idT));
+                const ganado = ganados.find((p) => p.id === parseInt(idT));
                 setGanadoData(ganado);
-                //console.log(ganadoData);
                 trasladoData.Nombre = ganadoData.nombre;
                 trasladoData.Numero = ganadoData.numero;
                 trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
-                //console.log(trasladoData);
                 createTraslado(trasladoData);
             } else {
-                trasladoData.id_usuario =2;
+                trasladoData.id_usuario = 2;
                 trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
                 updateTraslado(trasladoData);
             }
@@ -77,7 +73,7 @@ const TrasladoForm =(props) =>{
 
     const toast = useRef(null);
     const showInfo = () => {
-        toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
+        toast.current.show({severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000});
     }
 
     const _deleteTraslado = () => {
@@ -90,64 +86,87 @@ const TrasladoForm =(props) =>{
     };
 
     const showError = () => {
-        toast.current.show({severity:'error', summary: 'Eliminado', detail:'Se ha eliminado con éxito', life: 3000});
+        toast.current.show({severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000});
     }
 
-    const dialogFooter=(
+    const dialogFooter = (
         <div className="ui-dialog-buttonpane p-clearfix">
-            <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTraslado} reject={clearSelected} 
+            <ConfirmDialog 
+                visible={isVisibleDelete} 
+                onHide={() => setisVisibleDelete(false)} 
+                message="¿Está seguro de eliminar?"
+                header="Confirmación de eliminación" 
+                icon="pi pi-info-circle" 
+                accept={_deleteTraslado} 
+                reject={clearSelected} 
                 acceptClassName="p-button-danger"
-                />
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" label="Eliminar"
-                onClick={() => setisVisibleDelete(true)}/>
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                label="Guardar" icon="pi pi-check"
-                onClick={saveTraslado}/>
+            />
+            <Button 
+                className="p-button-raised p-button-rounded mb-3 p-button-info" 
+                icon="pi pi-times" 
+                label="Eliminar"
+                onClick={() => setisVisibleDelete(true)}
+            />
+            <Button 
+                className="p-button-raised p-button-rounded mb-3 p-button-info"
+                label="Guardar" 
+                icon="pi pi-check"
+                onClick={saveTraslado}
+            />
         </div>
     );
 
-    return(<div>
-        <Toast ref={toast} position="top-center"></Toast>
-        <Dialog
-            visible={isVisible}
-            modal={true}
-            style={{width:"420px"}}
-            contentStyle={{overflow:"visible"}}
-            header = "Detalles de traslado"
-            onHide={()=>clearSelected()}
-            footer={dialogFooter}
-        >
-            <div className="p-grid p-fluid">
-                <br/>
-                <div className="p-float-label">
-                    <Calendar
-                        value={trasladoData.Fecha && new Date(trasladoData.Fecha)}
-                        onChange={(e) => updateField(e.target.value.toISOString(), "Fecha")}
-                        dateFormat="dd-mm-yy"
-                    />
-                    <label>Fecha</label>
+    return (
+        <div>
+            <Toast ref={toast} position="top-center"></Toast>
+            <Dialog
+                visible={isVisible}
+                modal={true}
+                style={{width: "550px"}}
+                contentStyle={{overflow: "visible"}}
+                header="Detalles de traslado"
+                onHide={() => clearSelected()}
+                footer={dialogFooter}
+            >
+                <div style={styles.formGrid}>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Fecha*</label>
+                        <Calendar
+                            value={trasladoData.Fecha && new Date(trasladoData.Fecha)}
+                            onChange={(e) => updateField(e.value, "Fecha")}
+                            dateFormat="dd-mm-yy"
+                            showIcon
+                        />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Finca origen*</label>
+                        <InputText
+                            value={trasladoData.Finca_origen}
+                            onChange={(e) => updateField(e.target.value, "Finca_origen")}
+                        />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Finca destino*</label>
+                        <InputText
+                            value={trasladoData.Finca_destino}
+                            onChange={(e) => updateField(e.target.value, "Finca_destino")}
+                        />
+                    </div>
                 </div>
-                <br/>
-                <div className="p-float-label">
-                    <InputText
-                        value={trasladoData.Finca_origen}
-                        onChange={(e)=>updateField(e.target.value, "Finca_origen")}
-                    />
-                    <label>Finca origen*</label>
-                </div>
-                <br />
-                <div className="p-float-label">
-                    <InputText
-                        value={trasladoData.Finca_destino}
-                        onChange={(e)=>updateField(e.target.value, "Finca_destino")}
-                    />
-                    <label>Finca destino*</label>
-                </div>
-            </div>
-        </Dialog>
-    </div>);
+            </Dialog>
+        </div>
+    );
 }
+
+const styles = {
+    formGrid: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+    },
+    formField: {
+        marginBottom: '15px',
+    },
+};
 
 export default TrasladoForm;

@@ -83,7 +83,7 @@ const TempVentaForm = (props) => {
     }
 
     const dialogFooter = (
-        <div className="ui-dialog-buttonpane p-clearfix">
+        <div style={styles.dialogFooter}>
             <ConfirmDialog 
                 visible={isVisibleDelete} 
                 onHide={() => setisVisibleDelete(false)} 
@@ -115,61 +115,72 @@ const TempVentaForm = (props) => {
             <Dialog
                 visible={isVisible}
                 modal={true}
-                style={{width:"420px"}}
+                style={{width:"550px"}}
                 contentStyle={{overflow:"visible"}}
                 header="Detalles de Venta"
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
             >
-                <div className="p-grid p-fluid">
-                    <br/>
-                    <div className="p-float-label">
+                <div style={styles.formGrid}>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Fecha*</label>
                         <Calendar
                             value={tempVentaData.Fecha && new Date(tempVentaData.Fecha)}
                             onChange={(e) => updateField(e.value, "Fecha")}
                             dateFormat="dd-mm-yy"
                             showIcon
                         />
-                        <label htmlFor="date-input">Fecha</label>
                     </div>
-                    <br/>
-                    <div className="p-float-label">
+                    <div className="p-field" style={styles.formField}>
+                        <label>Comprador*</label>
                         <InputText
                             value={tempVentaData.Comprador}
                             onChange={(e) => updateField(e.target.value, "Comprador")}
                         />
-                        <label>Comprador*</label>
                     </div>
-                    <br />
-                    <div className="p-float-label">
+                    <div className="p-field" style={styles.formField}>
+                        <label>Precio*</label>
                         <InputNumber
                             value={tempVentaData.Precio}
                             onChange={(e) => updateField(e.value, "Precio")}
                             mode="decimal" locale="en-US" minFractionDigits={2}
                         />
-                        <label>Precio*</label>
                     </div>
-                    <br />
-                    <div className="p-float-label">
+                    <div className="p-field" style={styles.formField}>
+                        <label>Peso*</label>
                         <InputText
                             value={tempVentaData.Peso}
                             onChange={(e) => updateField(e.target.value, "Peso")}
                         />
-                        <label>Peso*</label>
                     </div>
-                    <br />
-                    <div className="p-float-label">
+                    <div className="p-field" style={styles.formField}>
+                        <label>Total*</label>
                         <InputNumber
                             value={tempVentaData.Total}
                             onChange={(e) => updateField(e.value, "Total")}
                             mode="decimal" locale="en-US" minFractionDigits={2}
                         />
-                        <label>Total*</label>
                     </div>
                 </div>
             </Dialog>
         </div>
     );
 }
+
+const styles = {
+    formGrid: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+    },
+    formField: {
+        marginBottom: '15px',
+    },
+    dialogFooter: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '10px 0',
+    }
+};
 
 export default TempVentaForm;

@@ -63,8 +63,8 @@ const Navigation = () => {
     {
       label: "Aprobaciones",
       submenu: [
-        { label: "Salidas", path: "/aprobarsalidas" },
-        { label: "Ventas", path: "/aprobarventas" }
+        { label: "Salidas", path: "/aprobarsalida" },
+        { label: "Ventas", path: "/aprobarventa" }
       ]
     }
   ];
