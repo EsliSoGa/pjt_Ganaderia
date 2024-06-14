@@ -10,6 +10,7 @@ import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
+import '../SharedTableStyles.css'; // Asegúrate de importar el archivo CSS general
 
 const ServicioList = () =>{
     const {servicios, findServicio} = useContext(ServicioContext);
@@ -19,7 +20,7 @@ const ServicioList = () =>{
     let cont = 0;
 
     const numero = () => {
-        cont = cont+0.5;
+        cont = cont + 0.5;
         return cont;
     }
     
@@ -81,7 +82,7 @@ const ServicioList = () =>{
     }
     const renderHeader1 = () => {
         return (
-            <div className="flex justify-content-between">
+            <div className="flex justify-content-between align-items-center table-header">
                 <Button type="button" icon="pi pi-filter-slash" label="Limpiar" className="p-button-outlined" onClick={clearFilter1} />
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
@@ -93,32 +94,29 @@ const ServicioList = () =>{
     const header1 = renderHeader1();
 
     return(
-        <div>
-        <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
-        <Panel
-            header="Listado de servicios" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
-            style={{ textAlign: "justify" }}
-        >
-            <div>
-            <DataTable 
-                value={servicios.filter((p)=>p.id_ganado === parseInt(idS))}
-                selectionMode="single"
-                onSelectionChange={(e) => saveServicio(e.value.id)}
-                paginator className="p-datatable-customers" showGridlines rows={10}
-                dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Numero', 'Nombre_tipo','Fecha', 'Condicion', 'Edad']} header={header1} emptyMessage="No se encontraron servicios."
-                >
-                <Column body={numero} header="No." sortable/>
-                <Column field="Numero" header="Ganado" sortable/>
-                <Column field="Nombre_tipo" header="Tipo" sortable/>
-                <Column field="Fecha" body={dateServicio} header="Fecha de servicio" sortable/>
-                <Column field="Condicion" header="Condición" sortable/>
-                <Column field="Edad" header="Edad" sortable/>
-                <Column field="comentario" header="Comentario" sortable/>
-            </DataTable>
-            </div>
-        </Panel>
-        <ServicioForm idS={idS} isVisible={isVisible} setIsVisible={setIsVisible}/>
+        <div className="table-container">
+            <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+            <Panel header="Listado de servicios" className="table-panel">
+                <div className="table-datatable">
+                    <DataTable 
+                        value={servicios.filter((p)=>p.id_ganado === parseInt(idS))}
+                        selectionMode="single"
+                        onSelectionChange={(e) => saveServicio(e.value.id)}
+                        paginator className="p-datatable-customers" showGridlines rows={10}
+                        dataKey="id" filters={filters1} filterDisplay="menu"
+                        globalFilterFields={['Numero', 'Nombre_tipo','Fecha', 'Condicion', 'Edad']} header={header1} emptyMessage="No se encontraron servicios."
+                    >
+                        <Column body={numero} header="No." sortable className="table-column" />
+                        <Column field="Numero" header="Ganado" sortable className="table-column" />
+                        <Column field="Nombre_tipo" header="Tipo" sortable className="table-column" />
+                        <Column field="Fecha" body={dateServicio} header="Fecha de servicio" sortable className="table-column" />
+                        <Column field="Condicion" header="Condición" sortable className="table-column" />
+                        <Column field="Edad" header="Edad" sortable className="table-column" />
+                        <Column field="comentario" header="Comentario" sortable className="table-column" />
+                    </DataTable>
+                </div>
+            </Panel>
+            <ServicioForm idS={idS} isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );
 }

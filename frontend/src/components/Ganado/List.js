@@ -1,24 +1,24 @@
-import React, {useContext, useState, useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { GanadoContext } from "../../context/GanadoContext";
 import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
-import {Column} from 'primereact/column';
+import { Column } from 'primereact/column';
 import Form from './Form';
 
-import {InputText} from "primereact/inputtext";
-import {Button} from 'primereact/button';
+import { InputText } from "primereact/inputtext";
+import { Button } from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
-//import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import '../SharedTableStyles.css'; // Importamos el archivo CSS general
 
-const GanadoList = () =>{
-    const {ganados, findGanado} = useContext(GanadoContext);
-    
+const GanadoList = () => {
+    const { ganados, findGanado } = useContext(GanadoContext);
+
     let cont = 0;
 
     const numero = () => {
-        cont = cont+0.5;
+        cont = cont + 0.5;
         return cont;
     }
 
@@ -38,28 +38,11 @@ const GanadoList = () =>{
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar ganado" 
-                onClick={()=>setIsVisible(true)}/>
+                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar ganado"
+                    onClick={() => setIsVisible(true)} />
             </React.Fragment>
         )
     }
-
-    /*const navigate = useNavigate();
-    function linkRequisicion (){
-        navigate('/requisicion')
-    }
-    function linkPedido (){
-        navigate('/pedido')
-    }
-
-    const rightToolbarTemplate = () => {
-        return (
-            <React.Fragment>
-                <Button label="Regresar a requisición" icon="pi pi-angle-double-left" className="p-button-rounded mr-2" onClick={linkRequisicion}/>
-                <Button label="Regresar a pedido" icon="pi pi-angle-double-left" className="p-button-rounded p-toolbar-separator mr-2" onClick={linkPedido}/>
-            </React.Fragment>
-        )
-    }*/
 
     //Filtro
     const [filters1, setFilters1] = useState(null);
@@ -86,7 +69,7 @@ const GanadoList = () =>{
     }
     const renderHeader1 = () => {
         return (
-            <div className="flex justify-content-between">
+            <div className="flex justify-content-between align-items-center table-header">
                 <Button type="button" icon="pi pi-filter-slash" label="Limpiar" className="p-button-outlined" onClick={clearFilter1} />
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
@@ -96,43 +79,38 @@ const GanadoList = () =>{
         )
     }
     const header1 = renderHeader1();
-    return(
-        <div>
-        <Toolbar className="mr-2" start={leftToolbarTemplate} /*right={rightToolbarTemplate}*/></Toolbar>
-        <Panel
-            header="Listado del ganado" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
-            style={{ textAlign: "justify" }}
-        >
-            <div>
-            <DataTable 
-                value={ganados}
-                responsiveLayout="scroll"
-                /*scrollable 
-                scrollHeight="400px"*/
-                selectionMode="single"
-                onSelectionChange={(e) => saveGanado(e.value.id)}
-                paginator className="p-datatable-customers" showGridlines rows={15}
-                dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['nombre', 'numero', 'sexo', 'estado', 'finca', 'tipo','peso', dateGanado, 'tipo_nacimiento']} header={header1} emptyMessage="No se encontraro el ganado."
-                >
-                <Column body={numero} header="No." sortable/>
-                <Column field="nombre" header="Nombre" sortable/>
-                <Column field="numero" header="Número" sortable/>
-                <Column field="sexo" header="Sexo" sortable/>
-                <Column field="color" header="Color" sortable/>
-                <Column field="peso" header="Peso" sortable/>
-                <Column field="fecha" body={dateGanado} header="Fecha de nacimiento" sortable/>
-                <Column field="tipo" header="Tipo" sortable/>
-                <Column field="finca" header="Finca" sortable/>
-                <Column field='estado' body={estadoTemplate} header="Estado" sortable/>
-                <Column field="comentarios" header="Comentario" sortable/>
-                <Column field="padre" header="Padre" sortable/>
-                <Column field="madre" header="Madre" sortable/>
-                <Column field="tipo_nacimiento" header="Tipo nacimiento" sortable/>
-            </DataTable>
-            </div>
-        </Panel>
-        <Form isVisible={isVisible} setIsVisible={setIsVisible}/>
+    return (
+        <div className="table-container">
+            <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
+            <Panel header="Listado del ganado" className="table-panel">
+                <div className="table-datatable">
+                    <DataTable
+                        value={ganados}
+                        responsiveLayout="scroll"
+                        selectionMode="single"
+                        onSelectionChange={(e) => saveGanado(e.value.id)}
+                        paginator className="p-datatable-customers" showGridlines rows={15}
+                        dataKey="id" filters={filters1} filterDisplay="menu"
+                        globalFilterFields={['nombre', 'numero', 'sexo', 'estado', 'finca', 'tipo', 'peso', dateGanado, 'tipo_nacimiento']} header={header1} emptyMessage="No se encontró el ganado."
+                    >
+                        <Column body={numero} header="No." sortable className="table-column" />
+                        <Column field="nombre" header="Nombre" sortable className="table-column" />
+                        <Column field="numero" header="Número" sortable className="table-column" />
+                        <Column field="sexo" header="Sexo" sortable className="table-column" />
+                        <Column field="color" header="Color" sortable className="table-column" />
+                        <Column field="peso" header="Peso" sortable className="table-column" />
+                        <Column field="fecha" body={dateGanado} header="Fecha de nacimiento" sortable className="table-column" />
+                        <Column field="tipo" header="Tipo" sortable className="table-column" />
+                        <Column field="finca" header="Finca" sortable className="table-column" />
+                        <Column field='estado' body={estadoTemplate} header="Estado" sortable className="table-column" />
+                        <Column field="comentarios" header="Comentario" sortable className="table-column" />
+                        <Column field="padre" header="Padre" sortable className="table-column" />
+                        <Column field="madre" header="Madre" sortable className="table-column" />
+                        <Column field="tipo_nacimiento" header="Tipo nacimiento" sortable className="table-column" />
+                    </DataTable>
+                </div>
+            </Panel>
+            <Form isVisible={isVisible} setIsVisible={setIsVisible} />
         </div>
     );
 }

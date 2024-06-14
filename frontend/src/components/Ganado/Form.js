@@ -142,7 +142,7 @@ const Form = (props) => {
 
     const buttons = (
         <div className="ui-dialog-buttonpane p-clearfix" style={styles.buttonPane}>
-            <span className="p-buttonset">
+            <span className="p-buttonset" style={styles.buttonSet}>
                 <Button className="p-button-rounded mb-3 p-button-info"
                     icon="pi pi-times" label="Traslado" visible={isVisibleButton}
                     onClick={linkTraslado} />
@@ -155,10 +155,10 @@ const Form = (props) => {
                 <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
                     label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
                     onClick={linkTempSalida} />
+                <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
+                    label="Padres" icon="pi pi-check" visible={isVisibleButton}
+                    onClick={padresForm} />
             </span>
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
-                label="Padres" icon="pi pi-check" visible={isVisibleButton}
-                onClick={padresForm} />
         </div>
     );
 
@@ -191,7 +191,7 @@ const Form = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Sexo</label>
-                        <Dropdown value={ganadoData.sexo} options={generos} onChange={(e) => updateField(e.value, "sexo")} placeholder="Seleccione un genero" />
+                        <Dropdown value={ganadoData.sexo} options={generos} onChange={(e) => updateField(e.value, "sexo")} placeholder="Seleccione un género" />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Color*</label>
@@ -266,8 +266,9 @@ const styles = {
     },
     buttonPane: {
         display: 'flex',
-        justifyContent: 'space-between',
-        marginBottom: '15px',
+        flexWrap: 'wrap',
+        gap: '10px',
+        justifyContent: 'center',
     },
     dialogFooter: {
         display: 'flex',

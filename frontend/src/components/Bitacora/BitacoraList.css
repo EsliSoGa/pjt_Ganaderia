@@ -1,0 +1,60 @@
+/* BitacoraList.css */
+.bitacora-container {
+    padding: 20px;
+    background: #f0f4f8; /* Fondo ligero para toda la página */
+}
+
+.bitacora-panel {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: #ffffff; /* Fondo blanco para el panel */
+}
+
+.bitacora-header {
+    background: #e0f7fa; /* Fondo azul claro para el header */
+    padding: 10px;
+    border-radius: 8px 8px 0 0;
+}
+
+.p-input-icon-left input {
+    border-radius: 20px;
+}
+
+.bitacora-datatable .p-datatable-header {
+    padding: 10px 10px;
+}
+
+.p-datatable-customers .p-datatable-thead > tr > th {
+    background: #e0f7fa; /* Fondo azul claro para los encabezados de columna */
+    color: #00796b; /* Color de texto para los encabezados de columna */
+    text-align: center;
+}
+
+.bitacora-column {
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    background: #ffffff; /* Fondo blanco para las filas */
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(even) > td {
+    background: #f0f4f8; /* Fondo gris claro para filas pares */
+}
+
+.p-datatable .p-datatable-tbody > tr:hover > td {
+    background: #e0f7fa; /* Fondo azul claro al pasar el mouse */
+}
+
+.p-button-outlined {
+    background: #00796b !important; /* Botón verde */
+    border: 1px solid #00796b !important;
+    color: white !important;
+}
+
+.p-button-outlined:hover {
+    background: #004d40 !important; /* Botón verde oscuro al pasar el mouse */
+    border: 1px solid #004d40 !important;
+}

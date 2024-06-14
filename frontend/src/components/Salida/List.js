@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
 import { Column } from 'primereact/column';
@@ -9,22 +9,23 @@ import { Toolbar } from 'primereact/toolbar';
 import moment from "moment";
 import { SalidaContext } from "../../context/SalidaContext";
 import SalidaForm from './Form';
+import '../SharedTableStyles.css'; // Importamos el archivo CSS general
 
-const SalidaList = () =>{
-    const {salidas, findSalida} = useContext(SalidaContext);
-    
+const SalidaList = () => {
+    const { salidas, findSalida } = useContext(SalidaContext);
+
     const [isVisible, setIsVisible] = useState(false);
-    
+
     const dateSalida = (salida) => {
         return moment(salida.Fecha).format("DD/MM/YYYY");
     }
 
     let cont = 0;
     const numero = () => {
-        cont = cont+0.5;
+        cont = cont + 0.5;
         return cont;
     }
-    
+
     const saveSalida = (id) => {
         findSalida(id);
         setIsVisible(true);
@@ -33,8 +34,8 @@ const SalidaList = () =>{
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar salida" 
-                onClick={()=>setIsVisible(true)}/>
+                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar salida"
+                    onClick={() => setIsVisible(true)} />
             </React.Fragment>
         )
     }
@@ -64,7 +65,7 @@ const SalidaList = () =>{
     }
     const renderHeader1 = () => {
         return (
-            <div className="flex justify-content-between">
+            <div className="flex justify-content-between align-items-center table-header">
                 <Button type="button" icon="pi pi-filter-slash" label="Limpiar" className="p-button-outlined" onClick={clearFilter1} />
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
@@ -75,33 +76,30 @@ const SalidaList = () =>{
     }
     const header1 = renderHeader1();
 
-    return(
-        <div>
-        <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
-        <Panel
-            header="Listado de salida aprobadas" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
-            style={{ textAlign: "justify" }}
-        >
-            <div>
-            <DataTable 
-                value={salidas}
-                responsiveLayout="scroll"
-                selectionMode="single"
-                onSelectionChange={(e) => saveSalida(e.value.id)}
-                paginator className="p-datatable-customers" showGridlines rows={10}
-                dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Fecha', 'Motivo']} header={header1} emptyMessage="No se encontraron salidas."
-                >
-                <Column body={numero} header="No." sortable/>
-                <Column field="Numero" header="Ganado" sortable/>
-                <Column field="Fecha" body={dateSalida} header="Fecha de venta" sortable/>
-                <Column field="Motivo" header="Motivo" sortable/>
-                <Column field="Imagen" header="Imagen" sortable/>
-                <Column field="Comentarios" header="Comentarios" sortable/>
-            </DataTable>
-            </div>
-        </Panel>
-        <SalidaForm isVisible={isVisible} setIsVisible={setIsVisible}/>
+    return (
+        <div className="table-container">
+            <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
+            <Panel header="Listado de salida aprobadas" className="table-panel">
+                <div className="table-datatable">
+                    <DataTable
+                        value={salidas}
+                        responsiveLayout="scroll"
+                        selectionMode="single"
+                        onSelectionChange={(e) => saveSalida(e.value.id)}
+                        paginator className="p-datatable-customers" showGridlines rows={10}
+                        dataKey="id" filters={filters1} filterDisplay="menu"
+                        globalFilterFields={['Fecha', 'Motivo']} header={header1} emptyMessage="No se encontraron salidas."
+                    >
+                        <Column body={numero} header="No." sortable className="table-column" />
+                        <Column field="Numero" header="Ganado" sortable className="table-column" />
+                        <Column field="Fecha" body={dateSalida} header="Fecha de venta" sortable className="table-column" />
+                        <Column field="Motivo" header="Motivo" sortable className="table-column" />
+                        <Column field="Imagen" header="Imagen" sortable className="table-column" />
+                        <Column field="Comentarios" header="Comentarios" sortable className="table-column" />
+                    </DataTable>
+                </div>
+            </Panel>
+            <SalidaForm isVisible={isVisible} setIsVisible={setIsVisible} />
         </div>
     );
 }
