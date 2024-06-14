@@ -4,6 +4,7 @@ import { useLocation, Link } from "react-router-dom";
 import { logout } from "../../actions/auth";
 import { clearMessage } from "../../actions/message";
 import "./Navigation.css";
+import logo from "../../images/vaca1.ico" // Asegúrate de que este archivo contenga los estilos necesarios
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -95,10 +96,10 @@ const Navigation = () => {
 
   const renderNavItems = (items) => {
     return items.map(item => (
-      <li key={item.label}>
+      <li key={item.label} className="nav-item">
         <Link to={item.path} onClick={item.onClick}>{item.label}</Link>
         {item.submenu && (
-          <ul>
+          <ul className="submenu">
             {item.submenu.map(subItem => (
               <li key={subItem.label}>
                 <Link to={subItem.path}>{subItem.label}</Link>
@@ -114,13 +115,16 @@ const Navigation = () => {
   const userItems = currentUser ? profileItems : loginItems;
 
   return (
-    <nav>
+    <nav className="navbar">
       <div className="nav-wrapper">
-        <Link to="/home" className="brand-logo">Logo</Link>
-        <ul id="nav-mobile" className="right hide-on-med-and-down">
+        <Link to="/home" className="brand-logo">
+          <img src={logo} alt="Logo" className="logo-image" />
+          Maragos
+        </Link>
+        <ul className="nav-menu">
           {renderNavItems(navItems)}
         </ul>
-        <ul id="nav-mobile" className="right hide-on-med-and-down">
+        <ul className="nav-menu">
           {renderNavItems(userItems)}
         </ul>
       </div>
