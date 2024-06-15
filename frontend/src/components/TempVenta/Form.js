@@ -1,17 +1,18 @@
-import React, {useContext, useState, useEffect, useRef} from "react";
-import {Dialog} from "primereact/dialog";
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import {InputText} from "primereact/inputtext";
+import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
 import { InputNumber } from "primereact/inputnumber";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
 import { TempVentaContext } from "../../context/TempVentaContext";
 
 const TempVentaForm = (props) => {
-    const {idTV, isVisible, setIsVisible} = props;
+    const { idTV, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
     const {
@@ -54,11 +55,16 @@ const TempVentaForm = (props) => {
             showInfo();
         }
         else{
-            tempVentaData.Fecha = moment(tempVentaData.Fecha).format("YYYY-MM-DD");
+            const formattedDate = tempVentaData.Fecha ? moment(tempVentaData.Fecha).format("YYYY-MM-DD") : null;
+            const tempVentaDataWithFormattedDate = {
+                ...tempVentaData,
+                Fecha: formattedDate,
+            };
+
             if (!editTempVenta) {
-                createTempVenta(tempVentaData);
+                createTempVenta(tempVentaDataWithFormattedDate);
             } else {
-                updateTempVenta(tempVentaData);
+                updateTempVenta(tempVentaDataWithFormattedDate);
             }
             clearSelected();
         }
@@ -124,11 +130,10 @@ const TempVentaForm = (props) => {
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={tempVentaData.Fecha && new Date(tempVentaData.Fecha)}
-                            onChange={(e) => updateField(e.value, "Fecha")}
-                            dateFormat="dd-mm-yy"
-                            showIcon
+                        <DatePicker
+                            selected={tempVentaData.Fecha ? new Date(tempVentaData.Fecha) : null}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

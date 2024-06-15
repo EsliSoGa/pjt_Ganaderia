@@ -28,3 +28,18 @@
 .ui-dialog-buttonpane .p-button {
     margin: 0.5rem;
 }
+
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.image-thumbnail {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.2s;
+}
+
+.image-thumbnail:hover {
+    transform: scale(1.5);
+}

@@ -4,7 +4,8 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
+import DatePicker from 'react-datepicker'; // Importar DatePicker desde react-datepicker
+import "react-datepicker/dist/react-datepicker.css"; // Importar estilos CSS de react-datepicker
 import { Dropdown } from 'primereact/dropdown';
 import moment from "moment";
 
@@ -13,7 +14,6 @@ import { SalidaContext } from "../../context/SalidaContext";
 const SalidaForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
-    const [ganadoData, setGanadoData] = useState([]);
 
     const {
         createSalida,
@@ -25,7 +25,7 @@ const SalidaForm = (props) => {
 
     const inicialSalidasState = {
         id: null,
-        Fecha: "",
+        Fecha: null, // Cambiar a null para que coincida con el tipo de DatePicker
         Motivo: "",
         Imagen: "",
         Comentarios: "",
@@ -38,7 +38,12 @@ const SalidaForm = (props) => {
     const [salidaData, setSalidaData] = useState(inicialSalidasState);
 
     useEffect(() => {
-        if (editSalida) setSalidaData(editSalida);
+        if (editSalida) {
+            setSalidaData({
+                ...editSalida,
+                Fecha: editSalida.Fecha ? new Date(editSalida.Fecha) : null // Formatear la fecha correctamente
+            });
+        }
     }, [editSalida]);
 
     const updateField = (data, field) => {
@@ -54,19 +59,23 @@ const SalidaForm = (props) => {
     };
 
     const saveSalida = () => {
-        if (salidaData.Fecha === "" || salidaData.Motivo === "" || salidaData.Comentarios === "") {
+        if (salidaData.Fecha === null || salidaData.Motivo === "" || salidaData.Comentarios === "") {
             showInfo();
         } else {
-            salidaData.Fecha = moment(salidaData.Fecha).format("YYYY-MM-DD");
+            const formattedDate = salidaData.Fecha ? moment(salidaData.Fecha).format("YYYY-MM-DD") : null;
+            const salidaDataWithFormattedDate = {
+                ...salidaData,
+                Fecha: formattedDate,
+            };
+
             if (!editSalida) {
                 const ganado = ganados.find((p) => p.id === parseInt(salidaData.Id_ganado));
-                setGanadoData(ganado);
-                salidaData.Nombre = ganadoData.nombre;
-                salidaData.Numero = ganadoData.numero;
-                createSalida(salidaData);
+                salidaDataWithFormattedDate.Nombre = ganado.nombre;
+                salidaDataWithFormattedDate.Numero = ganado.numero;
+                createSalida(salidaDataWithFormattedDate);
             } else {
-                salidaData.id_usuario = 2;
-                updateSalida(salidaData);
+                salidaDataWithFormattedDate.id_usuario = 2;
+                updateSalida(salidaDataWithFormattedDate);
             }
             clearSelected();
         }
@@ -126,10 +135,12 @@ const SalidaForm = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={salidaData.Fecha && new Date(salidaData.Fecha)}
-                            onChange={(e) => updateField(e.target.value.toISOString(), "Fecha")}
-                            dateFormat="dd-mm-yy"
+                        <DatePicker
+                            selected={salidaData.Fecha}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
+                            className="p-inputtext p-component"
+                            placeholderText="Seleccione una fecha"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

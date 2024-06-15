@@ -4,7 +4,8 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
 import { TempSalidaContext } from "../../context/TempSalidaContext";
@@ -51,11 +52,16 @@ const TempSalidaForm = (props) => {
         if (tempSalidaData.Fecha === "" || tempSalidaData.Motivo === "" || tempSalidaData.Comentarios === "") {
             showInfo();
         } else {
-            tempSalidaData.Fecha = moment(tempSalidaData.Fecha).format("YYYY-MM-DD");
+            const formattedDate = tempSalidaData.Fecha ? moment(tempSalidaData.Fecha).format("YYYY-MM-DD") : null;
+            const tempSalidaDataWithFormattedDate = {
+                ...tempSalidaData,
+                Fecha: formattedDate,
+            };
+
             if (!editTempSalida) {
-                createTempSalida(tempSalidaData);
+                createTempSalida(tempSalidaDataWithFormattedDate);
             } else {
-                updateTempSalida(tempSalidaData);
+                updateTempSalida(tempSalidaDataWithFormattedDate);
             }
             clearSelected();
         }
@@ -109,10 +115,10 @@ const TempSalidaForm = (props) => {
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={tempSalidaData.Fecha && new Date(tempSalidaData.Fecha)}
-                            onChange={(e) => updateField(e.target.value.toISOString(), "Fecha")}
-                            dateFormat="dd-mm-yy"
+                        <DatePicker
+                            selected={tempSalidaData.Fecha ? new Date(tempSalidaData.Fecha) : null}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

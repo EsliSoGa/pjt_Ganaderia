@@ -6,7 +6,8 @@ import { Dropdown } from 'primereact/dropdown';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { InputNumber } from "primereact/inputnumber";
-import { Calendar } from "primereact/calendar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
 import { ServicioContext } from "../../context/ServicioContext";
@@ -14,9 +15,6 @@ import { ServicioContext } from "../../context/ServicioContext";
 const ServicioForm = (props) => {
     const { idS, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
-
-    const [ganadoData, setGanadoData] = useState([]);
-    const [tipoData, setTipoData] = useState([]);
 
     const {
         createServicio,
@@ -57,23 +55,24 @@ const ServicioForm = (props) => {
         if (servicioData.Nombre === "" || servicioData.comentario === "") {
             showInfo();
         } else {
-            servicioData.Fecha = moment(servicioData.Fecha).format("YYYY-MM-DD");
+            const formattedDate = servicioData.Fecha ? moment(servicioData.Fecha).format("YYYY-MM-DD") : null;
+            const servicioDataWithFormattedDate = {
+                ...servicioData,
+                Fecha: formattedDate,
+            };
 
             if (!editServicio) {
-                const nombreTipo = tipoServicios.find((p) => p.id === parseInt(servicioData.id_tipo_servicio));
-                setTipoData(nombreTipo);
-                servicioData.Nombre_tipo = tipoData.Nombre_tipo;
+                const nombreTipo = tipoServicios.find((p) => p.id === parseInt(servicioDataWithFormattedDate.id_tipo_servicio));
+                servicioDataWithFormattedDate.Nombre_tipo = nombreTipo.Nombre_tipo;
                 const ganado = ganados.find((p) => p.id === parseInt(idS));
-                setGanadoData(ganado);
-                servicioData.Nombre = ganadoData.nombre;
-                servicioData.Numero = ganadoData.numero;
-                createServicio(servicioData);
+                servicioDataWithFormattedDate.Nombre = ganado.nombre;
+                servicioDataWithFormattedDate.Numero = ganado.numero;
+                createServicio(servicioDataWithFormattedDate);
             } else {
-                servicioData.id_usuario = 2;
-                const nombreTipo = tipoServicios.find((p) => p.id === parseInt(servicioData.id_tipo_servicio));
-                setTipoData(nombreTipo);
-                servicioData.Nombre_tipo = tipoData.Nombre_tipo;
-                updateServicio(servicioData);
+                servicioDataWithFormattedDate.id_usuario = 2;
+                const nombreTipo = tipoServicios.find((p) => p.id === parseInt(servicioDataWithFormattedDate.id_tipo_servicio));
+                servicioDataWithFormattedDate.Nombre_tipo = nombreTipo.Nombre_tipo;
+                updateServicio(servicioDataWithFormattedDate);
             }
             retornar();
         }
@@ -142,10 +141,10 @@ const ServicioForm = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha</label>
-                        <Calendar
-                            value={servicioData.Fecha && new Date(servicioData.Fecha)}
-                            onChange={(e) => updateField(e.target.value.toISOString(), "Fecha")}
-                            dateFormat="dd-mm-yy"
+                        <DatePicker
+                            selected={servicioData.Fecha ? new Date(servicioData.Fecha) : null}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

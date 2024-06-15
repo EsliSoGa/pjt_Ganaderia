@@ -44,10 +44,12 @@ const update = (id, Id_rol, Nombre, Correo, Contrasena) => {
   });
 };
 
-export default {
+const authService = {
   login, 
   logout, 
   register,
   signout,
   update
 };
+
+export default authService;

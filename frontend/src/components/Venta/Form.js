@@ -1,10 +1,11 @@
-import React, {useContext, useState, useEffect, useRef} from "react";
-import {Dialog} from "primereact/dialog";
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import {InputText} from "primereact/inputtext";
+import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from 'primereact/dropdown';
 import moment from "moment";
@@ -12,7 +13,7 @@ import moment from "moment";
 import { VentaContext } from "../../context/VentaContext";
 
 const VentaForm = (props) => {
-    const {isVisible, setIsVisible} = props;
+    const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
     const [ganadoData, setGanadoData] = useState([]);
@@ -30,11 +31,11 @@ const VentaForm = (props) => {
         Fecha: "",
         Comprador: "",
         Precio: "",
-        Peso: "", 
+        Peso: "",
         Total: "",
         Id_ganado: "",
         Nombre: "",
-        Numero: "", 
+        Numero: "",
         id_usuario: 2
     };
 
@@ -78,7 +79,7 @@ const VentaForm = (props) => {
     const toast = useRef(null);
 
     const showInfo = () => {
-        toast.current.show({severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000});
+        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
     }
 
     const _deleteVenta = () => {
@@ -91,30 +92,30 @@ const VentaForm = (props) => {
     };
 
     const showError = () => {
-        toast.current.show({severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000});
+        toast.current.show({ severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000 });
     }
 
     const dialogFooter = (
         <div className="ui-dialog-buttonpane p-clearfix">
-            <ConfirmDialog 
-                visible={isVisibleDelete} 
-                onHide={() => setisVisibleDelete(false)} 
+            <ConfirmDialog
+                visible={isVisibleDelete}
+                onHide={() => setisVisibleDelete(false)}
                 message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" 
-                icon="pi pi-info-circle" 
-                accept={_deleteVenta} 
-                reject={clearSelected} 
+                header="Confirmación de eliminación"
+                icon="pi pi-info-circle"
+                accept={_deleteVenta}
+                reject={clearSelected}
                 acceptClassName="p-button-danger"
             />
-            <Button 
-                className="p-button-raised p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" 
+            <Button
+                className="p-button-raised p-button-rounded mb-3 p-button-info"
+                icon="pi pi-times"
                 label="Eliminar"
                 onClick={() => setisVisibleDelete(true)}
             />
-            <Button 
+            <Button
                 className="p-button-raised p-button-rounded mb-3 p-button-info"
-                label="Guardar" 
+                label="Guardar"
                 icon="pi pi-check"
                 onClick={saveVenta}
             />
@@ -127,8 +128,8 @@ const VentaForm = (props) => {
             <Dialog
                 visible={isVisible}
                 modal={true}
-                style={{width: "550px"}}
-                contentStyle={{overflow: "visible"}}
+                style={{ width: "550px" }}
+                contentStyle={{ overflow: "visible" }}
                 header="Detalles de Venta"
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
@@ -136,25 +137,24 @@ const VentaForm = (props) => {
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Ganado*</label>
-                        <Dropdown 
-                            value={ventaData.Id_ganado} 
-                            options={ganados} 
-                            optionLabel="numero" 
-                            optionValue="id" 
-                            onChange={(e) => updateField(e.value, "Id_ganado")} 
-                            filter 
-                            showClear 
-                            filterBy="numero" 
+                        <Dropdown
+                            value={ventaData.Id_ganado}
+                            options={ganados}
+                            optionLabel="numero"
+                            optionValue="id"
+                            onChange={(e) => updateField(e.value, "Id_ganado")}
+                            filter
+                            showClear
+                            filterBy="numero"
                             placeholder="Seleccione un ganado"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={ventaData.Fecha && new Date(ventaData.Fecha)}
-                            onChange={(e) => updateField(e.value, "Fecha")}
-                            dateFormat="dd-mm-yy"
-                            showIcon
+                        <DatePicker
+                            selected={ventaData.Fecha ? new Date(ventaData.Fecha) : null}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
@@ -169,8 +169,8 @@ const VentaForm = (props) => {
                         <InputNumber
                             value={ventaData.Precio}
                             onChange={(e) => updateField(e.value, "Precio")}
-                            mode="decimal" 
-                            locale="en-US" 
+                            mode="decimal"
+                            locale="en-US"
                             minFractionDigits={2}
                         />
                     </div>
@@ -186,8 +186,8 @@ const VentaForm = (props) => {
                         <InputNumber
                             value={ventaData.Total}
                             onChange={(e) => updateField(e.value, "Total")}
-                            mode="decimal" 
-                            locale="en-US" 
+                            mode="decimal"
+                            locale="en-US"
                             minFractionDigits={2}
                         />
                     </div>

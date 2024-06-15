@@ -1,15 +1,16 @@
-import React, {useContext, useState, useEffect, useRef} from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { TrasladoContext } from "../../context/TrasladoContext";
-import {Dialog} from "primereact/dialog";
+import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import {InputText} from "primereact/inputtext";
+import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
 const TrasladoForm = (props) => {
-    const {idT, isVisible, setIsVisible} = props;
+    const { idT, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
     const [ganadoData, setGanadoData] = useState([]);
@@ -18,7 +19,7 @@ const TrasladoForm = (props) => {
         createTraslado,
         deleteTraslado,
         editTraslado,
-        updateTraslado, 
+        updateTraslado,
         ganados
     } = useContext(TrasladoContext);
 
@@ -29,7 +30,7 @@ const TrasladoForm = (props) => {
         Finca_origen: "",
         Finca_destino: "",
         Nombre: "",
-        Numero: "", 
+        Numero: "",
         id_usuario: 2
     };
 
@@ -73,7 +74,7 @@ const TrasladoForm = (props) => {
 
     const toast = useRef(null);
     const showInfo = () => {
-        toast.current.show({severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000});
+        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
     }
 
     const _deleteTraslado = () => {
@@ -86,30 +87,30 @@ const TrasladoForm = (props) => {
     };
 
     const showError = () => {
-        toast.current.show({severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000});
+        toast.current.show({ severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000 });
     }
 
     const dialogFooter = (
         <div className="ui-dialog-buttonpane p-clearfix">
-            <ConfirmDialog 
-                visible={isVisibleDelete} 
-                onHide={() => setisVisibleDelete(false)} 
+            <ConfirmDialog
+                visible={isVisibleDelete}
+                onHide={() => setisVisibleDelete(false)}
                 message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" 
-                icon="pi pi-info-circle" 
-                accept={_deleteTraslado} 
-                reject={clearSelected} 
+                header="Confirmación de eliminación"
+                icon="pi pi-info-circle"
+                accept={_deleteTraslado}
+                reject={clearSelected}
                 acceptClassName="p-button-danger"
             />
-            <Button 
-                className="p-button-raised p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" 
+            <Button
+                className="p-button-raised p-button-rounded mb-3 p-button-info"
+                icon="pi pi-times"
                 label="Eliminar"
                 onClick={() => setisVisibleDelete(true)}
             />
-            <Button 
+            <Button
                 className="p-button-raised p-button-rounded mb-3 p-button-info"
-                label="Guardar" 
+                label="Guardar"
                 icon="pi pi-check"
                 onClick={saveTraslado}
             />
@@ -122,8 +123,8 @@ const TrasladoForm = (props) => {
             <Dialog
                 visible={isVisible}
                 modal={true}
-                style={{width: "550px"}}
-                contentStyle={{overflow: "visible"}}
+                style={{ width: "550px" }}
+                contentStyle={{ overflow: "visible" }}
                 header="Detalles de traslado"
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
@@ -131,11 +132,10 @@ const TrasladoForm = (props) => {
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={trasladoData.Fecha && new Date(trasladoData.Fecha)}
-                            onChange={(e) => updateField(e.value, "Fecha")}
-                            dateFormat="dd-mm-yy"
-                            showIcon
+                        <DatePicker
+                            selected={trasladoData.Fecha ? new Date(trasladoData.Fecha) : null}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

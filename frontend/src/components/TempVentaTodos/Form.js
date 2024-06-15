@@ -1,10 +1,11 @@
-import React, {useContext, useState, useEffect, useRef} from "react";
-import {Dialog} from "primereact/dialog";
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import {InputText} from "primereact/inputtext";
+import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from 'primereact/dropdown';
 import moment from "moment";
@@ -12,7 +13,7 @@ import moment from "moment";
 import { TempVentaContext } from "../../context/TempVentaContext";
 
 const TempVentaForm = (props) => {
-    const {isVisible, setIsVisible} = props;
+    const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
     const [isVisibleBtnAprobado, setIsVisibleBtnAprobado] = useState(false);
     const [isVisibleMsgAprobado, setisVisibleMsgAprobado] = useState(false);
@@ -60,15 +61,19 @@ const TempVentaForm = (props) => {
     };
 
     const saveTempVenta = () => {
-        if(tempVentaData.Fecha === "" || tempVentaData.Comprador === "" || tempVentaData.Peso === ""){
+        if (tempVentaData.Fecha === "" || tempVentaData.Comprador === "" || tempVentaData.Peso === "") {
             showInfo();
-        }
-        else{
-            tempVentaData.Fecha = moment(tempVentaData.Fecha).format("YYYY-MM-DD");
+        } else {
+            const formattedDate = tempVentaData.Fecha ? moment(tempVentaData.Fecha).format("YYYY-MM-DD") : null;
+            const tempVentaDataWithFormattedDate = {
+                ...tempVentaData,
+                Fecha: formattedDate,
+            };
+
             if (!editTempVenta) {
-                createTempVenta(tempVentaData);
+                createTempVenta(tempVentaDataWithFormattedDate);
             } else {
-                updateTempVenta(tempVentaData);
+                updateTempVenta(tempVentaDataWithFormattedDate);
             }
             clearSelected();
         }
@@ -77,12 +82,12 @@ const TempVentaForm = (props) => {
     const toast = useRef(null);
 
     const showInfo = () => {
-        toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
+        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
     }
 
     // Eliminar
     const showError = () => {
-        toast.current.show({severity:'error', summary: 'Eliminado', detail:'Se ha eliminado con éxito', life: 3000});
+        toast.current.show({ severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000 });
     }
 
     const _deleteTempVenta = () => {
@@ -95,31 +100,31 @@ const TempVentaForm = (props) => {
 
     const dialogFooter = (
         <div style={styles.dialogFooter}>
-            <ConfirmDialog 
-                visible={isVisibleDelete} 
-                onHide={() => setisVisibleDelete(false)} 
+            <ConfirmDialog
+                visible={isVisibleDelete}
+                onHide={() => setisVisibleDelete(false)}
                 message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" 
-                icon="pi pi-info-circle" 
-                accept={_deleteTempVenta} 
-                reject={clearSelected} 
+                header="Confirmación de eliminación"
+                icon="pi pi-info-circle"
+                accept={_deleteTempVenta}
+                reject={clearSelected}
                 acceptClassName="p-button-danger"
             />
-            <Button 
-                className="p-button-raised p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" 
+            <Button
+                className="p-button-raised p-button-rounded mb-3 p-button-info"
+                icon="pi pi-times"
                 label="Eliminar"
                 onClick={() => setisVisibleDelete(true)}
             />
-            <Button 
+            <Button
                 className="p-button-raised p-button-rounded mb-3 p-button-info"
-                label="Guardar" 
+                label="Guardar"
                 icon="pi pi-check"
                 onClick={saveTempVenta}
             />
         </div>
     );
-    
+
     // Aprobar
     const estadoTemplate = () => (
         <div style={styles.dialogHeader}>
@@ -129,34 +134,34 @@ const TempVentaForm = (props) => {
     );
 
     const showAprobado = () => {
-        toast.current.show({severity:'success', summary: 'Aprobado', detail:'Se ha aprobado con éxito', life: 3000});
+        toast.current.show({ severity: 'success', summary: 'Aprobado', detail: 'Se ha aprobado con éxito', life: 3000 });
     }
 
     const _aprobarVenta = () => {
-        if(editTempVenta){
+        if (editTempVenta) {
             tempVentaData.id_usuario = 2;
             aprobarVenta(tempVentaData);
             showAprobado();
         }
         clearSelected();
     }
-    
+
     const buttons = (
         <div className="card flex justify-content-center">
-            <ConfirmDialog 
-                visible={isVisibleMsgAprobado} 
-                onHide={() => setisVisibleMsgAprobado(false)} 
+            <ConfirmDialog
+                visible={isVisibleMsgAprobado}
+                onHide={() => setisVisibleMsgAprobado(false)}
                 message="¿Está seguro de aprobar?"
-                header="Confirmación de aprobación" 
-                icon="pi pi-info-circle" 
-                accept={_aprobarVenta} 
-                reject={clearSelected} 
+                header="Confirmación de aprobación"
+                icon="pi pi-info-circle"
+                accept={_aprobarVenta}
+                reject={clearSelected}
                 acceptClassName="p-button-danger"
             />
-            <Button 
-                className="p-button-raised p-button-rounded mb-3 p-button-danger" 
-                icon="pi pi-check" 
-                label="Aprobar venta" 
+            <Button
+                className="p-button-raised p-button-rounded mb-3 p-button-danger"
+                icon="pi pi-check"
+                label="Aprobar venta"
                 visible={isVisibleBtnAprobado}
                 onClick={() => setisVisibleMsgAprobado(true)}
             />
@@ -169,8 +174,8 @@ const TempVentaForm = (props) => {
             <Dialog
                 visible={isVisible}
                 modal={true}
-                style={{width:"550px"}}
-                contentStyle={{overflow:"visible"}}
+                style={{ width: "550px" }}
+                contentStyle={{ overflow: "visible" }}
                 header={estadoTemplate}
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
@@ -178,25 +183,24 @@ const TempVentaForm = (props) => {
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Ganado*</label>
-                        <Dropdown 
-                            value={tempVentaData.Id_ganado} 
-                            options={ganados} 
-                            optionLabel="numero" 
-                            optionValue="id" 
-                            onChange={(e) => updateField(e.target.value, "Id_ganado")} 
-                            filter 
-                            showClear 
-                            filterBy="numero" 
+                        <Dropdown
+                            value={tempVentaData.Id_ganado}
+                            options={ganados}
+                            optionLabel="numero"
+                            optionValue="id"
+                            onChange={(e) => updateField(e.target.value, "Id_ganado")}
+                            filter
+                            showClear
+                            filterBy="numero"
                             placeholder="Seleccione un ganado"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={tempVentaData.Fecha && new Date(tempVentaData.Fecha)}
-                            onChange={(e) => updateField(e.value, "Fecha")}
-                            dateFormat="dd-mm-yy"
-                            showIcon
+                        <DatePicker
+                            selected={tempVentaData.Fecha ? new Date(tempVentaData.Fecha) : null}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
@@ -211,8 +215,8 @@ const TempVentaForm = (props) => {
                         <InputNumber
                             value={tempVentaData.Precio}
                             onChange={(e) => updateField(e.value, "Precio")}
-                            mode="decimal" 
-                            locale="en-US" 
+                            mode="decimal"
+                            locale="en-US"
                             minFractionDigits={2}
                         />
                     </div>
@@ -228,8 +232,8 @@ const TempVentaForm = (props) => {
                         <InputNumber
                             value={tempVentaData.Total}
                             onChange={(e) => updateField(e.value, "Total")}
-                            mode="decimal" 
-                            locale="en-US" 
+                            mode="decimal"
+                            locale="en-US"
                             minFractionDigits={2}
                         />
                     </div>

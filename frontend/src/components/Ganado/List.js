@@ -25,9 +25,15 @@ const GanadoList = () => {
     const estadoTemplate = (ganados) => {
         return <span className={`${ganados.estado ? "activo" : "inactivo"}`}>{ganados.estado ? " Activo " : " Inactivo "}</span>;
     }
+
     const dateGanado = (ganados) => {
         return moment(ganados.fecha).format("DD/MM/YYYY");
     }
+
+    const imageTemplate = (ganados) => {
+        return <img src={`http://localhost:8080/${ganados.imagen}`} alt={ganados.nombre} style={{ width: '50px', height: '50px' }} />;
+    }
+
     const [isVisible, setIsVisible] = useState(false);
 
     const saveGanado = (id) => {
@@ -53,12 +59,15 @@ const GanadoList = () => {
         });
         setGlobalFilterValue1('');
     }
+
     const clearFilter1 = () => {
         initFilters1();
     }
+
     useEffect(() => {
         initFilters1();
     }, []);
+
     const onGlobalFilterChange1 = (e) => {
         const value = e.target.value;
         let _filters1 = { ...filters1 };
@@ -67,6 +76,7 @@ const GanadoList = () => {
         setFilters1(_filters1);
         setGlobalFilterValue1(value);
     }
+
     const renderHeader1 = () => {
         return (
             <div className="flex justify-content-between align-items-center table-header">
@@ -78,7 +88,9 @@ const GanadoList = () => {
             </div>
         )
     }
+
     const header1 = renderHeader1();
+
     return (
         <div className="table-container">
             <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
@@ -107,6 +119,7 @@ const GanadoList = () => {
                         <Column field="padre" header="Padre" sortable className="table-column" />
                         <Column field="madre" header="Madre" sortable className="table-column" />
                         <Column field="tipo_nacimiento" header="Tipo nacimiento" sortable className="table-column" />
+                        <Column field="imagen" body={imageTemplate} header="Imagen" sortable className="table-column" />
                     </DataTable>
                 </div>
             </Panel>

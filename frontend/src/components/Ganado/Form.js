@@ -5,9 +5,10 @@ import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import FormPadres from "./Padres";
 
@@ -32,7 +33,7 @@ const Form = (props) => {
         numero: "",
         sexo: "",
         peso: "",
-        fecha: "",
+        fecha: null,
         tipo: "",
         finca: "",
         estado: 1,
@@ -62,7 +63,10 @@ const Form = (props) => {
 
     useEffect(() => {
         if (editGanados) {
-            setGanadoData(editGanados);
+            setGanadoData({
+                ...editGanados,
+                fecha: editGanados.fecha ? new Date(editGanados.fecha) : null
+            });
             setIsVisibleButton(true);
         }
     }, [editGanados]);
@@ -71,7 +75,7 @@ const Form = (props) => {
         setGanadoData({
             ...ganadoData,
             [field]: data
-        })
+        });
     };
 
     const clearSelected = () => {
@@ -84,11 +88,16 @@ const Form = (props) => {
         if (ganadoData.numero === "" || ganadoData.nombre === "") {
             showInfo();
         } else {
-            ganadoData.fecha = moment(ganadoData.fecha).format("YYYY-MM-DD");
+            const formattedDate = ganadoData.fecha ? moment(ganadoData.fecha).format("YYYY-MM-DD") : null;
+            const ganadoDataWithFormattedDate = {
+                ...ganadoData,
+                fecha: formattedDate,
+            };
+
             if (!editGanados) {
-                createGanado(ganadoData);
+                createGanado(ganadoDataWithFormattedDate);
             } else {
-                updateGanado(ganadoData);
+                updateGanado(ganadoDataWithFormattedDate);
             }
             clearSelected();
         }
@@ -134,15 +143,15 @@ const Form = (props) => {
     const linkTempVenta = () => navigate(`/tventa/${ganadoData.id}`);
     const linkTempSalida = () => navigate(`/tsalida/${ganadoData.id}`);
 
-    // Formulario padres
     const padresForm = () => {
         findPadre(ganadoData.id);
+        console.log(editPadres);
         setIsVisibleButtonPadres(true);
     };
 
     const buttons = (
         <div className="ui-dialog-buttonpane p-clearfix" style={styles.buttonPane}>
-            <span className="p-buttonset" style={styles.buttonSet}>
+            <span className="p-buttonset">
                 <Button className="p-button-rounded mb-3 p-button-info"
                     icon="pi pi-times" label="Traslado" visible={isVisibleButton}
                     onClick={linkTraslado} />
@@ -155,10 +164,10 @@ const Form = (props) => {
                 <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
                     label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
                     onClick={linkTempSalida} />
-                <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
-                    label="Padres" icon="pi pi-check" visible={isVisibleButton}
-                    onClick={padresForm} />
             </span>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
+                label="Padres" icon="pi pi-check" visible={isVisibleButton}
+                onClick={padresForm} />
         </div>
     );
 
@@ -209,11 +218,11 @@ const Form = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha de nacimiento*</label>
-                        <Calendar
-                            value={ganadoData.fecha && new Date(ganadoData.fecha)}
-                            onChange={(e) => updateField(e.value, "fecha")}
-                            dateFormat="dd-mm-yy"
-                            showIcon
+                        <DatePicker
+                            selected={ganadoData.fecha}
+                            onChange={(date) => updateField(date, "fecha")}
+                            dateFormat="yyyy-MM-dd"
+                            className="p-inputtext p-component"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
