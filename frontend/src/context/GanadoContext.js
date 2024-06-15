@@ -27,10 +27,10 @@ const GanadoContextProvider = (props)=>{
             .then((data)=>setGanados([...ganados, data]));
     };
 
-    const deleteGanado =(id)=>{
+    const deleteGanado =(ganado)=>{
         ganadoService
-            .delete(id)
-            .then(()=>setGanados(ganados.filter((p)=>p.id !== id)));
+            .delete(ganado)
+            .then(()=>setGanados(ganados.filter((p)=>p.id !== ganado.id)));
     };
     
     const findGanado =(id)=>{
@@ -65,7 +65,6 @@ const GanadoContextProvider = (props)=>{
     };
     
     const findPadre =(id)=>{
-        //console.log(id);
         padreService.readId(id).then((data) => setEditPadres(data));
     };
 

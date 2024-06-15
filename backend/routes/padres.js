@@ -65,35 +65,7 @@ router.post('/', (req,res)=>{
             }
     })
 });
-/*
-//put
-router.put('/', (req,res)=>{
-    const relacion = {
-        madre : req.body.Id_ganado_madre,
-        nacimiento: req.body.Tipo_nacimiento,
-        padre: req.body.Id_ganado_padre,
-        hijo: req.body.Id_ganado_hijo
-    };
-    mysqlconexion.query(`CALL sp_padres(?, ?, ?, ?);`,
-        [relacion.hijo, relacion.padre, relacion.madre, relacion.nacimiento], 
-        (error,rows,fields)=>{
-            if(!error){
-                //res.json(rows);
-                res.send({
-                    code:200,
-                    success:"Actualizado correctamente",
-                });
-            }
-            else{
-                console.log(error);
-                res.send({
-                    code:400,
-                    failed:"error occurred",
-                    error : error});
-            }
-    })
-});
-*/
+
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;

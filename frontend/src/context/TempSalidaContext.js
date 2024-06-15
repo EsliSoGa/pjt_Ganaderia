@@ -1,18 +1,22 @@
 import React, {createContext, useState, useEffect, useMemo } from "react";
 import {TempSalidaService} from "../services/TempSalidaServices"
+import {GanadoService} from "../services/GanadoServices"
 
 export const TempSalidaContext = createContext();
 
 const TempSalidaContextProvider = (props)=>{
     const salidaService = useMemo(() => new TempSalidaService(), []);
+    const ganadoService = useMemo(() => new GanadoService(), []);
     
     const [tempSalidas, setTempSalidas] = useState([]);
+    const [ganados, setGanados] = useState([]);
 
     const [editTempSalida, setEditTempSalida] = useState(null);
 
     useEffect(() => {
         salidaService.readAll().then((data) => setTempSalidas(data));
-    }, [salidaService, tempSalidas]);
+        ganadoService.readAll().then((data) => setGanados(data));
+    }, [salidaService, tempSalidas, ganadoService, ganados]);
 
     const createTempSalida =(salida)=>{
         salidaService
@@ -41,6 +45,14 @@ const TempSalidaContextProvider = (props)=>{
         );
         setEditTempSalida(null);
     };
+
+    //Aprovar Salida
+    const aprobarSalida =(salida)=>{
+        salidaService
+            .aprobar(salida)
+            .then(()=>setTempSalidas(tempSalidas.filter((p)=>p.id !== salida.id)));
+    };
+
     return(
         <TempSalidaContext.Provider 
             value={{
@@ -49,7 +61,9 @@ const TempSalidaContextProvider = (props)=>{
                 findTempSalida,
                 updateTempSalida,
                 editTempSalida,
-                tempSalidas
+                tempSalidas,
+                ganados,
+                aprobarSalida
             }}>
             {props.children}
         </TempSalidaContext.Provider>

@@ -1,18 +1,22 @@
 import React, {createContext, useState, useEffect, useMemo } from "react";
 import {TrasladoService} from "../services/TrasladoServices"
+import { GanadoService } from "../services/GanadoServices";
 
 export const TrasladoContext = createContext();
 
 const TrasladoContextProvider = (props)=>{
     const trasladoService = useMemo(() => new TrasladoService(), []);
+    const ganadoService = useMemo(()=> new GanadoService(), []);
     
     const [traslados, setTraslados] = useState([]);
+    const [ganados, setGanados] = useState([]);
 
     const [editTraslado, setEditTraslado] = useState(null);
 
     useEffect(() => {
         trasladoService.readAll().then((data) => setTraslados(data));
-    }, [trasladoService, traslados]);
+        ganadoService.readAll().then((data) => setGanados(data));
+    }, [trasladoService, traslados, ganadoService, ganados]);
 
     const createTraslado =(traslado)=>{
         trasladoService
@@ -20,10 +24,10 @@ const TrasladoContextProvider = (props)=>{
             .then((data)=>setTraslados([...traslados, data]));
     };
 
-    const deleteTraslado =(id)=>{
+    const deleteTraslado =(traslado)=>{
         trasladoService
-            .delete(id)
-            .then(()=>setTraslados(traslados.filter((p)=>p.id !== id)));
+            .delete(traslado)
+            .then(()=>setTraslados(traslados.filter((p)=>p.id !== traslado.id)));
     };
     
     const findTraslado =(id)=>{
@@ -49,7 +53,8 @@ const TrasladoContextProvider = (props)=>{
                 findTraslado,
                 updateTraslado,
                 editTraslado,
-                traslados
+                traslados,
+                ganados
             }}>
             {props.children}
         </TrasladoContext.Provider>

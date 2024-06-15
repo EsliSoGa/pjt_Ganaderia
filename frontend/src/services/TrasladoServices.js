@@ -12,7 +12,7 @@ export class TrasladoService {
     update(traslados){
         return axios.put(this.url+traslados.id, traslados).then(res=> res.data);
     }
-    delete(id){
-        return axios.delete(this.url+id).then(res=> res.data);
+    delete(traslado){
+        return axios.delete(this.url+traslado.id, {data: traslado}).then(res=> res.data);
     }
 }
