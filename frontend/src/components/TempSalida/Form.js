@@ -7,6 +7,8 @@ import { Toast } from 'primereact/toast';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
+import { Dropdown } from 'primereact/dropdown';
+import axios from 'axios';
 
 import { TempSalidaContext } from "../../context/TempSalidaContext";
 
@@ -18,7 +20,8 @@ const TempSalidaForm = (props) => {
         createTempSalida,
         deleteTempSalida,
         editTempSalida,
-        updateTempSalida
+        updateTempSalida,
+        ganados
     } = useContext(TempSalidaContext);
 
     const inicialTempSalidasState = {
@@ -31,6 +34,8 @@ const TempSalidaForm = (props) => {
     };
 
     const [tempSalidaData, setTempSalidaData] = useState(inicialTempSalidasState);
+    const [imageFile, setImageFile] = useState(null);
+    const toast = useRef(null);
 
     useEffect(() => {
         if (editTempSalida) setTempSalidaData(editTempSalida);
@@ -48,7 +53,7 @@ const TempSalidaForm = (props) => {
         setTempSalidaData(inicialTempSalidasState);
     };
 
-    const saveTempSalida = () => {
+    const saveTempSalida = async () => {
         if (tempSalidaData.Fecha === "" || tempSalidaData.Motivo === "" || tempSalidaData.Comentarios === "") {
             showInfo();
         } else {
@@ -58,16 +63,37 @@ const TempSalidaForm = (props) => {
                 Fecha: formattedDate,
             };
 
+            if (imageFile) {
+                try {
+                    const formData = new FormData();
+                    formData.append('image', imageFile);
+                    formData.append('motivo', tempSalidaData.Motivo);
+
+                    const response = await axios.post('http://localhost:8080/tmpsalida/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+                    tempSalidaDataWithFormattedDate.Imagen = response.data.filePath;
+                } catch (error) {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al subir la imagen' });
+                    return;
+                }
+            }
+
             if (!editTempSalida) {
+                const ganado = ganados.find((p) => p.id === parseInt(tempSalidaData.Id_ganado));
+                tempSalidaDataWithFormattedDate.Nombre = ganado.nombre;
+                tempSalidaDataWithFormattedDate.Numero = ganado.numero;
                 createTempSalida(tempSalidaDataWithFormattedDate);
             } else {
+                tempSalidaDataWithFormattedDate.id_usuario = 2;
                 updateTempSalida(tempSalidaDataWithFormattedDate);
             }
             clearSelected();
         }
     };
-
-    const toast = useRef(null);
 
     const showInfo = () => {
         toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
@@ -75,6 +101,7 @@ const TempSalidaForm = (props) => {
 
     const _deleteTempSalida = () => {
         if (editTempSalida) {
+            tempSalidaData.id_usuario = 2;
             deleteTempSalida(tempSalidaData.id);
             showError();
         }
@@ -114,6 +141,11 @@ const TempSalidaForm = (props) => {
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
+                        <label>Ganado*</label>
+                        <Dropdown value={tempSalidaData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
+                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
                         <DatePicker
                             selected={tempSalidaData.Fecha ? new Date(tempSalidaData.Fecha) : null}
@@ -131,8 +163,9 @@ const TempSalidaForm = (props) => {
                     <div className="p-field" style={styles.formField}>
                         <label>Imagen*</label>
                         <InputText
-                            value={tempSalidaData.Imagen}
-                            onChange={(e) => updateField(e.target.value, "Imagen")}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setImageFile(e.target.files[0])}
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

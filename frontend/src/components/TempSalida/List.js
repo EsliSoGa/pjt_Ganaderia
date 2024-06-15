@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
 import { Column } from 'primereact/column';
@@ -12,13 +12,17 @@ import { TempSalidaContext } from "../../context/TempSalidaContext";
 import TempSalidaForm from './Form';
 import '../SharedTableStyles.css'; // Asegúrate de importar el archivo CSS general
 
-const TempSalidaList = () =>{
-    const {tempSalidas, findTempSalida} = useContext(TempSalidaContext);
+const TempSalidaList = () => {
+    const { tempSalidas, findTempSalida } = useContext(TempSalidaContext);
     
     const [isVisible, setIsVisible] = useState(false);
     
     const dateTempSalida = (tempSalida) => {
         return moment(tempSalida.Fecha).format("DD/MM/YYYY");
+    }
+
+    const imageTemplate = (tempSalida) => {
+        return <img src={`http://localhost:8080/${tempSalida.Imagen}`} alt={tempSalida.Motivo} style={{ width: '50px', height: '50px' }} />;
     }
 
     let cont = 0;
@@ -40,12 +44,12 @@ const TempSalidaList = () =>{
         return (
             <React.Fragment>
                 <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar salida" 
-                onClick={()=>setIsVisible(true)}/>
+                onClick={() => setIsVisible(true)}/>
             </React.Fragment>
         )
     }
 
-    function linkGanado (){
+    function linkGanado() {
         navigate('/ganado')
     }
 
@@ -93,13 +97,13 @@ const TempSalidaList = () =>{
     }
     const header1 = renderHeader1();
 
-    return(
+    return (
         <div className="table-container">
             <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
             <Panel header="Listado de salida" className="table-panel">
                 <div className="table-datatable">
                     <DataTable 
-                        value={tempSalidas.filter((p)=>p.Id_ganado === parseInt(idTS))}
+                        value={tempSalidas.filter((p) => p.Id_ganado === parseInt(idTS))}
                         responsiveLayout="scroll"
                         selectionMode="single"
                         onSelectionChange={(e) => saveTempSalida(e.value.id)}
@@ -111,7 +115,7 @@ const TempSalidaList = () =>{
                         <Column field="Numero" header="Ganado" sortable className="table-column" />
                         <Column field="Fecha" body={dateTempSalida} header="Fecha de venta" sortable className="table-column" />
                         <Column field="Motivo" header="Motivo" sortable className="table-column" />
-                        <Column field="Imagen" header="Imagen" sortable className="table-column" />
+                        <Column field="Imagen" body={imageTemplate} header="Imagen" sortable className="table-column" />
                         <Column field="Comentarios" header="Comentarios" sortable className="table-column" />
                     </DataTable>
                 </div>

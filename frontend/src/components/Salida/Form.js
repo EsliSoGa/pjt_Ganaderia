@@ -4,8 +4,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import DatePicker from 'react-datepicker'; // Importar DatePicker desde react-datepicker
-import "react-datepicker/dist/react-datepicker.css"; // Importar estilos CSS de react-datepicker
+import { Calendar } from "primereact/calendar";
 import { Dropdown } from 'primereact/dropdown';
 import moment from "moment";
 
@@ -25,7 +24,7 @@ const SalidaForm = (props) => {
 
     const inicialSalidasState = {
         id: null,
-        Fecha: null, // Cambiar a null para que coincida con el tipo de DatePicker
+        Fecha: null,
         Motivo: "",
         Imagen: "",
         Comentarios: "",
@@ -41,7 +40,7 @@ const SalidaForm = (props) => {
         if (editSalida) {
             setSalidaData({
                 ...editSalida,
-                Fecha: editSalida.Fecha ? new Date(editSalida.Fecha) : null // Formatear la fecha correctamente
+                Fecha: editSalida.Fecha ? new Date(editSalida.Fecha) : null
             });
         }
     }, [editSalida]);
@@ -135,12 +134,10 @@ const SalidaForm = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <DatePicker
-                            selected={salidaData.Fecha}
-                            onChange={(date) => updateField(date, "Fecha")}
-                            dateFormat="dd-MM-yyyy"
-                            className="p-inputtext p-component"
-                            placeholderText="Seleccione una fecha"
+                        <Calendar
+                            value={salidaData.Fecha}
+                            onChange={(e) => updateField(e.value.toISOString(), "Fecha")}
+                            dateFormat="dd-mm-yy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
