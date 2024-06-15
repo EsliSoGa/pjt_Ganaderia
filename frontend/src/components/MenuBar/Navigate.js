@@ -32,41 +32,29 @@ const Navigation = () => {
     {
       label: "Aprobaciones",
       submenu: [
-        { label: "Salidas", path: "/aprobarsalida" },
-        { label: "Ventas", path: "/aprobarventa" }
+        { label: "Salidas temporales", path: "/aprobarsalida" },
+        { label: "Ventas temporales", path: "/aprobarventa" }
       ]
     },
     { label: "Lista de salidas", path: "/salida" },
     { label: "Lista de ventas", path: "/venta" },
-    { label: "Usuarios", path: "/usuario" }
+    { label: "Usuarios", path: "/usuario" },
+    { label: "Bitacora", path: "/bitacora" }
   ];
 
   const navItemsJefe = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
-    {
-      label: "Aprobaciones",
-      submenu: [
-        { label: "Salidas", path: "/aprobarsalida" },
-        { label: "Ventas", path: "/aprobarventa" }
-      ]
-    },
     { label: "Lista de salidas", path: "/salida" },
-    { label: "Lista de ventas", path: "/venta" }
+    { label: "Lista de ventas", path: "/venta" },
+    { label: "Bitacora", path: "/bitacora" }
   ];
 
   const navItemsVaquero = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
     { label: "Salidas", path: "/salidas" },
-    { label: "Ventas", path: "/ventas" },
-    {
-      label: "Aprobaciones",
-      submenu: [
-        { label: "Salidas", path: "/aprobarsalida" },
-        { label: "Ventas", path: "/aprobarventa" }
-      ]
-    }
+    { label: "Ventas", path: "/ventas" }
   ];
 
   const navItemsUsuario = [
