@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 const mysqlconexion = require('../db');
 
 //get
@@ -48,7 +50,7 @@ router.post('/', (req,res)=>{
         sexo: req.body.sexo,
         color: req.body.color,
         peso: req.body.peso,
-        fecha: req.body.fecha,
+        fecha: req.body.fecha ? new Date(req.body.fecha).toISOString().slice(0, 10) : null,
         tipo: req.body.tipo,
         finca:req.body.finca,
         estado: req.body.estado,
@@ -81,7 +83,7 @@ router.put('/:id', (req,res)=>{
         sexo: req.body.sexo,
         color: req.body.color,
         peso: req.body.peso,
-        fecha: req.body.fecha,
+        fecha: req.body.fecha ? new Date(req.body.fecha).toISOString().slice(0, 10) : null,
         tipo: req.body.tipo,
         finca:req.body.finca,
         estado: req.body.estado,
@@ -106,14 +108,46 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('DELETE FROM ganado WHERE id=?',[id], (error,rows,fields)=>{
+    const ganado = {
+        descripcion: "Nombre: "+req.body.nombre+" Numero: "+req.body.numero,
+        id_usuario: req.body.id_usuario
+    };
+    mysqlconexion.query(`DELETE FROM ganado WHERE id=?;`,
+    [id], (error,rows,fields)=>{
         if(!error){
+            mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) VALUES ('Eliminar ganado', ?, now(), ?);`,
+            [ganado.descripcion, ganado.id_usuario], (error2,rows2,fields2)=>{
+                if(error2){
+                    console.log(error2);
+                }
+            })
             res.json(rows);
         }
         else{
             console.log(error);
         }
     })
+});
+
+// Configuración de multer para guardar las imágenes en la carpeta 'images'
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, '..', 'images'));
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Ruta para subir una imagen
+router.post('/upload', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No se subió ninguna imagen.' });
+    }
+    res.json({ filePath: `images/${req.file.filename}` });
 });
 
 module.exports = router;

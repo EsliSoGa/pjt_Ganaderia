@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const cors = require('cors');
 
 var usuarioRoute = require('./routes/usuario');
@@ -13,6 +14,7 @@ var tmpventasRoute = require('./routes/tempVenta');
 var salidaRoute = require('./routes/salida');
 var tmpsalidaRoute = require('./routes/tempSalida');
 var trasladoRoute = require('./routes/traslado');
+var bitacoraRoute = require('./routes/bitacora');
 
 const cookieSession = require("cookie-session");
 
@@ -41,6 +43,7 @@ app.use(
     })
 )
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/usuario', usuarioRoute);
 app.use('/tipoServicio', tipo_servicioRoute);
 app.use('/servicio', servicioRoute);
@@ -52,6 +55,7 @@ app.use('/tmpVenta', tmpventasRoute);
 app.use('/salida', salidaRoute);
 app.use('/tmpSalida', tmpsalidaRoute);
 app.use('/traslado', trasladoRoute);
+app.use('/bitacora', bitacoraRoute);
 
 app.listen(app.get('port'), () => {
     console.log('Port:', app.get('port'));
