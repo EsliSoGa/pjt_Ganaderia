@@ -18,7 +18,11 @@ const TempVentaList = () => {
 
     let cont = 0;
     const numero = () => {
+<<<<<<< HEAD
         cont = cont + 0.5;
+=======
+        cont = cont++;
+>>>>>>> cff00ee624d636ab42e4a0c240f5fb50ae3b4bd4
         return cont;
     }
     

@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import React from "react";
 import imagen1 from '../images/vaca1.jpg';
 import './Home.css'; // Importa el archivo CSS
+=======
+import React, { useState } from "react";
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import { Galleria } from 'primereact/galleria';
+>>>>>>> cff00ee624d636ab42e4a0c240f5fb50ae3b4bd4
 
 const Home = () => {
     return (
