@@ -1,0 +1,65 @@
+.home-container {
+    padding: 20px;
+    font-family: 'Arial, sans-serif';
+    background-color: #f0f0f0; /* Fondo claro para el contenedor principal */
+    background-image: url('../images/vaca1.jpg'); /* Imagen de fondo */
+    background-size: cover; /* Ajusta la imagen de fondo para cubrir todo el contenedor */
+    background-repeat: no-repeat; /* Evita la repetición de la imagen */
+    background-position: center; /* Centra la imagen de fondo */
+}
+
+.content-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.about-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff; /* Fondo blanco para el texto y la imagen */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    width: 80%; /* Ancho del contenedor */
+}
+
+.about-desc {
+    text-align: center;
+}
+
+.about-desc h3 {
+    font-size: 1.8rem;
+    color: #007bff; /* Color azul para el título */
+    margin-bottom: 10px;
+}
+
+.about-desc p {
+    font-size: 1rem;
+    line-height: 1.5;
+    text-align: justify;
+    color: #333333; /* Color de texto gris oscuro */
+    margin-bottom: 20px;
+}
+
+.image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.about-image {
+    width: 80%; /* Ajusta el tamaño de la imagen */
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+}
+
+footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #555555; /* Color de texto gris */
+}

@@ -1,22 +1,26 @@
 import React, {createContext, useState, useEffect, useMemo } from "react";
 import {ServicioService} from "../services/ServicioServices"
 import {TipoServicioService} from "../services/tipoServiciosService"
+import { GanadoService } from "../services/GanadoServices";
 
 export const ServicioContext = createContext();
 
 const ServicioContextProvider = (props)=>{
     const servicioService = useMemo(() => new ServicioService(), []);
     const tipoServicioService = useMemo(() => new TipoServicioService(), []);
+    const ganadoService = useMemo(()=> new GanadoService(), []);
     
     const [servicios, setServicios] = useState([]);
     const [tipoServicios, setTipoServicios] = useState([]);
+    const [ganados, setGanados] = useState([]);
 
     const [editServicio, setEditServicio] = useState(null);
 
     useEffect(() => {
         servicioService.readAll().then((data) => setServicios(data));
         tipoServicioService.readAll().then((data) => setTipoServicios(data));
-    }, [servicioService, servicios, tipoServicioService, tipoServicios]);
+        ganadoService.readAll().then((data) => setGanados(data));
+    }, [servicioService, servicios, tipoServicioService, tipoServicios, ganadoService, ganados]);
 
     const createServicio =(servicio)=>{
         servicioService
@@ -24,10 +28,10 @@ const ServicioContextProvider = (props)=>{
             .then((data)=>setServicios([...servicios, data]));
     };
 
-    const deleteServicio =(id)=>{
+    const deleteServicio =(servicio)=>{
         servicioService
-            .delete(id)
-            .then(()=>setServicios(servicios.filter((p)=>p.id !== id)));
+            .delete(servicio)
+            .then(()=>setServicios(servicios.filter((p)=>p.id !== servicio.id)));
     };
     
     const findServicio =(id)=>{
@@ -54,7 +58,8 @@ const ServicioContextProvider = (props)=>{
                 updateServicio,
                 editServicio,
                 servicios,
-                tipoServicios
+                tipoServicios,
+                ganados
             }}>
             {props.children}
         </ServicioContext.Provider>

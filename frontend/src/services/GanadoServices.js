@@ -12,7 +12,7 @@ export class GanadoService {
     update(ganado){
         return axios.put(this.url+ganado.id, ganado).then(res=> res.data);
     }
-    delete(id){
-        return axios.delete(this.url+id).then(res=> res.data);
+    delete(ganado){
+        return axios.delete(this.url+ganado.id, {data: ganado}).then(res=> res.data);
     }
 }

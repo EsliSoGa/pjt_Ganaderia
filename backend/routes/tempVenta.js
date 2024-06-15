@@ -4,7 +4,10 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta_temporal',
+    mysqlconexion.query(`SELECT v.id, v.Fecha, Comprador, Precio, v.Peso, Total, Id_ganado, g.Numero
+    FROM venta_temporal as v
+    INNER JOIN ganado as g
+    on v.Id_ganado = g.id`,
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +25,10 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta_temporal WHERE id=?', 
+    mysqlconexion.query(`SELECT v.id, v.Fecha, Comprador, Precio, v.Peso, Total, Id_ganado, g.Numero
+    FROM venta_temporal as v
+    INNER JOIN ganado as g
+    on v.Id_ganado = g.id WHERE v.id=?`, 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -119,6 +125,30 @@ router.delete('/:id', (req,res)=>{
                 failed:"error occurred",
                 error : error});
         }
+    })
+});
+
+module.exports = router;
+
+//Aprobación de venta
+router.post('/aprobar', (req,res)=>{
+    const venta = {
+        id: req.body.id,
+        idUsuario: req.body.id_usuario
+    };
+    mysqlconexion.query(`CALL sp_ventaAprobadas(?, ?);`,
+        [venta.id, venta.idUsuario], 
+        (error,rows,fields)=>{
+            if(!error){
+                res.json(rows[0][0]);
+            }
+            else{
+                console.log(error);
+                res.send({
+                    code:400,
+                    failed:"error occurred",
+                    error : error});
+            }
     })
 });
 
