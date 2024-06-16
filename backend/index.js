@@ -7,7 +7,7 @@ var usuarioRoute = require('./routes/usuario');
 var tipo_servicioRoute = require('./routes/tipoServicio');
 var servicioRoute = require('./routes/servicio');
 var ganadoRoute = require('./routes/ganado');
-var lecheRoute = require('./routes/leche'); // Nueva ruta añadida
+var lecheRoute = require('./routes/leche');  // Asegúrate de incluir la ruta de leche
 var padreRoute = require('./routes/padres');
 var ventasRoute = require('./routes/ventas');
 var tmpventasRoute = require('./routes/tempVenta');
@@ -48,7 +48,7 @@ app.use('/usuario', usuarioRoute);
 app.use('/tipoServicio', tipo_servicioRoute);
 app.use('/servicio', servicioRoute);
 app.use('/ganado', ganadoRoute);
-app.use('/leche', lecheRoute); // Nueva ruta añadida
+app.use('/leche', lecheRoute);  // Asegúrate de incluir la ruta de leche
 app.use('/padres', padreRoute);
 app.use('/venta', ventasRoute);
 app.use('/tmpVenta', tmpventasRoute);

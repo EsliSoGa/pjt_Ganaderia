@@ -1,5 +1,5 @@
 import React, {createContext, useState, useEffect, useMemo } from "react";
-import {LecheService} from "../services/LecheService"
+import {LecheService} from "../services/LecheServices"
 import {GanadoService} from "../services/GanadoServices"
 
 export const LecheContext = createContext();
@@ -16,7 +16,7 @@ const LecheContextProvider = (props)=>{
     useEffect(() => {
         lecheService.readAll().then((data) => setLeches(data));
         ganadoService.readAll().then((data) => setGanados(data));
-    }, [lecheService, ganadoService]);
+    }, [lecheService, leches, ganadoService, ganados]);
 
     const createLeche =(leche)=>{
         lecheService
@@ -24,10 +24,10 @@ const LecheContextProvider = (props)=>{
             .then((data)=>setLeches([...leches, data]));
     };
 
-    const deleteLeche =(id)=>{
+    const deleteLeche =(leche)=>{
         lecheService
-            .delete(id)
-            .then(()=>setLeches(leches.filter((p)=>p.id !== id)));
+            .delete(leche)
+            .then(()=>setLeches(leches.filter((p)=>p.id !== leche.id)));
     };
     
     const findLeche =(id)=>{
@@ -45,7 +45,6 @@ const LecheContextProvider = (props)=>{
         );
         setEditLeche(null);
     };
-
     return(
         <LecheContext.Provider 
             value={{

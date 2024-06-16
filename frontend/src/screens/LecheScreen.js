@@ -5,7 +5,7 @@ import "primeicons/primeicons.css";
 import LecheContextProvider from '../context/LecheContext';
 import LecheList from '../components/Leche/LecheList';
 
-function LecheScreen() {
+function LecheScreen (){
     return (
         <div className='LecheScreen'>
             <LecheContextProvider>

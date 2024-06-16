@@ -9,7 +9,7 @@ import { Toolbar } from 'primereact/toolbar';
 import moment from "moment";
 import { LecheContext } from "../../context/LecheContext";
 import LecheForm from './LecheForm';
-import '../SharedTableStyles.css'; // Asegúrate de importar el archivo CSS general
+import '../SharedTableStyles.css'; // Importamos el archivo CSS general
 
 const LecheList = () => {
     const { leches, findLeche } = useContext(LecheContext);
@@ -21,7 +21,6 @@ const LecheList = () => {
     }
 
     let cont = 0;
-
     const numero = () => {
         cont = cont + 0.5;
         return cont;
@@ -41,7 +40,7 @@ const LecheList = () => {
         )
     }
 
-    // Filtro
+    //Filtro
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const initFilters1 = () => {
@@ -89,11 +88,11 @@ const LecheList = () => {
                         onSelectionChange={(e) => saveLeche(e.value.id)}
                         paginator className="p-datatable-customers" showGridlines rows={10}
                         dataKey="id" filters={filters1} filterDisplay="menu"
-                        globalFilterFields={['Fecha', 'Produccion_diaria', 'NombreGanado']} header={header1} emptyMessage="No se encontraron registros de leche."
+                        globalFilterFields={['Fecha', 'Produccion_diaria']} header={header1} emptyMessage="No se encontraron registros de producción de leche."
                     >
                         <Column body={numero} header="No." sortable className="table-column" />
-                        <Column field="NombreGanado" header="Ganado" sortable className="table-column" />
-                        <Column field="Fecha" body={dateLeche} header="Fecha" sortable className="table-column" />
+                        <Column field="Numero" header="Ganado" sortable className="table-column" />
+                        <Column field="Fecha" body={dateLeche} header="Fecha de producción" sortable className="table-column" />
                         <Column field="Produccion_diaria" header="Producción diaria" sortable className="table-column" />
                     </DataTable>
                 </div>

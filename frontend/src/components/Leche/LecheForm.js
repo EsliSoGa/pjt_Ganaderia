@@ -4,8 +4,8 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+import { Calendar } from "primereact/calendar";
+import { Dropdown } from 'primereact/dropdown';
 import moment from "moment";
 
 import { LecheContext } from "../../context/LecheContext";
@@ -19,19 +19,28 @@ const LecheForm = (props) => {
         deleteLeche,
         editLeche,
         updateLeche,
+        ganados
     } = useContext(LecheContext);
 
     const inicialLecheState = {
         id: null,
-        Fecha: "",
+        Fecha: null,
         Produccion_diaria: "",
-        Id_ganado: null
+        Id_ganado: "",
+        Nombre: "",
+        Numero: "",
+        id_usuario: 2
     };
 
     const [lecheData, setLecheData] = useState(inicialLecheState);
 
     useEffect(() => {
-        if (editLeche) setLecheData(editLeche);
+        if (editLeche) {
+            setLecheData({
+                ...editLeche,
+                Fecha: editLeche.Fecha ? new Date(editLeche.Fecha) : null
+            });
+        }
     }, [editLeche]);
 
     const updateField = (data, field) => {
@@ -47,7 +56,7 @@ const LecheForm = (props) => {
     };
 
     const saveLeche = () => {
-        if (lecheData.Fecha === "" || lecheData.Produccion_diaria === "") {
+        if (lecheData.Fecha === null || lecheData.Produccion_diaria === "") {
             showInfo();
         } else {
             const formattedDate = lecheData.Fecha ? moment(lecheData.Fecha).format("YYYY-MM-DD") : null;
@@ -57,8 +66,12 @@ const LecheForm = (props) => {
             };
 
             if (!editLeche) {
+                const ganado = ganados.find((p) => p.id === parseInt(lecheData.Id_ganado));
+                lecheDataWithFormattedDate.Nombre = ganado.nombre;
+                lecheDataWithFormattedDate.Numero = ganado.numero;
                 createLeche(lecheDataWithFormattedDate);
             } else {
+                lecheDataWithFormattedDate.id_usuario = 2;
                 updateLeche(lecheDataWithFormattedDate);
             }
             clearSelected();
@@ -73,7 +86,8 @@ const LecheForm = (props) => {
 
     const _deleteLeche = () => {
         if (editLeche) {
-            deleteLeche(lecheData.id);
+            lecheData.id_usuario = 2;
+            deleteLeche(lecheData);
             showError();
         }
         clearSelected();
@@ -106,17 +120,22 @@ const LecheForm = (props) => {
                 modal={true}
                 style={{ width: "550px" }}
                 contentStyle={{ overflow: "visible" }}
-                header="Detalles de la leche"
+                header="Detalle de leche"
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
+                        <label>Ganado*</label>
+                        <Dropdown value={lecheData.Id_ganado} options={ganados} optionLabel="nombre" optionValue="id"
+                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="nombre" placeholder="Seleccione un ganado" />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <DatePicker
-                            selected={lecheData.Fecha ? new Date(lecheData.Fecha) : null}
-                            onChange={(date) => updateField(date, "Fecha")}
-                            dateFormat="dd-MM-yyyy"
+                        <Calendar
+                            value={lecheData.Fecha}
+                            onChange={(e) => updateField(e.value.toISOString(), "Fecha")}
+                            dateFormat="dd-mm-yy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
