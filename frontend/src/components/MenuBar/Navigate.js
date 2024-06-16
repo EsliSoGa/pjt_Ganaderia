@@ -4,7 +4,7 @@ import { useLocation, Link } from "react-router-dom";
 import { logout } from "../../actions/auth";
 import { clearMessage } from "../../actions/message";
 import "./Navigation.css";
-import logo from "../../images/vaca1.ico" // Asegúrate de que este archivo contenga los estilos necesarios
+import logo from "../../images/vaca1.ico"; // Asegúrate de que este archivo contenga los estilos necesarios
 
 const Navigation = () => {
   const dispatch = useDispatch();
@@ -45,6 +45,7 @@ const Navigation = () => {
   const navItemsJefe = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
+    { label: "Leche", path: "/leche" },
     { label: "Lista de salidas", path: "/salida" },
     { label: "Lista de ventas", path: "/venta" },
     { label: "Bitacora", path: "/bitacora" }
@@ -53,6 +54,7 @@ const Navigation = () => {
   const navItemsVaquero = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
+    { label: "Leche", path: "/leche" },
     { label: "Salidas", path: "/salidas" },
     { label: "Ventas", path: "/ventas" }
   ];
