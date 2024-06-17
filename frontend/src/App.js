@@ -74,14 +74,14 @@ function App() {
           } />
           <Route path="/tventa/:idTV" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Vaquero")}
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <TempVentaScreen />
             </ProtectedRoute>
           } />
           <Route path="/tsalida/:idTS" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Vaquero")}
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <TempSalidaScreen />
             </ProtectedRoute>
