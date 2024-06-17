@@ -41,19 +41,35 @@ const ServicioForm = (props) => {
     const [servicioData, setServicioData] = useState(inicialServiciosState);
 
     useEffect(() => {
-        if (editServicio) setServicioData(editServicio);
-    }, [editServicio]);
+        if (editServicio) {
+            setServicioData(editServicio);
+        } else {
+            const ganado = ganados.find((p) => p.id === parseInt(idS));
+            if (ganado) {
+                setServicioData((prevState) => ({
+                    ...prevState,
+                    Nombre: ganado.Nombre,
+                    Numero: ganado.Numero
+                }));
+            }
+        }
+    }, [editServicio, ganados, idS]);
 
     const updateField = (data, field) => {
-        setServicioData({
-            ...servicioData,
+        console.log(`Actualizando campo ${field} con valor:`, data);
+        setServicioData((prevState) => ({
+            ...prevState,
             [field]: data
-        });
+        }));
     };
 
     const saveServicio = () => {
         if (servicioData.Nombre === "" || servicioData.comentario === "") {
             showInfo();
+            console.log("Campos requeridos vacíos:", {
+                Nombre: servicioData.Nombre,
+                comentario: servicioData.comentario
+            });
         } else {
             const formattedDate = servicioData.Fecha ? moment(servicioData.Fecha).format("YYYY-MM-DD") : null;
             const servicioDataWithFormattedDate = {
@@ -61,12 +77,14 @@ const ServicioForm = (props) => {
                 Fecha: formattedDate,
             };
 
+            console.log("Intentando guardar servicio con datos:", servicioDataWithFormattedDate);
+
             if (!editServicio) {
                 const nombreTipo = tipoServicios.find((p) => p.id === parseInt(servicioDataWithFormattedDate.id_tipo_servicio));
                 servicioDataWithFormattedDate.Nombre_tipo = nombreTipo.Nombre_tipo;
                 const ganado = ganados.find((p) => p.id === parseInt(idS));
-                servicioDataWithFormattedDate.Nombre = ganado.nombre;
-                servicioDataWithFormattedDate.Numero = ganado.numero;
+                servicioDataWithFormattedDate.Nombre = ganado.Nombre;
+                servicioDataWithFormattedDate.Numero = ganado.Numero;
                 createServicio(servicioDataWithFormattedDate);
             } else {
                 servicioDataWithFormattedDate.id_usuario = 2;

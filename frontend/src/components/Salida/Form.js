@@ -4,8 +4,9 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
 import { Dropdown } from 'primereact/dropdown';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
 import { SalidaContext } from "../../context/SalidaContext";
@@ -134,10 +135,10 @@ const SalidaForm = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={salidaData.Fecha}
-                            onChange={(e) => updateField(e.value.toISOString(), "Fecha")}
-                            dateFormat="dd-mm-yy"
+                        <DatePicker
+                            selected={salidaData.Fecha}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
@@ -145,13 +146,6 @@ const SalidaForm = (props) => {
                         <InputText
                             value={salidaData.Motivo}
                             onChange={(e) => updateField(e.target.value, "Motivo")}
-                        />
-                    </div>
-                    <div className="p-field" style={styles.formField}>
-                        <label>Imagen*</label>
-                        <InputText
-                            value={salidaData.Imagen}
-                            onChange={(e) => updateField(e.target.value, "Imagen")}
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

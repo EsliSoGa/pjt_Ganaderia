@@ -49,8 +49,8 @@ const UploadImage = () => {
                         value={selectedAnimal} 
                         options={ganados} 
                         onChange={(e) => setSelectedAnimal(e.value)} 
-                        optionLabel="nombre" 
-                        placeholder="Seleccione un animal" 
+                        optionLabel="numero" // Cambiado a "Numero"
+                        placeholder="Seleccione un animal por número" 
                         className="dropdown"
                     />
                 </div>
@@ -69,4 +69,3 @@ const UploadImage = () => {
 };
 
 export default UploadImage;
-

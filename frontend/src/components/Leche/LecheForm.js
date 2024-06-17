@@ -127,8 +127,8 @@ const LecheForm = (props) => {
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Ganado*</label>
-                        <Dropdown value={lecheData.Id_ganado} options={ganados} optionLabel="nombre" optionValue="id"
-                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="nombre" placeholder="Seleccione un ganado" />
+                        <Dropdown value={lecheData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
+                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
