@@ -153,25 +153,53 @@ router.delete('/:id', (req, res) => {
 
 //Aprobación de salida
 router.post('/aprobar', (req, res) => {
-    const salida = {
-        id: req.body.id,
-        idUsuario: req.body.id_usuario
-    };
-    mysqlconexion.query(`CALL sp_salidasAprobadas(?, ?);`,
-        [salida.id, salida.idUsuario],
-        (error, rows, fields) => {
+    const { id, id_usuario, Id_ganado } = req.body;
+
+    console.log('Iniciando aprobación de salida:', { id, id_usuario, Id_ganado });
+
+    if (!Id_ganado) {
+        return res.status(400).json({ error: 'Id_ganado es requerido.' });
+    }
+
+    mysqlconexion.query(`UPDATE ganado SET estado = 0 WHERE id = ?`, [Id_ganado],
+        (error, result) => {
             if (!error) {
-                res.json(rows[0][0]);
-            }
-            else {
-                console.log(error);
-                res.send({
-                    code: 400,
+                console.log('Estado del ganado actualizado a inactivo:', result);
+
+                mysqlconexion.query(`INSERT INTO salidas (Fecha, Motivo, Imagen, Comentarios, Id_ganado) SELECT Fecha, Motivo, Imagen, Comentarios, Id_ganado FROM salidas_temporal WHERE id = ?`, [id],
+                    (error2, result2) => {
+                        if (!error2) {
+                            console.log('Salida movida a tabla principal:', result2);
+
+                            mysqlconexion.query(`DELETE FROM salidas_temporal WHERE id = ?`, [id],
+                                (error3, result3) => {
+                                    if (!error3) {
+                                        console.log('Salida temporal eliminada:', result3);
+                                        res.json({ success: true, message: "Salida aprobada y ganado actualizado a inactivo" });
+                                    } else {
+                                        console.log('Error al eliminar la salida temporal:', error3);
+                                        res.status(400).send({
+                                            failed: "error occurred",
+                                            error: error3
+                                        });
+                                    }
+                                });
+                        } else {
+                            console.log('Error al mover la salida a la tabla principal:', error2);
+                            res.status(400).send({
+                                failed: "error occurred",
+                                error: error2
+                            });
+                        }
+                    });
+            } else {
+                console.log('Error al actualizar el estado del ganado:', error);
+                res.status(400).send({
                     failed: "error occurred",
                     error: error
                 });
             }
-        })
+        });
 });
 
 module.exports = router;
