@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
 import { Column } from 'primereact/column';
@@ -7,10 +7,11 @@ import { Button } from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import moment from "moment";
 import { BitacoraContext } from "../../context/BitacoraContext";
+import './BitacoraList.css'; // Importamos el archivo CSS adicional
 
-const BitacoraList = () =>{
-    const {bitacoras} = useContext(BitacoraContext);
-        
+const BitacoraList = () => {
+    const { bitacoras } = useContext(BitacoraContext);
+
     const date = (bitacora) => {
         return moment(bitacora.Fecha).format("DD/MM/YYYY");
     }
@@ -40,7 +41,7 @@ const BitacoraList = () =>{
     }
     const renderHeader1 = () => {
         return (
-            <div className="flex justify-content-between">
+            <div className="flex justify-content-between align-items-center bitacora-header">
                 <Button type="button" icon="pi pi-filter-slash" label="Limpiar" className="p-button-outlined" onClick={clearFilter1} />
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
@@ -51,29 +52,26 @@ const BitacoraList = () =>{
     }
     const header1 = renderHeader1();
 
-    return(
-        <div>
-        <Panel
-            header="Bitacora" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
-            style={{ textAlign: "justify" }}
-        >
-            <div>
-            <DataTable 
-                value={bitacoras}
-                responsiveLayout="scroll"
-                selectionMode="single"
-                paginator className="p-datatable-customers" showGridlines rows={10}
-                dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Accion', 'Fecha', 'Descripcion', 'Nombre']} header={header1} emptyMessage="No se encontro bitacora."
-                >
-                <Column field="id" header="No." sortable/>
-                <Column field="Accion" header="Acción" sortable/>
-                <Column field="Fecha" body={date} header="Fecha de venta" sortable/>
-                <Column field="Descripcion" header="Descripción" sortable/>
-                <Column field="Nombre" header="Usuario" sortable/>
-            </DataTable>
-            </div>
-        </Panel>
+    return (
+        <div className="bitacora-container">
+            <Panel header="Bitácora" className="bitacora-panel">
+                <div className="bitacora-datatable">
+                    <DataTable
+                        value={bitacoras}
+                        responsiveLayout="scroll"
+                        selectionMode="single"
+                        paginator className="p-datatable-customers" showGridlines rows={10}
+                        dataKey="id" filters={filters1} filterDisplay="menu"
+                        globalFilterFields={['Accion', 'Fecha', 'Descripcion', 'Nombre']} header={header1} emptyMessage="No se encontró bitácora."
+                    >
+                        <Column field="id" header="No." sortable className="bitacora-column" />
+                        <Column field="Accion" header="Acción" sortable className="bitacora-column" />
+                        <Column field="Fecha" body={date} header="Fecha de venta" sortable className="bitacora-column" />
+                        <Column field="Descripcion" header="Descripción" sortable className="bitacora-column" />
+                        <Column field="Nombre" header="Usuario" sortable className="bitacora-column" />
+                    </DataTable>
+                </div>
+            </Panel>
         </div>
     );
 }

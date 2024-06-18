@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRouted";
 
-//import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import 'primereact/resources/primereact.min.css';
 import Navigation from "./components/MenuBar/Navigate";
@@ -126,4 +125,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;

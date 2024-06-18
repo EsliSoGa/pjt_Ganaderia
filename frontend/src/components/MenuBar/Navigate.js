@@ -1,255 +1,123 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
-import { Menubar } from 'primereact/menubar';
-import { SplitButton } from 'primereact/splitbutton';
+import { useLocation, Link } from "react-router-dom";
 import { logout } from "../../actions/auth";
 import { clearMessage } from "../../actions/message";
-//import logo from "../../images/fondo2.ico";
+import "./Navigation.css";
+import logo from "../../images/vaca1.ico" // Asegúrate de que este archivo contenga los estilos necesarios
+
 const Navigation = () => {
-    const dispatch = useDispatch();
-    const { user: currentUser } = useSelector((state) => state.auth);
-    const logOut = useCallback(() => {
-        dispatch(logout());
-    }, [dispatch]);
-    let location = useLocation();
-    useEffect(() => {
-        if (["/login", "/register"].includes(location.pathname)) {
-            dispatch(clearMessage()); // clear message when changing location
-        }
-    }, [dispatch, location]);
-    useEffect(() => {
-        if (currentUser) {
+  const dispatch = useDispatch();
+  const { user: currentUser } = useSelector((state) => state.auth);
 
-        } else {
+  const logOut = useCallback(() => {
+    dispatch(logout());
+  }, [dispatch]);
 
-        }
-    }, [currentUser]);
-    /* Items */
-    const navlistInicio = [
-        {
-            label: "Inicio",
-            icon: "pi pi-fw pi-home",
-            command: () => {
-                window.location.href = '/';
-            },
-        }
-    ];
-    const navlistJefe = [
-        {
-            label: "Inicio",
-            icon: "pi pi-fw pi-home",
-            command: () => {
-                window.location.href = '/profile';
-            }
-        },
-        {
-            label: "Ganado",
-            icon: "pi pi-fw pi-bolt",
-            command: () => {
-                window.location.href = '/ganado';
-            }
-        },
-        {
-            label: "Aprobaciones",
-            icon: "pi pi-fw pi-compass",
-            items: [
-                {
-                    label: "Salidas",
-                    icon: "pi pi-fw pi-shopping-bag",
-                    command: () => {
-                        window.location.href = '/aprobarsalida';
-                    }
-                },
-                {
-                    label: "Ventas",
-                    icon: "pi pi-fw pi-shopping-cart",
-                    command: () => {
-                        window.location.href = '/aprobarventa';
-                    }
-                },
-            ],
-        },
-        {
-            label: "Lista de salidas",
-            icon: "pi pi-fw pi-users",
-            command: () => {
-                window.location.href = '/salida';
-            }
-        },
-        {
-            label: "Lista de ventas",
-            icon: "pi pi-fw pi-users",
-            command: () => {
-                window.location.href = '/venta';
-            }
-        },
-    ];
-
-    const navListVaquero = [
-        {
-            label: "Inicio",
-            icon: "pi pi-fw pi-home",
-            command: () => {
-                window.location.href = '/profile';
-            }
-        },
-        {
-            label: "Ganado",
-            icon: "pi pi-fw pi-spinner",
-            command: () => {
-                window.location.href = '/ganado';
-            }
-        }
-    ]
-
-    const navListAdmin = [
-        {
-            label: "Inicio",
-            icon: "pi pi-fw pi-home",
-            command: () => {
-                window.location.href = '/profile';
-            }
-        },
-        {
-            label: "Ganado",
-            icon: "pi pi-fw pi-bolt",
-            command: () => {
-                window.location.href = '/ganado';
-            }
-        },
-        {
-            label: "Aprobaciones",
-            icon: "pi pi-fw pi-compass",
-            items: [
-                {
-                    label: "Salidas",
-                    icon: "pi pi-fw pi-shopping-bag",
-                    command: () => {
-                        window.location.href = '/aprobarsalida';
-                    }
-                },
-                {
-                    label: "Ventas",
-                    icon: "pi pi-fw pi-shopping-cart",
-                    command: () => {
-                        window.location.href = '/aprobarventa';
-                    }
-                },
-            ],
-        },
-        {
-            label: "Lista de salidas",
-            icon: "pi pi-fw pi-users",
-            command: () => {
-                window.location.href = '/salida';
-            }
-        },
-        {
-            label: "Lista de ventas",
-            icon: "pi pi-fw pi-users",
-            command: () => {
-                window.location.href = '/venta';
-            }
-        },
-        {
-            label: "Ususarios",
-            icon: "pi pi-fw pi-bolt",
-            command: () => {
-                window.location.href = '/usuario';
-            }
-        },
-    ]
-
-    const navListUsuario = [
-        {
-            label: "Inicio",
-            icon: "pi pi-fw pi-home",
-            command: () => {
-                window.location.href = '/profile';
-            }
-        }
-    ]
-    /*Items 2 */
-    const itemsInicio = [
-        {
-            label: "Inicio de sesión",
-            icon: "pi pi-fw pi-user",
-            command: () => {
-                window.location.href = '/login';
-            }
-        },
-        {
-            label: "Registrarse",
-            icon: "pi pi-fw pi-sign-in",
-            command: () => {
-                window.location.href = '/register';
-            }
-        }
-    ]
-    const itemsCerrar = [
-        {
-            label: "Perfil",
-            icon: "pi pi-fw pi-user",
-            command: () => {
-                window.location.href = '/profile';
-            }
-        },
-        {
-            label: "Editar perfil",
-            icon: "pi pi-fw pi-users",
-            command: () => {
-                window.location.href = '/edituser';
-            }
-        },
-        {
-            label: "Salir",
-            icon: "pi pi-fw pi-sign-out",
-            command: () => {
-                window.location.href = '/profile';
-                window.onclick = logOut();
-            }
-        }
-    ]
-
-    if (!currentUser) {
-
-    } else if (currentUser) {
-        if (currentUser.estado === 0) {
-            logOut();
-        } else {
-
-        }
+  let location = useLocation();
+  
+  useEffect(() => {
+    if (["/login", "/register"].includes(location.pathname)) {
+      dispatch(clearMessage());
     }
+  }, [dispatch, location]);
 
-    function isLogin(currentUser, itemsInicio, itemsCerrar) {
-        if (!currentUser) {
-            return <SplitButton className="mr-2 mb-2 p-button-rounded p-button-info" label="Acciones" model={itemsInicio} />;
-        } else if (currentUser) {
-            return <SplitButton className="mr-2 mb-2 p-button-rounded p-button-success" label={currentUser.Nombre} model={itemsCerrar} />;
-        }
-    }
+  const navItemsInicio = [
+    { label: "Inicio", path: "/home" }
+  ];
 
-    function isRol(currentUser, navlistInicio, navListAdmin, navListJefe, navListVaquero, navListUsuario) {
-        if (!currentUser) {
-            return navlistInicio;
-        } else if (currentUser.rol === "Administrador") {
-            return navListAdmin;
-        } else if (currentUser.rol === "Jefe") {
-            return navListJefe;
-        } else if (currentUser.rol === "Vaquero") {
-            return navListVaquero;
-        } else if (currentUser.rol === "Usuario") {
-            return navListUsuario;
-        }
+  const navItemsAdmin = [
+    { label: "Inicio", path: "/profile" },
+    { label: "Ganado", path: "/ganado" },
+    {
+      label: "Aprobaciones",
+      submenu: [
+        { label: "Salidas temporales", path: "/aprobarsalida" },
+        { label: "Ventas temporales", path: "/aprobarventa" }
+      ]
+    },
+    { label: "Lista de salidas", path: "/salida" },
+    { label: "Lista de ventas", path: "/venta" },
+    { label: "Usuarios", path: "/usuario" },
+    { label: "Bitacora", path: "/bitacora" }
+  ];
+
+  const navItemsJefe = [
+    { label: "Inicio", path: "/profile" },
+    { label: "Ganado", path: "/ganado" },
+    { label: "Lista de salidas", path: "/salida" },
+    { label: "Lista de ventas", path: "/venta" },
+    { label: "Bitacora", path: "/bitacora" }
+  ];
+
+  const navItemsVaquero = [
+    { label: "Inicio", path: "/profile" },
+    { label: "Ganado", path: "/ganado" },
+    { label: "Salidas", path: "/salidas" },
+    { label: "Ventas", path: "/ventas" }
+  ];
+
+  const navItemsUsuario = [
+    { label: "Inicio", path: "/profile" }
+  ];
+
+  const loginItems = [
+    { label: "Inicio de sesión", path: "/login" },
+    { label: "Registrarse", path: "/register" }
+  ];
+
+  const profileItems = [
+    { label: "Perfil", path: "/profile" },
+    { label: "Editar perfil", path: "/edituser" },
+    { label: "Salir", path: "/profile", onClick: logOut }
+  ];
+
+  const getNavItems = (role) => {
+    switch (role) {
+      case "Administrador": return navItemsAdmin;
+      case "Jefe": return navItemsJefe;
+      case "Vaquero": return navItemsVaquero;
+      case "Usuario": return navItemsUsuario;
+      default: return navItemsInicio;
     }
-    const end = isLogin(currentUser, itemsInicio, itemsCerrar);
-    const start = <img alt="logo" onError={(e) => e.target.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} height="40" className="mr-2"></img>;
-    return (
-        <header>
-            <Menubar model={isRol(currentUser, navlistInicio, navListAdmin, navlistJefe, navListVaquero, navListUsuario)} start={start} end={end} />
-        </header>
-    );
+  };
+
+  const renderNavItems = (items) => {
+    return items.map(item => (
+      <li key={item.label} className="nav-item">
+        <Link to={item.path} onClick={item.onClick}>{item.label}</Link>
+        {item.submenu && (
+          <ul className="submenu">
+            {item.submenu.map(subItem => (
+              <li key={subItem.label}>
+                <Link to={subItem.path}>{subItem.label}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ));
+  };
+
+  const navItems = getNavItems(currentUser?.rol);
+  const userItems = currentUser ? profileItems : loginItems;
+
+  return (
+    <nav className="navbar">
+      <div className="nav-wrapper">
+        <Link to="/home" className="brand-logo">
+          <img src={logo} alt="Logo" className="logo-image" />
+          Maragos
+        </Link>
+        <ul className="nav-menu">
+          {renderNavItems(navItems)}
+        </ul>
+        <ul className="nav-menu">
+          {renderNavItems(userItems)}
+        </ul>
+      </div>
+    </nav>
+  );
 }
 
 export default Navigation;

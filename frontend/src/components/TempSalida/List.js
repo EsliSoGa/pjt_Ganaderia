@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { TempSalidaContext } from "../../context/TempSalidaContext";
 import TempSalidaForm from './Form';
+import '../SharedTableStyles.css'; // Asegúrate de importar el archivo CSS general
 
 const TempSalidaList = () =>{
     const {tempSalidas, findTempSalida} = useContext(TempSalidaContext);
@@ -81,7 +82,7 @@ const TempSalidaList = () =>{
     }
     const renderHeader1 = () => {
         return (
-            <div className="flex justify-content-between">
+            <div className="flex justify-content-between align-items-center table-header">
                 <Button type="button" icon="pi pi-filter-slash" label="Limpiar" className="p-button-outlined" onClick={clearFilter1} />
                 <span className="p-input-icon-left">
                     <i className="pi pi-search" />
@@ -93,32 +94,29 @@ const TempSalidaList = () =>{
     const header1 = renderHeader1();
 
     return(
-        <div>
-        <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
-        <Panel
-            header="Listado de salida" sortField="category" sortOrder={-1} responsiveLayout="scroll" 
-            style={{ textAlign: "justify" }}
-        >
-            <div>
-            <DataTable 
-                value={tempSalidas.filter((p)=>p.Id_ganado === parseInt(idTS))}
-                responsiveLayout="scroll"
-                selectionMode="single"
-                onSelectionChange={(e) => saveTempSalida(e.value.id)}
-                paginator className="p-datatable-customers" showGridlines rows={10}
-                dataKey="id" filters={filters1} filterDisplay="menu"
-                globalFilterFields={['Fecha', 'Motivo']} header={header1} emptyMessage="No se encontraron salidas."
-                >
-                <Column body={numero} header="No." sortable/>
-                <Column field="Numero" header="Ganado" sortable/>
-                <Column field="Fecha" body={dateTempSalida} header="Fecha de venta" sortable/>
-                <Column field="Motivo" header="Motivo" sortable/>
-                <Column field="Imagen" header="Imagen" sortable/>
-                <Column field="Comentarios" header="Comentarios" sortable/>
-            </DataTable>
-            </div>
-        </Panel>
-        <TempSalidaForm idTS={idTS} isVisible={isVisible} setIsVisible={setIsVisible}/>
+        <div className="table-container">
+            <Toolbar className="mr-2" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
+            <Panel header="Listado de salida" className="table-panel">
+                <div className="table-datatable">
+                    <DataTable 
+                        value={tempSalidas.filter((p)=>p.Id_ganado === parseInt(idTS))}
+                        responsiveLayout="scroll"
+                        selectionMode="single"
+                        onSelectionChange={(e) => saveTempSalida(e.value.id)}
+                        paginator className="p-datatable-customers" showGridlines rows={10}
+                        dataKey="id" filters={filters1} filterDisplay="menu"
+                        globalFilterFields={['Fecha', 'Motivo']} header={header1} emptyMessage="No se encontraron salidas."
+                    >
+                        <Column body={numero} header="No." sortable className="table-column" />
+                        <Column field="Numero" header="Ganado" sortable className="table-column" />
+                        <Column field="Fecha" body={dateTempSalida} header="Fecha de venta" sortable className="table-column" />
+                        <Column field="Motivo" header="Motivo" sortable className="table-column" />
+                        <Column field="Imagen" header="Imagen" sortable className="table-column" />
+                        <Column field="Comentarios" header="Comentarios" sortable className="table-column" />
+                    </DataTable>
+                </div>
+            </Panel>
+            <TempSalidaForm idTS={idTS} isVisible={isVisible} setIsVisible={setIsVisible}/>
         </div>
     );
 }
