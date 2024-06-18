@@ -7,7 +7,6 @@ import { Toast } from 'primereact/toast';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
-import { Dropdown } from 'primereact/dropdown';
 import axios from 'axios';
 
 import { TempSalidaContext } from "../../context/TempSalidaContext";
@@ -30,7 +29,8 @@ const TempSalidaForm = (props) => {
         Motivo: "",
         Imagen: "",
         Comentarios: "",
-        Id_ganado: idTS
+        Id_ganado: idTS,
+        Numero: ""
     };
 
     const [tempSalidaData, setTempSalidaData] = useState(inicialTempSalidasState);
@@ -38,8 +38,18 @@ const TempSalidaForm = (props) => {
     const toast = useRef(null);
 
     useEffect(() => {
-        if (editTempSalida) setTempSalidaData(editTempSalida);
-    }, [editTempSalida]);
+        if (editTempSalida) {
+            setTempSalidaData(editTempSalida);
+        } else {
+            const ganado = ganados.find((p) => p.id === parseInt(idTS));
+            if (ganado) {
+                setTempSalidaData((prevState) => ({
+                    ...prevState,
+                    Numero: ganado.numero
+                }));
+            }
+        }
+    }, [editTempSalida, ganados, idTS]);
 
     const updateField = (data, field) => {
         setTempSalidaData({
@@ -82,9 +92,6 @@ const TempSalidaForm = (props) => {
             }
 
             if (!editTempSalida) {
-                const ganado = ganados.find((p) => p.id === parseInt(tempSalidaData.Id_ganado));
-                tempSalidaDataWithFormattedDate.Nombre = ganado.nombre;
-                tempSalidaDataWithFormattedDate.Numero = ganado.numero;
                 createTempSalida(tempSalidaDataWithFormattedDate);
             } else {
                 tempSalidaDataWithFormattedDate.id_usuario = 2;
@@ -140,9 +147,11 @@ const TempSalidaForm = (props) => {
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
-                        <label>Ganado*</label>
-                        <Dropdown value={tempSalidaData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
-                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                        <label>Ganado Número*</label>
+                        <InputText
+                            value={tempSalidaData.Numero}
+                            disabled
+                        />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
