@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { SalidaContext } from '../../context/SalidaContext';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
@@ -9,13 +9,28 @@ import '../Ganado/UploadImageStyles.css';
 
 const UploadImage = () => {
     const { salidas, updateSalida } = useContext(SalidaContext);
-    const [selectedSalida, setSelectedSalida] = useState(null);
+    const [ganados, setGanados] = useState([]);
+    const [selectedGanado, setSelectedGanado] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const toast = useRef(null);
 
+    useEffect(() => {
+        // Fetch ganados data from the backend
+        const fetchGanados = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/ganado'); // Asegúrate de que esta ruta sea correcta
+                setGanados(response.data);
+            } catch (error) {
+                console.error('Error fetching ganados:', error);
+            }
+        };
+
+        fetchGanados();
+    }, []);
+
     const handleUpload = async () => {
-        if (!selectedSalida || !imageFile) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar una salida y una imagen' });
+        if (!selectedGanado || !imageFile) {
+            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar un animal y una imagen' });
             return;
         }
 
@@ -30,10 +45,15 @@ const UploadImage = () => {
             });
 
             const imagePath = response.data.filePath;
-            const updatedSalida = { ...selectedSalida, Imagen: imagePath };
-            updateSalida(updatedSalida);
+            const updatedSalida = salidas.find(salida => salida.Id_ganado === selectedGanado.id);
+            if (updatedSalida) {
+                updatedSalida.Imagen = imagePath;
+                updateSalida(updatedSalida);
 
-            toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Imagen subida correctamente' });
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Imagen subida correctamente' });
+            } else {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se encontró la salida correspondiente' });
+            }
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al subir la imagen' });
         }
@@ -46,11 +66,12 @@ const UploadImage = () => {
             <div className="upload-form">
                 <div className="field">
                     <Dropdown 
-                        value={selectedSalida} 
-                        options={salidas} 
-                        onChange={(e) => setSelectedSalida(e.value)} 
-                        optionLabel="Motivo" 
-                        placeholder="Seleccione una salida" 
+                        value={selectedGanado} 
+                        options={ganados} 
+                        onChange={(e) => setSelectedGanado(e.value)} 
+                        optionLabel="numero" 
+                        optionValue="id"
+                        placeholder="Seleccione un animal" 
                         className="dropdown"
                     />
                 </div>

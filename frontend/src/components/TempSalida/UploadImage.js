@@ -21,7 +21,6 @@ const UploadImage = () => {
 
         const formData = new FormData();
         formData.append('image', imageFile);
-        formData.append('motivo', selectedAnimal.Motivo);
 
         try {
             const response = await axios.post('http://localhost:8080/tmpsalida/upload', formData, {
@@ -50,8 +49,8 @@ const UploadImage = () => {
                         value={selectedAnimal} 
                         options={tempSalidas} 
                         onChange={(e) => setSelectedAnimal(e.value)} 
-                        optionLabel="Motivo" 
-                        placeholder="Seleccione un motivo de salida" 
+                        optionLabel="Numero" 
+                        placeholder="Seleccione un número de ganado" 
                         className="dropdown"
                     />
                 </div>

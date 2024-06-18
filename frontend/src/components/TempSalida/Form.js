@@ -67,7 +67,6 @@ const TempSalidaForm = (props) => {
                 try {
                     const formData = new FormData();
                     formData.append('image', imageFile);
-                    formData.append('motivo', tempSalidaData.Motivo);
 
                     const response = await axios.post('http://localhost:8080/tmpsalida/upload', formData, {
                         headers: {
