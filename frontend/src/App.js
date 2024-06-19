@@ -20,6 +20,7 @@ import TempSalidaTodosScreen from './screens/TempSalidaTodosScreen';
 import TempVentaTotalScreen from './screens/TempVentaTotalScreen';
 import SalidaScreen from './screens/SalidaScreen';
 import VentaScreen from './screens/VentaScreen';
+import ActividadesScreen from "./screens/ActividadesScreen";
 import BitacoraScreen from './screens/BitacoraScreen';
 import LecheScreen from './screens/LecheScreen'; // Nueva importación
 
@@ -77,6 +78,13 @@ function App() {
               isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <TempVentaScreen />
+            </ProtectedRoute>
+          } />
+          <Route path="/actividades" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <ActividadesScreen />
             </ProtectedRoute>
           } />
           <Route path="/tsalida/:idTS" element={

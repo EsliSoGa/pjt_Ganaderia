@@ -15,6 +15,7 @@ var salidaRoute = require('./routes/salida');
 var tmpsalidaRoute = require('./routes/tempSalida');
 var trasladoRoute = require('./routes/traslado');
 var bitacoraRoute = require('./routes/bitacora');
+var actividadesRoute = require('./routes/actividades');
 
 const cookieSession = require("cookie-session");
 
@@ -48,12 +49,13 @@ app.use('/usuario', usuarioRoute);
 app.use('/tipoServicio', tipo_servicioRoute);
 app.use('/servicio', servicioRoute);
 app.use('/ganado', ganadoRoute);
-app.use('/leche', lecheRoute);  // Asegúrate de incluir la ruta de leche
+app.use('/leche', lecheRoute); 
 app.use('/padres', padreRoute);
 app.use('/venta', ventasRoute);
 app.use('/tmpVenta', tmpventasRoute);
 app.use('/salida', salidaRoute);
 app.use('/tmpSalida', tmpsalidaRoute);
+app.use('/actividades', actividadesRoute);
 app.use('/traslado', trasladoRoute);
 app.use('/bitacora', bitacoraRoute);
 

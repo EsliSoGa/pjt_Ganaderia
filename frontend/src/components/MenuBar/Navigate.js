@@ -1,18 +1,22 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, Link } from "react-router-dom";
 import { logout } from "../../actions/auth";
 import { clearMessage } from "../../actions/message";
+import { useMediaQuery } from 'react-responsive';
 import "./Navigation.css";
-import logo from "../../images/vaca1.ico"; // Asegúrate de que este archivo contenga los estilos necesarios
+import logo from "../../images/vaca1.ico";
 
 const Navigation = () => {
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   const logOut = useCallback(() => {
     dispatch(logout());
-  }, [dispatch]);
+    if (isMobile) setMenuOpen(false);
+  }, [dispatch, isMobile]);
 
   let location = useLocation();
   
@@ -21,6 +25,14 @@ const Navigation = () => {
       dispatch(clearMessage());
     }
   }, [dispatch, location]);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const closeMenu = () => {
+    if (isMobile) setMenuOpen(false);
+  };
 
   const navItemsInicio = [
     { label: "Inicio", path: "/home" }
@@ -39,6 +51,7 @@ const Navigation = () => {
     { label: "Lista de salidas", path: "/salida" },
     { label: "Lista de ventas", path: "/venta" },
     { label: "Usuarios", path: "/usuario" },
+    { label: "Actividades", path: "/actividades" },
     { label: "Bitacora", path: "/bitacora" }
   ];
 
@@ -48,7 +61,8 @@ const Navigation = () => {
     { label: "Leche", path: "/leche" },
     { label: "Lista de salidas", path: "/salida" },
     { label: "Lista de ventas", path: "/venta" },
-    { label: "Bitacora", path: "/bitacora" }
+    { label: "Bitacora", path: "/bitacora" },
+    { label: "Actividades", path: "/actividades" }
   ];
 
   const navItemsVaquero = [
@@ -56,7 +70,8 @@ const Navigation = () => {
     { label: "Ganado", path: "/ganado" },
     { label: "Leche", path: "/leche" },
     { label: "Salidas", path: "/salidas" },
-    { label: "Ventas", path: "/ventas" }
+    { label: "Ventas", path: "/ventas" },
+    { label: "Actividades", path: "/actividades" }
   ];
 
   const navItemsUsuario = [
@@ -87,12 +102,12 @@ const Navigation = () => {
   const renderNavItems = (items) => {
     return items.map(item => (
       <li key={item.label} className="nav-item">
-        <Link to={item.path} onClick={item.onClick}>{item.label}</Link>
+        <Link to={item.path} onClick={closeMenu}>{item.label}</Link>
         {item.submenu && (
           <ul className="submenu">
             {item.submenu.map(subItem => (
               <li key={subItem.label}>
-                <Link to={subItem.path}>{subItem.label}</Link>
+                <Link to={subItem.path} onClick={closeMenu}>{subItem.label}</Link>
               </li>
             ))}
           </ul>
@@ -107,14 +122,17 @@ const Navigation = () => {
   return (
     <nav className="navbar">
       <div className="nav-wrapper">
-        <Link to="/home" className="brand-logo">
+        <Link to="/home" className="brand-logo" onClick={closeMenu}>
           <img src={logo} alt="Logo" className="logo-image" />
           Maragos
         </Link>
-        <ul className="nav-menu">
+        <button className="menu-toggle" onClick={toggleMenu}>
+          ☰
+        </button>
+        <ul className={`nav-menu ${menuOpen ? "nav-menu-open" : ""}`}>
           {renderNavItems(navItems)}
         </ul>
-        <ul className="nav-menu">
+        <ul className={`nav-menu ${menuOpen ? "nav-menu-open" : ""}`}>
           {renderNavItems(userItems)}
         </ul>
       </div>
