@@ -103,7 +103,7 @@ const GanadoList = () => {
                         onSelectionChange={(e) => saveGanado(e.value.id)}
                         paginator className="p-datatable-customers" showGridlines rows={15}
                         dataKey="id" filters={filters1} filterDisplay="menu"
-                        globalFilterFields={['nombre', 'numero', 'sexo', 'estado', 'finca', 'tipo', 'peso', dateGanado, 'tipo_nacimiento']} header={header1} emptyMessage="No se encontró el ganado."
+                        globalFilterFields={['nombre', 'numero', 'sexo', 'estado', 'finca', 'tipo', 'peso', dateGanado, 'tipo_nacimiento', 'estado_secundario']} header={header1} emptyMessage="No se encontró el ganado."
                     >
                         <Column body={numero} header="No." sortable className="table-column" />
                         <Column field="nombre" header="Nombre" sortable className="table-column" />
@@ -115,6 +115,7 @@ const GanadoList = () => {
                         <Column field="tipo" header="Tipo" sortable className="table-column" />
                         <Column field="finca" header="Finca" sortable className="table-column" />
                         <Column field='estado' body={estadoTemplate} header="Estado" sortable className="table-column" />
+                        <Column field='estado_secundario' header="Estado Secundario" sortable className="table-column" />
                         <Column field="comentarios" header="Comentario" sortable className="table-column" />
                         <Column field="padre" header="Padre" sortable className="table-column" />
                         <Column field="madre" header="Madre" sortable className="table-column" />

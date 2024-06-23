@@ -39,7 +39,8 @@ const Form = (props) => {
         estado: 1,
         imagen: "",
         comentarios: "",
-        id_usuario: 1
+        id_usuario: 1,
+        estado_secundario: ""
     };
 
     const estados = [
@@ -50,6 +51,21 @@ const Form = (props) => {
     const generos = [
         { label: 'Masculino', value: "Masculino" },
         { label: "Femenino", value: "Femenino" }
+    ];
+
+    const estadoSecundarioOptions = [
+        { label: 'Ordeño', value: 'Ordeño' },
+        { label: 'PC', value: 'PC' },
+        { label: 'Esperando celo', value: 'Esperando celo' },
+        { label: 'A la venta', value: 'A la venta' },
+        { label: 'CDP', value: 'CDP' },
+        { label: 'FPCP', value: 'FPCP' },
+        { label: 'Seca', value: 'Seca' },
+        { label: 'Vacia', value: 'Vacia' },
+        { label: 'Preñada', value: 'Preñada' },
+        { label: 'Partos', value: 'Partos' },
+        { label: 'Sin partos', value: 'Sin partos' },
+        { label: 'Machos', value: 'Machos' }
     ];
 
     const estadoTemplate = () => {
@@ -242,6 +258,10 @@ const Form = (props) => {
                     <div className="p-field" style={styles.formField}>
                         <label>Estado</label>
                         <Dropdown value={ganadoData.estado} options={estados} onChange={(e) => updateField(e.value, "estado")} placeholder="Seleccione un estado" />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Estado Secundario</label>
+                        <Dropdown value={ganadoData.estado_secundario} options={estadoSecundarioOptions} onChange={(e) => updateField(e.value, "estado_secundario")} placeholder="Seleccione un estado secundario" />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Imagen*</label>
