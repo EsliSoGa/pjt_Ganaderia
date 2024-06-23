@@ -87,10 +87,35 @@ const Form = (props) => {
         }
     }, [editGanados]);
 
+    useEffect(() => {
+        if (ganadoData.fecha && ganadoData.sexo) {
+            updateTipoGanado();
+        }
+    }, [ganadoData.fecha, ganadoData.sexo]);
+
     const updateField = (data, field) => {
         setGanadoData({
             ...ganadoData,
             [field]: data
+        });
+    };
+
+    const updateTipoGanado = () => {
+        const birthDate = moment(ganadoData.fecha);
+        const ageInMonths = moment().diff(birthDate, 'months');
+
+        let tipo = '';
+        if (ageInMonths < 8) {
+            tipo = 'Ternero';
+        } else if (ageInMonths < 30) {
+            tipo = ganadoData.sexo === 'Masculino' ? 'Torete' : 'Novilla';
+        } else {
+            tipo = ganadoData.sexo === 'Masculino' ? 'Toro' : 'Vaca';
+        }
+
+        setGanadoData({
+            ...ganadoData,
+            tipo
         });
     };
 
@@ -246,6 +271,7 @@ const Form = (props) => {
                         <InputText
                             value={ganadoData.tipo}
                             onChange={(e) => updateField(e.target.value, "tipo")}
+                            disabled
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
