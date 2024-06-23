@@ -8,22 +8,13 @@ import { Toast } from 'primereact/toast';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
+import { Dropdown } from 'primereact/dropdown'; // Asegúrate de importar Dropdown
 
 const TrasladoForm = (props) => {
     const { idT, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
-
-    const [ganadoData, setGanadoData] = useState([]);
-
-    const {
-        createTraslado,
-        deleteTraslado,
-        editTraslado,
-        updateTraslado,
-        ganados
-    } = useContext(TrasladoContext);
-
-    const inicialTrasladosState = {
+    const [ganadoData, setGanadoData] = useState({});
+    const [trasladoData, setTrasladoData] = useState({
         id: null,
         Id_ganado: idT,
         Fecha: "",
@@ -32,50 +23,67 @@ const TrasladoForm = (props) => {
         Nombre: "",
         Numero: "",
         id_usuario: 2
-    };
+    });
 
-    const [trasladoData, setTrasladoData] = useState(inicialTrasladosState);
+    const { createTraslado, deleteTraslado, editTraslado, updateTraslado, ganados } = useContext(TrasladoContext);
+    const toast = useRef(null);
 
     useEffect(() => {
-        if (editTraslado) setTrasladoData(editTraslado);
-    }, [editTraslado]);
+        if (editTraslado) {
+            setTrasladoData(editTraslado);
+        } else {
+            const ganado = ganados.find((p) => p.id === parseInt(idT));
+            if (ganado) {
+                setGanadoData(ganado);
+                setTrasladoData((prevState) => ({
+                    ...prevState,
+                    Finca_origen: ganado.Finca,
+                    Nombre: ganado.Nombre,
+                    Numero: ganado.Numero
+                }));
+            }
+        }
+    }, [editTraslado, ganados, idT]);
 
     const updateField = (data, field) => {
-        setTrasladoData({
-            ...trasladoData,
+        setTrasladoData((prevState) => ({
+            ...prevState,
             [field]: data
-        });
+        }));
     };
 
     const clearSelected = () => {
         setIsVisible(false);
-        setTrasladoData(inicialTrasladosState);
+        setTrasladoData({
+            id: null,
+            Id_ganado: idT,
+            Fecha: "",
+            Finca_origen: "",
+            Finca_destino: "",
+            Nombre: "",
+            Numero: "",
+            id_usuario: 2
+        });
     };
 
     const saveTraslado = () => {
         if (trasladoData.Finca_destino === "" || trasladoData.Finca_origen === "" || trasladoData.Fecha === "") {
             showInfo();
         } else {
+            trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
             if (!editTraslado) {
-                const ganado = ganados.find((p) => p.id === parseInt(idT));
-                setGanadoData(ganado);
-                trasladoData.Nombre = ganadoData.nombre;
-                trasladoData.Numero = ganadoData.numero;
-                trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
                 createTraslado(trasladoData);
             } else {
                 trasladoData.id_usuario = 2;
-                trasladoData.Fecha = moment(trasladoData.Fecha).format("YYYY-MM-DD");
                 updateTraslado(trasladoData);
             }
             clearSelected();
         }
     };
 
-    const toast = useRef(null);
     const showInfo = () => {
         toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
-    }
+    };
 
     const _deleteTraslado = () => {
         if (editTraslado) {
@@ -88,7 +96,7 @@ const TrasladoForm = (props) => {
 
     const showError = () => {
         toast.current.show({ severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000 });
-    }
+    };
 
     const dialogFooter = (
         <div className="ui-dialog-buttonpane p-clearfix">
@@ -142,21 +150,27 @@ const TrasladoForm = (props) => {
                         <label>Finca origen*</label>
                         <InputText
                             value={trasladoData.Finca_origen}
-                            onChange={(e) => updateField(e.target.value, "Finca_origen")}
+                            disabled
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Finca destino*</label>
-                        <InputText
+                        <Dropdown
                             value={trasladoData.Finca_destino}
-                            onChange={(e) => updateField(e.target.value, "Finca_destino")}
+                            options={[
+                                { label: 'Panorama', value: 'Panorama' },
+                                { label: 'Santa Matilde', value: 'Santa Matilde' },
+                                { label: 'Vilaflor', value: 'Vilaflor' }
+                            ]}
+                            onChange={(e) => updateField(e.value, "Finca_destino")}
+                            placeholder="Seleccione una finca"
                         />
                     </div>
                 </div>
             </Dialog>
         </div>
     );
-}
+};
 
 const styles = {
     formGrid: {

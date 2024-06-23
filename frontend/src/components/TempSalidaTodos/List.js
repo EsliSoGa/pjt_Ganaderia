@@ -20,6 +20,10 @@ const TempSalidaList = () =>{
         return moment(tempSalida.Fecha).format("DD/MM/YYYY");
     }
 
+    const imageTemplate = (tempSalida) => {
+        return <img src={`http://localhost:8080/${tempSalida.Imagen}`} alt={tempSalida.Motivo} style={{ width: '50px', height: '50px' }} />;
+    }
+
     let cont = 0;
 
     const numero = () => {
@@ -95,7 +99,7 @@ const TempSalidaList = () =>{
                         <Column field="Numero" header="Ganado" sortable className="table-column" />
                         <Column field="Fecha" body={dateTempSalida} header="Fecha de venta" sortable className="table-column" />
                         <Column field="Motivo" header="Motivo" sortable className="table-column" />
-                        <Column field="Imagen" header="Imagen" sortable className="table-column" />
+                        <Column field="Imagen" body={imageTemplate} header="Imagen" sortable className="table-column" />
                         <Column field="Comentarios" header="Comentarios" sortable className="table-column" />
                     </DataTable>
                 </div>

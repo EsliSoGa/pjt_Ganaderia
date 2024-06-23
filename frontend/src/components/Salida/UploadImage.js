@@ -1,20 +1,35 @@
-import React, { useState, useContext, useRef } from 'react';
-import { GanadoContext } from '../../context/GanadoContext';
+import React, { useState, useContext, useRef, useEffect } from 'react';
+import { SalidaContext } from '../../context/SalidaContext';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import axios from 'axios';
-import './UploadImageStyles.css'; // Archivo CSS para estilos adicionales
+import '../Ganado/UploadImageStyles.css';
 
 const UploadImage = () => {
-    const { ganados, updateGanado } = useContext(GanadoContext);
-    const [selectedAnimal, setSelectedAnimal] = useState(null);
+    const { salidas, updateSalida } = useContext(SalidaContext);
+    const [ganados, setGanados] = useState([]);
+    const [selectedGanado, setSelectedGanado] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const toast = useRef(null);
 
+    useEffect(() => {
+        // Fetch ganados data from the backend
+        const fetchGanados = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/ganado'); // Asegúrate de que esta ruta sea correcta
+                setGanados(response.data);
+            } catch (error) {
+                console.error('Error fetching ganados:', error);
+            }
+        };
+
+        fetchGanados();
+    }, []);
+
     const handleUpload = async () => {
-        if (!selectedAnimal || !imageFile) {
+        if (!selectedGanado || !imageFile) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Debe seleccionar un animal y una imagen' });
             return;
         }
@@ -23,17 +38,22 @@ const UploadImage = () => {
         formData.append('image', imageFile);
 
         try {
-            const response = await axios.post('http://localhost:8080/ganado/upload', formData, {
+            const response = await axios.post('http://localhost:8080/salida/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
 
             const imagePath = response.data.filePath;
-            const updatedGanado = { ...selectedAnimal, imagen: imagePath };
-            updateGanado(updatedGanado);
+            const updatedSalida = salidas.find(salida => salida.Id_ganado === selectedGanado.id);
+            if (updatedSalida) {
+                updatedSalida.Imagen = imagePath;
+                updateSalida(updatedSalida);
 
-            toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Imagen subida correctamente' });
+                toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Imagen subida correctamente' });
+            } else {
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'No se encontró la salida correspondiente' });
+            }
         } catch (error) {
             toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al subir la imagen' });
         }
@@ -42,15 +62,16 @@ const UploadImage = () => {
     return (
         <div className="upload-image-container">
             <Toast ref={toast} />
-            <h2>Subir Imagen de Ganado</h2>
+            <h2>Subir Imagen de Salida</h2>
             <div className="upload-form">
                 <div className="field">
                     <Dropdown 
-                        value={selectedAnimal} 
+                        value={selectedGanado} 
                         options={ganados} 
-                        onChange={(e) => setSelectedAnimal(e.value)} 
-                        optionLabel="numero" // Cambiado a "Numero"
-                        placeholder="Seleccione un animal por número" 
+                        onChange={(e) => setSelectedGanado(e.value)} 
+                        optionLabel="numero" 
+                        optionValue="id"
+                        placeholder="Seleccione un animal" 
                         className="dropdown"
                     />
                 </div>

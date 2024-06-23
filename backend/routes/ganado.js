@@ -5,45 +5,45 @@ const path = require('path');
 const mysqlconexion = require('../db');
 
 //get
-router.get('/',(req,res)=>{
+router.get('/', (req, res) => {
     mysqlconexion.query(`SELECT g.id, nombre, numero, sexo,
     color, peso, fecha, tipo, finca, estado,
-    imagen, comentarios, id_usuario,
+    imagen, comentarios, id_usuario, estado_secundario,
     (SELECT numero from ganado where id = id_ganado_madre) as madre,
     (SELECT numero from ganado where id = id_ganado_padre) as padre, 
     tipo_nacimiento
     FROM ganado as g
     left JOIN relacion_padres as r
     ON Id_ganado_hijo = g.id;`,
-    (error,rows,fields)=>{
-        if(!error){
-            res.json(rows);
-        }
-        else{
-            console.log(error);
-        }
-    }) 
+        (error, rows, fields) => {
+            if (!error) {
+                res.json(rows);
+            }
+            else {
+                console.log(error);
+            }
+        })
 });
 
 //get con ID
-router.get('/:id', (req,res)=>{
-    const {id} = req.params;
+router.get('/:id', (req, res) => {
+    const { id } = req.params;
     mysqlconexion.query(`SELECT id, nombre, numero, sexo,
     color, peso, fecha, tipo, finca, estado,
-    imagen, comentarios, id_usuario  
-    FROM ganado WHERE id=?`, 
-        [id],(error,rows,fields)=>{
-        if (!error){
-            res.json(rows[0]);
-        }
-        else{
-            console.log(error);
-        }
-    });
+    imagen, comentarios, id_usuario, estado_secundario
+    FROM ganado WHERE id=?`,
+        [id], (error, rows, fields) => {
+            if (!error) {
+                res.json(rows[0]);
+            }
+            else {
+                console.log(error);
+            }
+        });
 });
 
 //post
-router.post('/', (req,res)=>{
+router.post('/', (req, res) => {
     const ganado = {
         nombre: req.body.nombre,
         numero: req.body.numero,
@@ -52,31 +52,32 @@ router.post('/', (req,res)=>{
         peso: req.body.peso,
         fecha: req.body.fecha ? new Date(req.body.fecha).toISOString().slice(0, 10) : null,
         tipo: req.body.tipo,
-        finca:req.body.finca,
+        finca: req.body.finca,
         estado: req.body.estado,
         imagen: req.body.imagen,
         comentarios: req.body.comentarios,
         id_usuario: req.body.id_usuario,
+        estado_secundario: req.body.estado_secundario
     };
     mysqlconexion.query(`INSERT INTO ganado(nombre, numero, sexo, color, peso, 
-        fecha, tipo, finca, estado, imagen, comentarios, id_usuario)
-         VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        fecha, tipo, finca, estado, imagen, comentarios, id_usuario, estado_secundario)
+         VALUE (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [ganado.nombre, ganado.numero, ganado.sexo, ganado.color, ganado.peso, ganado.fecha,
-        ganado.tipo, ganado.finca, ganado.estado, ganado.imagen, ganado.comentarios, ganado.id_usuario], 
-        (error,rows,fields)=>{
-            if(!error){
+        ganado.tipo, ganado.finca, ganado.estado, ganado.imagen, ganado.comentarios, ganado.id_usuario, ganado.estado_secundario],
+        (error, rows, fields) => {
+            if (!error) {
                 res.json(rows);
                 console.log('Enviado');
             }
-            else{
+            else {
                 console.log(error);
             }
-    })
+        })
 });
 
 //put
-router.put('/:id', (req,res)=>{
-    const {id} = req.params;
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
     const ganado = {
         nombre: req.body.nombre,
         numero: req.body.numero,
@@ -85,24 +86,25 @@ router.put('/:id', (req,res)=>{
         peso: req.body.peso,
         fecha: req.body.fecha ? new Date(req.body.fecha).toISOString().slice(0, 10) : null,
         tipo: req.body.tipo,
-        finca:req.body.finca,
+        finca: req.body.finca,
         estado: req.body.estado,
         imagen: req.body.imagen,
         comentarios: req.body.comentarios,
         id_usuario: req.body.id_usuario,
+        estado_secundario: req.body.estado_secundario
     };
     mysqlconexion.query(`UPDATE ganado SET nombre=?, numero=?, sexo=?, color=?, peso=?, 
-    fecha=?, tipo=?, finca=?, estado=?, imagen=?, comentarios=?, id_usuario=? WHERE id=?`,
+    fecha=?, tipo=?, finca=?, estado=?, imagen=?, comentarios=?, id_usuario=?, estado_secundario=? WHERE id=?`,
         [ganado.nombre, ganado.numero, ganado.sexo, ganado.color, ganado.peso, ganado.fecha,
-        ganado.tipo, ganado.finca, ganado.estado, ganado.imagen, ganado.comentarios, ganado.id_usuario, id], 
-        (error,rows,fields)=>{
-            if(!error){
+        ganado.tipo, ganado.finca, ganado.estado, ganado.imagen, ganado.comentarios, ganado.id_usuario, ganado.estado_secundario, id],
+        (error, rows, fields) => {
+            if (!error) {
                 res.json(rows);
             }
-            else{
+            else {
                 console.log(error);
             }
-    })
+        })
 });
 
 //delete

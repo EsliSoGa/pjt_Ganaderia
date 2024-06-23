@@ -9,6 +9,7 @@ import { Toolbar } from 'primereact/toolbar';
 import moment from "moment";
 import { SalidaContext } from "../../context/SalidaContext";
 import SalidaForm from './Form';
+import UploadImage from './UploadImage';
 import '../SharedTableStyles.css'; // Importamos el archivo CSS general
 
 const SalidaList = () => {
@@ -38,6 +39,10 @@ const SalidaList = () => {
                     onClick={() => setIsVisible(true)} />
             </React.Fragment>
         )
+    }
+
+    const imageTemplate = (salida) => {
+        return <img src={`http://localhost:8080/${salida.Imagen}`} alt={salida.Motivo} style={{ width: '50px', height: '50px' }} />;
     }
 
     //Filtro
@@ -94,12 +99,13 @@ const SalidaList = () => {
                         <Column field="Numero" header="Ganado" sortable className="table-column" />
                         <Column field="Fecha" body={dateSalida} header="Fecha de venta" sortable className="table-column" />
                         <Column field="Motivo" header="Motivo" sortable className="table-column" />
-                        <Column field="Imagen" header="Imagen" sortable className="table-column" />
+                        <Column field="Imagen" body={imageTemplate} header="Imagen" sortable className="table-column" />
                         <Column field="Comentarios" header="Comentarios" sortable className="table-column" />
                     </DataTable>
                 </div>
             </Panel>
             <SalidaForm isVisible={isVisible} setIsVisible={setIsVisible} />
+            <UploadImage />
         </div>
     );
 }

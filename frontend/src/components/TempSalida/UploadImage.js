@@ -1,14 +1,14 @@
 import React, { useState, useContext, useRef } from 'react';
-import { GanadoContext } from '../../context/GanadoContext';
+import { TempSalidaContext } from '../../context/TempSalidaContext';
 import { Dropdown } from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import axios from 'axios';
-import './UploadImageStyles.css'; // Archivo CSS para estilos adicionales
+import '../Ganado/UploadImageStyles.css'; // Archivo CSS para estilos adicionales
 
 const UploadImage = () => {
-    const { ganados, updateGanado } = useContext(GanadoContext);
+    const { tempSalidas, updateTempSalida } = useContext(TempSalidaContext);
     const [selectedAnimal, setSelectedAnimal] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const toast = useRef(null);
@@ -23,15 +23,15 @@ const UploadImage = () => {
         formData.append('image', imageFile);
 
         try {
-            const response = await axios.post('http://localhost:8080/ganado/upload', formData, {
+            const response = await axios.post('http://localhost:8080/tmpsalida/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
 
             const imagePath = response.data.filePath;
-            const updatedGanado = { ...selectedAnimal, imagen: imagePath };
-            updateGanado(updatedGanado);
+            const updatedSalida = { ...selectedAnimal, Imagen: imagePath };
+            updateTempSalida(updatedSalida);
 
             toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Imagen subida correctamente' });
         } catch (error) {
@@ -42,15 +42,15 @@ const UploadImage = () => {
     return (
         <div className="upload-image-container">
             <Toast ref={toast} />
-            <h2>Subir Imagen de Ganado</h2>
+            <h2>Subir Imagen de Salida Temporal</h2>
             <div className="upload-form">
                 <div className="field">
                     <Dropdown 
                         value={selectedAnimal} 
-                        options={ganados} 
+                        options={tempSalidas} 
                         onChange={(e) => setSelectedAnimal(e.value)} 
-                        optionLabel="numero" // Cambiado a "Numero"
-                        placeholder="Seleccione un animal por número" 
+                        optionLabel="Numero" 
+                        placeholder="Seleccione un número de ganado" 
                         className="dropdown"
                     />
                 </div>

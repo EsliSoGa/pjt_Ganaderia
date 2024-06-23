@@ -20,7 +20,9 @@ import TempSalidaTodosScreen from './screens/TempSalidaTodosScreen';
 import TempVentaTotalScreen from './screens/TempVentaTotalScreen';
 import SalidaScreen from './screens/SalidaScreen';
 import VentaScreen from './screens/VentaScreen';
+import ActividadesScreen from "./screens/ActividadesScreen";
 import BitacoraScreen from './screens/BitacoraScreen';
+import LecheScreen from './screens/LecheScreen'; // Nueva importación
 
 function App() {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -44,8 +46,7 @@ function App() {
           </Route>
           <Route path="/profile" element={
             <ProtectedRoute
-              isAllowed={!!currentUser
-              }
+              isAllowed={!!currentUser}
             >
               <Profile />
             </ProtectedRoute>
@@ -53,76 +54,95 @@ function App() {
           />
           <Route path="/ganado" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol ==="Vaquero")
-              }
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <GanadoScreen />
             </ProtectedRoute>
           } />
           <Route path="/servicio/:idS" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol ==="Vaquero")
-              }
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <ServiciosScreen />
             </ProtectedRoute>
           } />
           <Route path="/traslado/:idT" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol ==="Vaquero")
-              }
-            ><TrasladosScreen />
-            </ProtectedRoute>} />
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
+            >
+              <TrasladosScreen />
+            </ProtectedRoute>
+          } />
           <Route path="/tventa/:idTV" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol ==="Vaquero")
-              }
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <TempVentaScreen />
-            </ProtectedRoute>} />
+            </ProtectedRoute>
+          } />
+          <Route path="/actividades" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <ActividadesScreen />
+            </ProtectedRoute>
+          } />
           <Route path="/tsalida/:idTS" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol ==="Vaquero")
-              }
-            ><TempSalidaScreen />
-            </ProtectedRoute>} />
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
+            >
+              <TempSalidaScreen />
+            </ProtectedRoute>
+          } />
 
           <Route path="/aprobarsalida" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" )
-              }
-            ><TempSalidaTodosScreen />
-            </ProtectedRoute>} />
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <TempSalidaTodosScreen />
+            </ProtectedRoute>
+          } />
           <Route path="/aprobarventa" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
-              }
-            ><TempVentaTotalScreen />
-            </ProtectedRoute>} />
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <TempVentaTotalScreen />
+            </ProtectedRoute>
+          } />
 
           <Route path="/salida" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
-              }
-            ><SalidaScreen />
-            </ProtectedRoute>} />
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <SalidaScreen />
+            </ProtectedRoute>
+          } />
           <Route path="/venta" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
-              }
-            ><VentaScreen />
-            </ProtectedRoute>} />
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <VentaScreen />
+            </ProtectedRoute>
+          } />
 
           <Route path="/bitacora" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")
-              }
-            ><BitacoraScreen />
-            </ProtectedRoute>} />
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <BitacoraScreen />
+            </ProtectedRoute>
+          } />
+          <Route path="/leche" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
+            >
+              <LecheScreen />
+            </ProtectedRoute>
+          } /> {/* Nueva ruta añadida */}
         </Routes>
       </div>
     </div>
   );
 }
 
-export default App;
+export default App;

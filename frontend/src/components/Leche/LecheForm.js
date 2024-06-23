@@ -4,78 +4,75 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
+import { Calendar } from "primereact/calendar";
 import { Dropdown } from 'primereact/dropdown';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
-import { SalidaContext } from "../../context/SalidaContext";
+import { LecheContext } from "../../context/LecheContext";
 
-const SalidaForm = (props) => {
+const LecheForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
     const {
-        createSalida,
-        deleteSalida,
-        editSalida,
-        updateSalida,
+        createLeche,
+        deleteLeche,
+        editLeche,
+        updateLeche,
         ganados
-    } = useContext(SalidaContext);
+    } = useContext(LecheContext);
 
-    const inicialSalidasState = {
+    const inicialLecheState = {
         id: null,
         Fecha: null,
-        Motivo: "",
-        Imagen: "",
-        Comentarios: "",
+        Produccion_diaria: "",
         Id_ganado: "",
         Nombre: "",
         Numero: "",
         id_usuario: 2
     };
 
-    const [salidaData, setSalidaData] = useState(inicialSalidasState);
+    const [lecheData, setLecheData] = useState(inicialLecheState);
 
     useEffect(() => {
-        if (editSalida) {
-            setSalidaData({
-                ...editSalida,
-                Fecha: editSalida.Fecha ? new Date(editSalida.Fecha) : null
+        if (editLeche) {
+            setLecheData({
+                ...editLeche,
+                Fecha: editLeche.Fecha ? new Date(editLeche.Fecha) : null
             });
         }
-    }, [editSalida]);
+    }, [editLeche]);
 
     const updateField = (data, field) => {
-        setSalidaData({
-            ...salidaData,
+        setLecheData({
+            ...lecheData,
             [field]: data
         });
     };
 
     const clearSelected = () => {
         setIsVisible(false);
-        setSalidaData(inicialSalidasState);
+        setLecheData(inicialLecheState);
     };
 
-    const saveSalida = () => {
-        if (salidaData.Fecha === null || salidaData.Motivo === "" || salidaData.Comentarios === "") {
+    const saveLeche = () => {
+        if (lecheData.Fecha === null || lecheData.Produccion_diaria === "") {
             showInfo();
         } else {
-            const formattedDate = salidaData.Fecha ? moment(salidaData.Fecha).format("YYYY-MM-DD") : null;
-            const salidaDataWithFormattedDate = {
-                ...salidaData,
+            const formattedDate = lecheData.Fecha ? moment(lecheData.Fecha).format("YYYY-MM-DD") : null;
+            const lecheDataWithFormattedDate = {
+                ...lecheData,
                 Fecha: formattedDate,
             };
 
-            if (!editSalida) {
-                const ganado = ganados.find((p) => p.id === parseInt(salidaData.Id_ganado));
-                salidaDataWithFormattedDate.Nombre = ganado.nombre;
-                salidaDataWithFormattedDate.Numero = ganado.numero;
-                createSalida(salidaDataWithFormattedDate);
+            if (!editLeche) {
+                const ganado = ganados.find((p) => p.id === parseInt(lecheData.Id_ganado));
+                lecheDataWithFormattedDate.Nombre = ganado.nombre;
+                lecheDataWithFormattedDate.Numero = ganado.numero;
+                createLeche(lecheDataWithFormattedDate);
             } else {
-                salidaDataWithFormattedDate.id_usuario = 2;
-                updateSalida(salidaDataWithFormattedDate);
+                lecheDataWithFormattedDate.id_usuario = 2;
+                updateLeche(lecheDataWithFormattedDate);
             }
             clearSelected();
         }
@@ -87,10 +84,10 @@ const SalidaForm = (props) => {
         toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
     }
 
-    const _deleteSalida = () => {
-        if (editSalida) {
-            salidaData.id_usuario = 2;
-            deleteSalida(salidaData);
+    const _deleteLeche = () => {
+        if (editLeche) {
+            lecheData.id_usuario = 2;
+            deleteLeche(lecheData);
             showError();
         }
         clearSelected();
@@ -103,7 +100,7 @@ const SalidaForm = (props) => {
     const dialogFooter = (
         <div style={styles.dialogFooter}>
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteSalida} reject={clearSelected}
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteLeche} reject={clearSelected}
                 acceptClassName="p-button-danger"
             />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
@@ -111,7 +108,7 @@ const SalidaForm = (props) => {
                 onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"
-                onClick={saveSalida} />
+                onClick={saveLeche} />
         </div>
     );
 
@@ -123,36 +120,29 @@ const SalidaForm = (props) => {
                 modal={true}
                 style={{ width: "550px" }}
                 contentStyle={{ overflow: "visible" }}
-                header="Detalle de salida"
+                header="Detalle de leche"
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Ganado*</label>
-                        <Dropdown value={salidaData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
+                        <Dropdown value={lecheData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
                             onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <DatePicker
-                            selected={salidaData.Fecha}
-                            onChange={(date) => updateField(date, "Fecha")}
-                            dateFormat="dd-MM-yyyy"
+                        <Calendar
+                            value={lecheData.Fecha}
+                            onChange={(e) => updateField(e.value.toISOString(), "Fecha")}
+                            dateFormat="dd-mm-yy"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Motivo*</label>
+                        <label>Producción diaria*</label>
                         <InputText
-                            value={salidaData.Motivo}
-                            onChange={(e) => updateField(e.target.value, "Motivo")}
-                        />
-                    </div>
-                    <div className="p-field" style={styles.formField}>
-                        <label>Comentarios*</label>
-                        <InputText
-                            value={salidaData.Comentarios}
-                            onChange={(e) => updateField(e.target.value, "Comentarios")}
+                            value={lecheData.Produccion_diaria}
+                            onChange={(e) => updateField(e.target.value, "Produccion_diaria")}
                         />
                     </div>
                 </div>
@@ -177,4 +167,4 @@ const styles = {
     }
 };
 
-export default SalidaForm;
+export default LecheForm;

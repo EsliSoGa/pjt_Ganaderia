@@ -19,7 +19,8 @@ const TempVentaForm = (props) => {
         createTempVenta,
         deleteTempVenta,
         editTempVenta,
-        updateTempVenta
+        updateTempVenta,
+        ganados
     } = useContext(TempVentaContext);
 
     const inicialTempVentasState = {
@@ -29,14 +30,25 @@ const TempVentaForm = (props) => {
         Precio: "",
         Peso: "", 
         Total: "",
-        Id_ganado: idTV
+        Id_ganado: idTV,
+        Numero: ""
     };
 
     const [tempVentaData, setTempVentaData] = useState(inicialTempVentasState);
 
     useEffect(() => {
-        if (editTempVenta) setTempVentaData(editTempVenta);
-    }, [editTempVenta]);
+        if (editTempVenta) {
+            setTempVentaData(editTempVenta);
+        } else {
+            const ganado = ganados.find((p) => p.id === parseInt(idTV));
+            if (ganado) {
+                setTempVentaData((prevState) => ({
+                    ...prevState,
+                    Numero: ganado.numero
+                }));
+            }
+        }
+    }, [editTempVenta, ganados, idTV]);
 
     const updateField = (data, field) => {
         setTempVentaData({
@@ -128,6 +140,13 @@ const TempVentaForm = (props) => {
                 footer={dialogFooter}
             >
                 <div style={styles.formGrid}>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Ganado Número*</label>
+                        <InputText
+                            value={tempVentaData.Numero}
+                            disabled
+                        />
+                    </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
                         <DatePicker

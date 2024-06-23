@@ -1,0 +1,32 @@
+.calendar-container {
+    width: 1000px;
+    height: 700px;
+    margin: 0 auto;
+    overflow-y: auto;
+  }
+  .p-field {
+    margin-bottom: 1rem;
+  }
+
+  .ml-2 {
+    margin-left: 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .calendar-container {
+      width: 100%;
+      padding: 5px;
+    }
+  
+    .fc .fc-toolbar {
+      flex-wrap: wrap;
+    }
+  
+    .fc .fc-toolbar-chunk {
+      margin-bottom: 5px;
+    }
+  
+    .p-field {
+      width: 100%;
+    }
+  }
