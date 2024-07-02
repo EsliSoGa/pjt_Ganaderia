@@ -11,7 +11,7 @@ import { Password } from "primereact/password";
 import { useSelector } from "react-redux";
 
 const UsuarioForm = (props) => {
-    const { isVisible, setIsVisible } = props;
+    const { isVisible, setIsVisible, setRefresh } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
     const [visiblePassword, setVisiblePassword] = useState([true]);
     const { user: currentUser } = useSelector((state) => state.auth);
@@ -87,6 +87,7 @@ const UsuarioForm = (props) => {
     const retornar = async () => {
         setVisiblePassword(true);
         await setUsuarioData(inicialUsuarioState);
+        setRefresh()
         setIsVisible(false);
     };
 

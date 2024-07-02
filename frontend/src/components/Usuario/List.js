@@ -9,12 +9,21 @@ import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 import '../SharedTableStyles.css'; // Asegúrate de importar el archivo CSS general
 import Form from "./Form";
+import ChangePassForm from "./FormChangePass";
 
 const UsuarioList = () => {
-    const { usuarios, findUsuario } = useContext(UsuarioContext);
+    const { usuarios, findUsuario, getUsuario } = useContext(UsuarioContext);
     
     const [isVisible, setIsVisible] = useState(false);
-    let cont = 0;
+    const [isVisiblePass, setIsVisiblePass] = useState(false);
+    const [refreshList, setRefreshList] = useState(false);
+
+    let cont = 0;   
+    
+    useEffect(() => {
+      getUsuario()
+    }, [refreshList])
+    
 
     const numeroCont = () => {
         cont = cont++;
@@ -22,6 +31,12 @@ const UsuarioList = () => {
     }
 
     const saveUsuario = (id) => {
+        findUsuario(id);
+        setIsVisible(true);
+    };
+
+    const changePassUsuario = (id) => {
+        console.log('id ', id);
         findUsuario(id);
         setIsVisible(true);
     };
@@ -93,17 +108,14 @@ const UsuarioList = () => {
                         <Column field="Nombre" header="Nombre" sortable className="table-column" />
                         <Column field="Correo" header="Correo electronico" sortable className="table-column" />
                         <Column field="rol" header="Rol de usuario" sortable className="table-column" />
-                        <Column 
-                            body={
-                                <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                                icon="pi pi-pencil"/>
-                            } 
-                            header="Editar contraseña" headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}
-                        />
+                        
+                        {//<Column rowEditor={changePassUsuario} headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
+                        }
                     </DataTable>
                 </div>
             </Panel>
-            <Form isVisible={isVisible} setIsVisible={setIsVisible} />
+            <Form isVisible={isVisible} setIsVisible={setIsVisible} setRefresh={()=>setRefreshList(!refreshList)}/>
+            <ChangePassForm isVisible={isVisiblePass} setIsVisible={setIsVisiblePass} />
         </div>
     );
 }

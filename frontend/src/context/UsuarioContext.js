@@ -11,10 +11,10 @@ const UsuarioContextProvider = (props)=>{
     const [rol, setRol] = useState([]);
     const [editUsuarios, setEditUsuarios] = useState(null);
 
-    useEffect(() => {
+    const getUsuario =() => {
         usuarioService.readAll().then((data) => setUsuarios(data));
         rolService.readAll().then((data) => setRol(data));
-    }, [usuarioService, rolService]);
+    };
 
     const createUsuario =(usuario)=>{
         usuarioService
@@ -59,6 +59,7 @@ const UsuarioContextProvider = (props)=>{
     return(
         <UsuarioContext.Provider 
             value={{
+                getUsuario,
                 createUsuario,
                 deleteUsuario,
                 findUsuario,
