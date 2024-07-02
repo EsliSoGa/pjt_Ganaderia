@@ -52,7 +52,7 @@ const Navigation = () => {
     { label: "Lista de ventas", path: "/venta" },
     { label: "Usuarios", path: "/usuario" },
     { label: "Actividades", path: "/actividades" },
-    { label: "Bitacora", path: "/bitacora" }
+    { label: "Bitacora", path: "/bitacora" },
   ];
 
   const navItemsJefe = [
@@ -86,7 +86,7 @@ const Navigation = () => {
   const profileItems = [
     { label: "Perfil", path: "/profile" },
     { label: "Editar perfil", path: "/edituser" },
-    { label: "Salir", path: "/profile", onClick: logOut }
+    { label: "Salir", path: "/profile", onClick: logOut }   //No genera el logout
   ];
 
   const getNavItems = (role) => {

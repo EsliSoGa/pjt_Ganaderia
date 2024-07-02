@@ -78,49 +78,29 @@ router.post('/signin', expressAsyncHandler(async(req, res) => {
     });
 }));
 
-router.post('/create', expressAsyncHandler(async(req, res) => {
-    const Contrasena = req.body.Contrasena;    
-    const encryptedPassword = bcrypt.hashSync(Contrasena, 10);
-    const nuevo = {
-        Id_rol: req.body.Id_rol,
-        Nombre: req.body.Nombre,
-        Correo: req.body.Correo,
-        Contrasena: encryptedPassword
-    };
-    mysql.query('INSERT INTO usuario(Nombre, Contrasena, Id_rol, Correo) VALUES (?, ?, ?, ?)', 
-    [nuevo.Nombre, nuevo.Contrasena, nuevo.Id_rol, nuevo.Correo], 
-    async function(error, results, fields) {
-        if (error) {        
-                res.send({          
-                code:400,          
-                failed:"error occurred",          
-                error : error});   
-            } else {
-                res.send({          
-                    code:200,          
-                    success:"Usuario registrado correctamente",
-                    Nombre: nuevo.idRol,
-                    Correo: nuevo.Correo
-                });
-            }});
-}));
+//GET
 
 router.get('/', expressAsyncHandler(async(req, res) => {
-    mysql.query(`SELECT id, Nombre, Contrasena, Correo, rol 
+    mysql.query(`SELECT u.id, Nombre, Correo, rol, Id_rol
     FROM usuario u 
     INNER JOIN roles AS r 
     ON U.Id_rol = R.id`, async (error, rows, fields) => {
-        if(error){
-            res.send({message: "Error"});
-        } else {
+        if (!error) {
             res.json(rows);
+        } else {
+            console.log(error);
+            res.send({
+                code: 400,
+                failed: "error occurred",
+                error: error
+            });
         }
     })
 }));
 
 router.get('/:id', expressAsyncHandler(async(req, res) => {
     const { id } = req.params; 
-    mysql.query(`SELECT id, Nombre, Contrasena, Correo, rol 
+    mysql.query(`SELECT id, Nombre, Correo, rol 
     FROM usuario u 
     INNER JOIN roles AS r 
     ON U.Id_rol = R.id WHERE id = ?`, [id] ,async (error, rows, fields) => {
@@ -132,19 +112,86 @@ router.get('/:id', expressAsyncHandler(async(req, res) => {
     })
 }));
 
+//CREATE
+
+router.post('/create', expressAsyncHandler(async(req, res) => {
+    const Contrasena = req.body.Contrasena;    
+    const encryptedPassword = bcrypt.hashSync(Contrasena, 10);
+    const nuevo = {
+        Id_rol: req.body.Id_rol,
+        Nombre: req.body.Nombre,
+        Correo: req.body.Correo,
+        Contrasena: encryptedPassword,
+        descripcion: "Nombre: " + req.body.Nombre + ", Correo: " + req.body.Correo + ", Rol " + req.body.rol,
+        id_usuario: req.body.id_usuario
+    };
+    mysql.query('INSERT INTO usuario(Nombre, Contrasena, Id_rol, Correo) VALUES (?, ?, ?, ?)', 
+    [nuevo.Nombre, nuevo.Contrasena, nuevo.Id_rol, nuevo.Correo], 
+    async function(error, results, fields) {
+        if (!error) {
+            mysql.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+            VALUES ('Creación de usuario', ?, now(), ?);`,
+                [nuevo.descripcion, nuevo.id_usuario], (error2, rows2, fields2) => {
+                    if (error2) {
+                        console.log(error2);
+                    }
+                })
+            res.send({
+                code: 200,
+                success: "Usuario registrado correctamente",
+            });
+        } else {
+            res.send({
+                code: 400,
+                failed: "error occurred",
+                error: error
+            });
+        }});
+}));
+
+//UPDATE
+
 router.put('/update/:id', expressAsyncHandler(async(req, res) => {
     const { id } = req.params;
-    const Contrasena = req.body.Contrasena;    
-    const encryptedPassword = bcrypt.hashSync(Contrasena, 10)
     const nuevo = {
         idRol: req.body.Id_rol,
         Nombre: req.body.Nombre,
         Correo: req.body.Correo,
-        password: encryptedPassword
+        descripcion: "Nombre: " + req.body.Nombre + ", Correo: " + req.body.Correo + ", Rol " + req.body.rol,
+        id_usuario: req.body.id_usuario
     };
-    mysql.query(`UPDATE usuario SET Id_rol = ?, Nombre = ?, Correo=?, Contrasena=?
+    mysql.query(`UPDATE usuario SET Id_rol = ?, Nombre = ?, Correo=?
                 WHERE id = ?`, 
-    [nuevo.idRol, nuevo.Nombre, nuevo.Correo, nuevo.password, id], async function(error, rows, fields){
+    [nuevo.idRol, nuevo.Nombre, nuevo.Correo, id], async function(error, rows, fields){
+        if (!error) {
+            mysql.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+            VALUES ('Actualización de usuario', ?, now(), ?);`,
+                [nuevo.descripcion, nuevo.id_usuario], (error2, rows2, fields2) => {
+                    if (error2) {
+                        console.log(error2);
+                    }
+                })
+            res.send({
+                code: 200,
+                success: "Usuario registrado correctamente",
+            });
+        } else {
+            res.send({
+                code: 400,
+                failed: "error occurred",
+                error: error
+            });
+        }
+    });
+}));
+
+router.put('/changePass/:id', expressAsyncHandler(async(req, res) => {
+    const { id } = req.params;
+    const Contrasena = req.body.Contrasena;    
+    const encryptedPassword = bcrypt.hashSync(Contrasena, 10)
+    mysql.query(`UPDATE usuario SET Contrasena=?
+                WHERE id = ?`, 
+    [encryptedPassword, id], async function(error, rows, fields){
         if (error) {        
             res.send({          
             code:400,          
@@ -157,16 +204,36 @@ router.put('/update/:id', expressAsyncHandler(async(req, res) => {
     });
 }));
 
-router.delete('/:id', expressAsyncHandler(async(req, res) => {
+//delete
+router.delete('/:id', (req, res) => {
     const { id } = req.params;
-    mysql.query('DELETE FROM usuario WHERE id = ?',[id], async function(error, rows, fields){
-        if(error){
-            res.send({code: 400, failed: "Error en eliminar"});
-        }else{
-            res.send({code: 200, success: "Usuario eliminado"})
+    const usuario = {
+        descripcion: "Nombre: " + req.body.Nombre + ", Correo: " + req.body.Correo + ", Rol " + req.body.rol,
+        id_usuario: req.body.id_usuario
+    }
+    mysql.query('DELETE FROM usuario WHERE id=?', [id], (error, rows, fields) => {
+        if (!error) {
+            mysql.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+            VALUES ('Eliminar usuario', ?, now(), ?);`,
+                [usuario.descripcion, usuario.id_usuario], (error2, rows2, fields2) => {
+                    if (error2) {
+                        console.log(error2);
+                    }
+                })
+            res.send({
+                code: 200,
+                success: "Eliminado correctamente",
+            });
+        } else {
+            res.send({
+                code: 400,
+                failed: "error occurred",
+                error: error
+            });
         }
     })
-}));
+});
+
 
 router.post('/signout', expressAsyncHandler(async(req, res) => {
     req.session = null;

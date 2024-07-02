@@ -10,7 +10,7 @@ const BitacoraContextProvider = (props)=>{
 
     useEffect(() => {
         bitacoraService.readAll().then((data) => setBitacoras(data));
-    }, [bitacoraService, bitacoras]);
+    }, [bitacoraService]);
 
     return(
         <BitacoraContext.Provider 

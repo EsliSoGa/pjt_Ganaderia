@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 import axios from "axios";
 
 const API_URL = "http://localhost:8080/usuario/";
@@ -30,10 +31,12 @@ const logout = () => {
 };
 
 const signout = () => {
-  return axios.get(API_URL + 'signout').then((response) => {
+  return axios
+  .get(API_URL + 'signout')
+  .then((response) => {
     return response.data;
   });
-};
+ };
 
 const update = (id, Id_rol, Nombre, Correo, Contrasena) => {
   return axios.put(API_URL + `${id}`, {
@@ -44,12 +47,12 @@ const update = (id, Id_rol, Nombre, Correo, Contrasena) => {
   });
 };
 
-const authService = {
+
+
+export default {
   login, 
   logout, 
   register,
   signout,
   update
 };
-
-export default authService;

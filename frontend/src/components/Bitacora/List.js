@@ -66,7 +66,7 @@ const BitacoraList = () => {
                     >
                         <Column field="id" header="No." sortable className="bitacora-column" />
                         <Column field="Accion" header="Acción" sortable className="bitacora-column" />
-                        <Column field="Fecha" body={date} header="Fecha de venta" sortable className="bitacora-column" />
+                        <Column field="Fecha" body={date} header="Fecha" sortable className="bitacora-column" />
                         <Column field="Descripcion" header="Descripción" sortable className="bitacora-column" />
                         <Column field="Nombre" header="Usuario" sortable className="bitacora-column" />
                     </DataTable>

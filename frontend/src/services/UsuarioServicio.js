@@ -12,7 +12,18 @@ export class UsuarioService {
     update(usuario){
         return axios.put(this.url + "update/" + usuario.id, usuario).then(res => res.data);
     }
-    delete(id){
-        return axios.delete(this.url + id).then(res => res.data);
+    changePass(usuario){
+        return axios.put(this.url + "changePass/" + usuario.id, usuario).then(res => res.data);
+    }
+    delete(usuario){
+        return axios.delete(this.url + usuario.id, {data: usuario}).then(res => res.data);
+    }
+}
+
+export class RolService {
+    url = "http://localhost:8080/rol";
+    
+    readAll(){
+        return axios.get(this.url).then(res=> res.data);
     }
 }
