@@ -13,7 +13,7 @@ import moment from "moment";
 import FormPadres from "./Padres";
 
 const Form = (props) => {
-    const { isVisible, setIsVisible } = props;
+    const { isVisible, setIsVisible, setRefresh } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
     const [isVisibleButton, setIsVisibleButton] = useState(false);
     const [isVisibleButtonPadres, setIsVisibleButtonPadres] = useState(false);
@@ -97,6 +97,7 @@ const Form = (props) => {
     const clearSelected = () => {
         setIsVisible(false);
         setGanadoData(inicialGanadosState);
+        setRefresh();
         setIsVisibleButton(false);
     };
 

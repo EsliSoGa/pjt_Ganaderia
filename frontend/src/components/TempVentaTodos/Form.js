@@ -15,6 +15,7 @@ import { TempVentaContext } from "../../context/TempVentaContext";
 const TempVentaForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
     const [isVisibleBtnAprobado, setIsVisibleBtnAprobado] = useState(false);
     const [isVisibleMsgAprobado, setisVisibleMsgAprobado] = useState(false);
 
@@ -44,6 +45,7 @@ const TempVentaForm = (props) => {
         if (editTempVenta) {
             setTempVentaData(editTempVenta);
             setIsVisibleBtnAprobado(true);
+            setIsVisibleButton(true);
         }
     }, [editTempVenta]);
 
@@ -58,6 +60,7 @@ const TempVentaForm = (props) => {
         setIsVisible(false);
         setTempVentaData(inicialTempVentasState);
         setIsVisibleBtnAprobado(false);
+        setIsVisibleButton(false);
     };
 
     const saveTempVenta = () => {
@@ -114,6 +117,7 @@ const TempVentaForm = (props) => {
                 className="p-button-raised p-button-rounded mb-3 p-button-info"
                 icon="pi pi-times"
                 label="Eliminar"
+                visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)}
             />
             <Button

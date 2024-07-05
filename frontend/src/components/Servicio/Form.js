@@ -15,6 +15,7 @@ import { ServicioContext } from "../../context/ServicioContext";
 const ServicioForm = (props) => {
     const { idS, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
 
     const {
         createServicio,
@@ -43,6 +44,7 @@ const ServicioForm = (props) => {
     useEffect(() => {
         if (editServicio) {
             setServicioData(editServicio);
+            setIsVisibleButton(true);
         } else {
             const ganado = ganados.find((p) => p.id === parseInt(idS));
             if (ganado) {
@@ -113,6 +115,7 @@ const ServicioForm = (props) => {
     const retornar = () => {
         setServicioData(inicialServiciosState);
         setIsVisible(false);
+        setIsVisibleButton(false);
     };
 
     const showError = () => {
@@ -126,7 +129,7 @@ const ServicioForm = (props) => {
                 acceptClassName="p-button-danger"
             />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                icon="pi pi-times" label="Eliminar"
+                icon="pi pi-times" label="Eliminar"  visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"

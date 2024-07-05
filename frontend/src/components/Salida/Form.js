@@ -14,6 +14,7 @@ import { SalidaContext } from "../../context/SalidaContext";
 const SalidaForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
 
     const {
         createSalida,
@@ -43,6 +44,7 @@ const SalidaForm = (props) => {
                 ...editSalida,
                 Fecha: editSalida.Fecha ? new Date(editSalida.Fecha) : null
             });
+            setIsVisibleButton(true);
         }
     }, [editSalida]);
 
@@ -56,6 +58,7 @@ const SalidaForm = (props) => {
     const clearSelected = () => {
         setIsVisible(false);
         setSalidaData(inicialSalidasState);
+        setIsVisibleButton(false);
     };
 
     const saveSalida = () => {
@@ -107,7 +110,7 @@ const SalidaForm = (props) => {
                 acceptClassName="p-button-danger"
             />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                icon="pi pi-times" label="Eliminar"
+                icon="pi pi-times" label="Eliminar" visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"

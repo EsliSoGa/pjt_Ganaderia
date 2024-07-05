@@ -13,6 +13,7 @@ import { Dropdown } from 'primereact/dropdown'; // Asegúrate de importar Dropdo
 const TrasladoForm = (props) => {
     const { idT, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
     const [ganadoData, setGanadoData] = useState({});
     const [trasladoData, setTrasladoData] = useState({
         id: null,
@@ -31,6 +32,7 @@ const TrasladoForm = (props) => {
     useEffect(() => {
         if (editTraslado) {
             setTrasladoData(editTraslado);
+            setIsVisibleButton(true);
         } else {
             const ganado = ganados.find((p) => p.id === parseInt(idT));
             if (ganado) {
@@ -54,6 +56,7 @@ const TrasladoForm = (props) => {
 
     const clearSelected = () => {
         setIsVisible(false);
+        setIsVisibleButton(false);
         setTrasladoData({
             id: null,
             Id_ganado: idT,
@@ -114,6 +117,7 @@ const TrasladoForm = (props) => {
                 className="p-button-raised p-button-rounded mb-3 p-button-info"
                 icon="pi pi-times"
                 label="Eliminar"
+                visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)}
             />
             <Button

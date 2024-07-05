@@ -1,4 +1,4 @@
-import React, {createContext, useState, useEffect, useMemo } from "react";
+import React, {createContext, useState, useMemo } from "react";
 import { RolService, UsuarioService } from "../services/UsuarioServicio"
 
 export const UsuarioContext = createContext();

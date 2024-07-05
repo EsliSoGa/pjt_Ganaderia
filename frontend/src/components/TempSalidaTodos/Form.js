@@ -14,6 +14,7 @@ import { TempSalidaContext } from "../../context/TempSalidaContext";
 const TempSalidaForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
     const [isVisibleBtnAprobado, setIsVisibleBtnAprobado] = useState(false);
     const [isVisibleMsgAprobado, setisVisibleMsgAprobado] = useState(false);
 
@@ -42,6 +43,7 @@ const TempSalidaForm = (props) => {
         if (editTempSalida) {
             setTempSalidaData(editTempSalida);
             setIsVisibleBtnAprobado(true);
+            setIsVisibleButton(true);
         }
     }, [editTempSalida]);
 
@@ -56,6 +58,7 @@ const TempSalidaForm = (props) => {
         setIsVisible(false);
         setTempSalidaData(inicialTempSalidasState);
         setIsVisibleBtnAprobado(false);
+        setIsVisibleButton(false);
     };
 
     const saveTempSalida = () => {
@@ -102,7 +105,7 @@ const TempSalidaForm = (props) => {
                 acceptClassName="p-button-danger"
             />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                icon="pi pi-times" label="Eliminar"
+                icon="pi pi-times" label="Eliminar"  visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"

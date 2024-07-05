@@ -13,6 +13,7 @@ import { LecheContext } from "../../context/LecheContext";
 const LecheForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
 
     const {
         createLeche,
@@ -40,6 +41,7 @@ const LecheForm = (props) => {
                 ...editLeche,
                 Fecha: editLeche.Fecha ? new Date(editLeche.Fecha) : null
             });
+            setIsVisibleButton(true);
         }
     }, [editLeche]);
 
@@ -52,6 +54,7 @@ const LecheForm = (props) => {
 
     const clearSelected = () => {
         setIsVisible(false);
+        setIsVisibleButton(false);
         setLecheData(inicialLecheState);
     };
 
@@ -104,7 +107,7 @@ const LecheForm = (props) => {
                 acceptClassName="p-button-danger"
             />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                icon="pi pi-times" label="Eliminar"
+                icon="pi pi-times" label="Eliminar" visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"

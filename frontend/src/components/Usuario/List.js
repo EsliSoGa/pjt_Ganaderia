@@ -13,17 +13,15 @@ import ChangePassForm from "./FormChangePass";
 
 const UsuarioList = () => {
     const { usuarios, findUsuario, getUsuario } = useContext(UsuarioContext);
-    
+
     const [isVisible, setIsVisible] = useState(false);
-    const [isVisiblePass, setIsVisiblePass] = useState(false);
     const [refreshList, setRefreshList] = useState(false);
 
-    let cont = 0;   
-    
     useEffect(() => {
-      getUsuario()
+        getUsuario()
     }, [refreshList])
-    
+
+    let cont = 0;
 
     const numeroCont = () => {
         cont = cont++;
@@ -35,17 +33,11 @@ const UsuarioList = () => {
         setIsVisible(true);
     };
 
-    const changePassUsuario = (id) => {
-        console.log('id ', id);
-        findUsuario(id);
-        setIsVisible(true);
-    };
-
     const leftToolbarTemplate = () => {
         return (
             <React.Fragment>
-                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar usuario" 
-                onClick={() => setIsVisible(true)} />
+                <Button className="p-button-raised p-button-rounded mr-2 p-button-info" type="button" icon="pi pi-plus" label="Agregar usuario"
+                    onClick={() => setIsVisible(true)} />
             </React.Fragment>
         )
     }
@@ -95,7 +87,7 @@ const UsuarioList = () => {
             <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
             <Panel header={titulo} className="table-panel">
                 <div className="table-datatable">
-                    <DataTable 
+                    <DataTable
                         value={usuarios}
                         responsiveLayout="scroll"
                         selectionMode="single"
@@ -108,14 +100,10 @@ const UsuarioList = () => {
                         <Column field="Nombre" header="Nombre" sortable className="table-column" />
                         <Column field="Correo" header="Correo electronico" sortable className="table-column" />
                         <Column field="rol" header="Rol de usuario" sortable className="table-column" />
-                        
-                        {//<Column rowEditor={changePassUsuario} headerStyle={{ width: '10%', minWidth: '8rem' }} bodyStyle={{ textAlign: 'center' }}></Column>
-                        }
                     </DataTable>
                 </div>
             </Panel>
-            <Form isVisible={isVisible} setIsVisible={setIsVisible} setRefresh={()=>setRefreshList(!refreshList)}/>
-            <ChangePassForm isVisible={isVisiblePass} setIsVisible={setIsVisiblePass} />
+            <Form isVisible={isVisible} setIsVisible={setIsVisible} setRefresh={() => setRefreshList(!refreshList)} />
         </div>
     );
 }

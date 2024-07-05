@@ -13,7 +13,12 @@ import moment from "moment";
 import '../SharedTableStyles.css'; // Importamos el archivo CSS general
 
 const GanadoList = () => {
-    const { ganados, findGanado } = useContext(GanadoContext);
+    const { getGanado,  ganados, findGanado } = useContext(GanadoContext);
+    const [refreshList, setRefreshList] = useState(false);
+
+    useEffect(() => {
+        getGanado()
+    }, [refreshList])
 
     let cont = 0;
 
@@ -124,7 +129,7 @@ const GanadoList = () => {
                     </DataTable>
                 </div>
             </Panel>
-            <Form isVisible={isVisible} setIsVisible={setIsVisible} />
+            <Form isVisible={isVisible} setIsVisible={setIsVisible} setRefresh={() => setRefreshList(!refreshList)} />
         </div>
     );
 }

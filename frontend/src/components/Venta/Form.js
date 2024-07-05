@@ -15,6 +15,7 @@ import { VentaContext } from "../../context/VentaContext";
 const VentaForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
 
     const [ganadoData, setGanadoData] = useState([]);
 
@@ -42,7 +43,10 @@ const VentaForm = (props) => {
     const [ventaData, setVentaData] = useState(inicialVentasState);
 
     useEffect(() => {
-        if (editVenta) setVentaData(editVenta);
+        if (editVenta) {
+            setVentaData(editVenta);
+            setIsVisibleButton(true);
+        }
     }, [editVenta]);
 
     const updateField = (data, field) => {
@@ -55,6 +59,7 @@ const VentaForm = (props) => {
     const clearSelected = () => {
         setIsVisible(false);
         setVentaData(inicialVentasState);
+        setIsVisibleButton(false);
     };
 
     const saveVenta = () => {
@@ -111,6 +116,7 @@ const VentaForm = (props) => {
                 className="p-button-raised p-button-rounded mb-3 p-button-info"
                 icon="pi pi-times"
                 label="Eliminar"
+                visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)}
             />
             <Button

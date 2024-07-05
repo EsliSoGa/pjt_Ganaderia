@@ -1,9 +1,6 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { Dropdown } from 'primereact/dropdown';
-import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 
 import { UsuarioContext } from "../../context/UsuarioContext";
@@ -11,26 +8,19 @@ import { Password } from "primereact/password";
 import { useSelector } from "react-redux";
 
 const ChangePassForm = (props) => {
-    const { isVisible, setIsVisible } = props;
-    const [isVisibleDelete, setisVisibleDelete] = useState(false);
-    const [visiblePassword, setVisiblePassword] = useState([true]);
+    const { isVisible, setIsVisible, retornarForms } = props;
     const { user: currentUser } = useSelector((state) => state.auth);
 
     const {
-        createUsuario,
-        deleteUsuario,
         editUsuarios,
-        updateUsuario,
-        rol,
+        changePassUsuario
     } = useContext(UsuarioContext);
 
     const inicialUsuarioState = {
         id: null,
+        Nombre: "", 
         Contrasena: "",
-        Correo: "",
-        Nombre: "",
-        Id_rol: 3,
-        rol: "",
+        confirmContrasena: "",
         id_usuario: currentUser.id
     };
 
@@ -38,14 +28,10 @@ const ChangePassForm = (props) => {
 
     useEffect(() => {
         if (editUsuarios) {
-            setVisiblePassword(false);
             setUsuarioData({
                 ...editUsuarios,
                 id_usuario: currentUser.id
             })
-        }
-        else{
-            setVisiblePassword(true);
         }
     }, [editUsuarios, currentUser]);
 
@@ -59,16 +45,18 @@ const ChangePassForm = (props) => {
 
     const saveUsuario = () => {
         console.log(usuarioData);
-        if (usuarioData.Correo === "" || usuarioData.Contrasena === "") {
+        if (usuarioData.confirmContrasena === "" || usuarioData.Contrasena === "") {
             showInfo();
         } else {
-            if (!editUsuarios) {
-                createUsuario(usuarioData);
-            } else {
-                updateUsuario(usuarioData);
+            console.log(usuarioData);
+            if (usuarioData.confirmContrasena !== usuarioData.Contrasena) {
+                showInfoPass();
+            }
+            else {
+                changePassUsuario(usuarioData);
+                retornar();
             }
         }
-        retornar();
     };
 
     const toast = useRef(null);
@@ -76,33 +64,20 @@ const ChangePassForm = (props) => {
         toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
     }
 
-    const _deleteUsuario = () => {
-        if (editUsuarios) {
-            deleteUsuario(usuarioData);
-            showError();
-        }
-        retornar();
-    };
+    
+    const showInfoPass = () => {
+        toast.current.show({ severity: 'error', summary: 'Mensaje', detail: 'Las contraseñas deben de ser iguales', life: 3000 });
+    }
 
     const retornar = async () => {
-        setVisiblePassword(true);
         await setUsuarioData(inicialUsuarioState);
         setIsVisible(false);
+        retornarForms();
     };
 
-    const showError = () => {
-        toast.current.show({ severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000 });
-    }
 
     const dialogFooter = (
         <div style={styles.dialogFooter}>
-            <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteUsuario} reject={retornar}
-                acceptClassName="p-button-danger"
-            />
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                icon="pi pi-times" label="Eliminar"
-                onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"
                 onClick={saveUsuario} />
@@ -123,32 +98,21 @@ const ChangePassForm = (props) => {
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
-                        <label>Rol</label>
-                        <Dropdown value={usuarioData.Id_rol} options={rol} optionLabel="rol" optionValue="id"
-                            onChange={(e) => updateField(e.value, "Id_rol")} filter showClear filterBy="rol" placeholder="Seleccione un rol" />
-                    </div>
-                    <div className="p-field" style={styles.formField}>
-                        <label>Nombre</label>
-                        <InputText
-                            value={usuarioData.Nombre}
-                            onChange={(e) => updateField(e.target.value, "Nombre")}
-                        />
-                    </div>
-                    <div className="p-field" style={styles.formField}>
-                        <label>Correo electronico</label>
-                        <InputText
-                            value={usuarioData.Correo}
-                            onChange={(e) => updateField(e.target.value.trim(), "Correo")}
-                        />
-                    </div>
-                    {visiblePassword && <div className="p-field" style={styles.formField}>
                         <label>Contraseña</label>
                         <Password
                             value={usuarioData.Contrasena}
                             onChange={(e) => updateField(e.target.value.trim(), "Contrasena")}
                             toggleMask
                         />
-                    </div>}
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Repita la contraseña</label>
+                        <Password
+                            value={usuarioData.confirmContrasena}
+                            onChange={(e) => updateField(e.target.value.trim(), "confirmContrasena")}
+                            toggleMask
+                        />
+                    </div>
                 </div>
             </Dialog>
         </div>

@@ -9,11 +9,14 @@ import { Toast } from 'primereact/toast';
 import { UsuarioContext } from "../../context/UsuarioContext";
 import { Password } from "primereact/password";
 import { useSelector } from "react-redux";
+import ChangePassForm from "./FormChangePass";
 
 const UsuarioForm = (props) => {
     const { isVisible, setIsVisible, setRefresh } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
     const [visiblePassword, setVisiblePassword] = useState([true]);
+    const [visibleFormPassword, setVisibleFormPassword] = useState(false);
     const { user: currentUser } = useSelector((state) => state.auth);
 
     const {
@@ -39,6 +42,7 @@ const UsuarioForm = (props) => {
     useEffect(() => {
         if (editUsuarios) {
             setVisiblePassword(false);
+            setIsVisibleButton(true);
             setUsuarioData({
                 ...editUsuarios,
                 id_usuario: currentUser.id
@@ -84,11 +88,13 @@ const UsuarioForm = (props) => {
         retornar();
     };
 
-    const retornar = async () => {
+    const retornar = () => {
         setVisiblePassword(true);
-        await setUsuarioData(inicialUsuarioState);
+        setVisibleFormPassword(false);
+        setUsuarioData(inicialUsuarioState);
         setRefresh()
         setIsVisible(false);
+        setIsVisibleButton(false);
     };
 
     const showError = () => {
@@ -97,12 +103,16 @@ const UsuarioForm = (props) => {
 
     const dialogFooter = (
         <div style={styles.dialogFooter}>
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
+                icon="pi pi-pencil" label="Cambiar Contraseña"
+                visible={isVisibleButton}
+                onClick={() => setVisibleFormPassword(true)} />
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
                 header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteUsuario} reject={retornar}
                 acceptClassName="p-button-danger"
             />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
-                icon="pi pi-times" label="Eliminar"
+                icon="pi pi-times" label="Eliminar" visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"
@@ -152,6 +162,7 @@ const UsuarioForm = (props) => {
                     </div>}
                 </div>
             </Dialog>
+            <ChangePassForm idUsuario={usuarioData.id} isVisible={visibleFormPassword} setIsVisible={setVisibleFormPassword} retornarForms= {()=>retornar()}/>
         </div>
     );
 }

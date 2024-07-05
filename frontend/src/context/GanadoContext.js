@@ -16,10 +16,10 @@ const GanadoContextProvider = (props)=>{
 
     const [editPadres, setEditPadres] = useState(null);
 
-    useEffect(() => {
+    const getGanado = () => {
         ganadoService.readAll().then((data) => setGanados(data));
         padreService.readAll().then((data) => setPadres(data));
-    }, [ganadoService, ganados, padreService, padres]);
+    };
 
     const createGanado =(ganado)=>{
         ganadoService
@@ -75,6 +75,7 @@ const GanadoContextProvider = (props)=>{
     return(
         <GanadoContext.Provider 
             value={{
+                getGanado,
                 createGanado,
                 deleteGanado,
                 findGanado,

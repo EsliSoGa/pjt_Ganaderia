@@ -14,6 +14,7 @@ import { TempVentaContext } from "../../context/TempVentaContext";
 const TempVentaForm = (props) => {
     const { idTV, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [isVisibleButton, setIsVisibleButton] = useState(false);
 
     const {
         createTempVenta,
@@ -28,7 +29,7 @@ const TempVentaForm = (props) => {
         Fecha: "",
         Comprador: "",
         Precio: "",
-        Peso: "", 
+        Peso: "",
         Total: "",
         Id_ganado: idTV,
         Numero: ""
@@ -39,6 +40,7 @@ const TempVentaForm = (props) => {
     useEffect(() => {
         if (editTempVenta) {
             setTempVentaData(editTempVenta);
+            setIsVisibleButton(true);
         } else {
             const ganado = ganados.find((p) => p.id === parseInt(idTV));
             if (ganado) {
@@ -57,16 +59,17 @@ const TempVentaForm = (props) => {
         });
     };
 
-    const clearSelected = () => {
+    const clearSelected =  async () => {
+        await setTempVentaData(inicialTempVentasState);
+        setIsVisibleButton(false);
         setIsVisible(false);
-        setTempVentaData(inicialTempVentasState);
     };
 
     const saveTempVenta = () => {
-        if(tempVentaData.Fecha === "" || tempVentaData.Comprador === "" || tempVentaData.Peso === ""){
+        if (tempVentaData.Fecha === "" || tempVentaData.Comprador === "" || tempVentaData.Peso === "") {
             showInfo();
         }
-        else{
+        else {
             const formattedDate = tempVentaData.Fecha ? moment(tempVentaData.Fecha).format("YYYY-MM-DD") : null;
             const tempVentaDataWithFormattedDate = {
                 ...tempVentaData,
@@ -85,7 +88,7 @@ const TempVentaForm = (props) => {
     const toast = useRef(null);
 
     const showInfo = () => {
-        toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
+        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
     }
 
     const _deleteTempVenta = () => {
@@ -97,30 +100,31 @@ const TempVentaForm = (props) => {
     };
 
     const showError = () => {
-        toast.current.show({severity:'error', summary: 'Eliminado', detail:'Se ha eliminado con éxito', life: 3000});
+        toast.current.show({ severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000 });
     }
 
     const dialogFooter = (
         <div style={styles.dialogFooter}>
-            <ConfirmDialog 
-                visible={isVisibleDelete} 
-                onHide={() => setisVisibleDelete(false)} 
+            <ConfirmDialog
+                visible={isVisibleDelete}
+                onHide={() => setisVisibleDelete(false)}
                 message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" 
-                icon="pi pi-info-circle" 
-                accept={_deleteTempVenta} 
-                reject={clearSelected} 
+                header="Confirmación de eliminación"
+                icon="pi pi-info-circle"
+                accept={_deleteTempVenta}
+                reject={clearSelected}
                 acceptClassName="p-button-danger"
             />
-            <Button 
-                className="p-button-raised p-button-rounded mb-3 p-button-info" 
-                icon="pi pi-times" 
+            <Button
+                className="p-button-raised p-button-rounded mb-3 p-button-info"
+                icon="pi pi-times"
                 label="Eliminar"
+                visible={isVisibleButton}
                 onClick={() => setisVisibleDelete(true)}
             />
-            <Button 
+            <Button
                 className="p-button-raised p-button-rounded mb-3 p-button-info"
-                label="Guardar" 
+                label="Guardar"
                 icon="pi pi-check"
                 onClick={saveTempVenta}
             />
@@ -133,8 +137,8 @@ const TempVentaForm = (props) => {
             <Dialog
                 visible={isVisible}
                 modal={true}
-                style={{width:"550px"}}
-                contentStyle={{overflow:"visible"}}
+                style={{ width: "550px" }}
+                contentStyle={{ overflow: "visible" }}
                 header="Detalles de Venta"
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
