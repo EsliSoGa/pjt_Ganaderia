@@ -21,9 +21,13 @@ const ServicioForm = (props) => {
         deleteServicio,
         editServicio,
         updateServicio,
-        tipoServicios,
         ganados
     } = useContext(ServicioContext);
+
+    const tipoServicios = [
+        { label: "Palpación", value: "Palpación" },
+        { label: "Visual", value: "Visual" }
+    ];
 
     const inicialServiciosState = {
         id: null,
@@ -80,16 +84,12 @@ const ServicioForm = (props) => {
             console.log("Intentando guardar servicio con datos:", servicioDataWithFormattedDate);
 
             if (!editServicio) {
-                const nombreTipo = tipoServicios.find((p) => p.id === parseInt(servicioDataWithFormattedDate.id_tipo_servicio));
-                servicioDataWithFormattedDate.Nombre_tipo = nombreTipo.Nombre_tipo;
                 const ganado = ganados.find((p) => p.id === parseInt(idS));
                 servicioDataWithFormattedDate.Nombre = ganado.Nombre;
                 servicioDataWithFormattedDate.Numero = ganado.Numero;
                 createServicio(servicioDataWithFormattedDate);
             } else {
                 servicioDataWithFormattedDate.id_usuario = 2;
-                const nombreTipo = tipoServicios.find((p) => p.id === parseInt(servicioDataWithFormattedDate.id_tipo_servicio));
-                servicioDataWithFormattedDate.Nombre_tipo = nombreTipo.Nombre_tipo;
                 updateServicio(servicioDataWithFormattedDate);
             }
             retornar();
@@ -153,9 +153,9 @@ const ServicioForm = (props) => {
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
-                        <label>Tipo</label>
-                        <Dropdown value={servicioData.id_tipo_servicio} options={tipoServicios} optionLabel="Nombre_tipo" optionValue="id"
-                            onChange={(e) => updateField(e.value, "id_tipo_servicio")} filter showClear filterBy="Nombre_tipo" placeholder="Seleccione un tipo" />
+                        <label>Tipo de deteccion</label>
+                        <Dropdown value={servicioData.Nombre_tipo} options={tipoServicios} optionLabel="label" optionValue="value"
+                            onChange={(e) => updateField(e.value, "Nombre_tipo")} placeholder="Seleccione un tipo" />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha</label>
@@ -173,7 +173,7 @@ const ServicioForm = (props) => {
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Edad</label>
+                        <label>Meses Feto</label>
                         <InputNumber
                             value={servicioData.Edad}
                             onChange={(e) => updateField(e.value, "Edad")}
