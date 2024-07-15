@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { logout } from "../../actions/auth";
 import { clearMessage } from "../../actions/message";
 import { useMediaQuery } from 'react-responsive';
@@ -9,14 +9,17 @@ import logo from "../../images/vaca1.ico";
 
 const Navigation = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user: currentUser } = useSelector((state) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   const logOut = useCallback(() => {
-    dispatch(logout());
+    dispatch(logout()).then(() => {
+      navigate("/login");
+    });
     if (isMobile) setMenuOpen(false);
-  }, [dispatch, isMobile]);
+  }, [dispatch, isMobile, navigate]);
 
   let location = useLocation();
   
@@ -41,6 +44,8 @@ const Navigation = () => {
   const navItemsAdmin = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
+    { label: "Leche", path: "/leche" },
+    { label: "Vacunas", path: "/vacunas" }, // Nuevo label
     {
       label: "Aprobaciones",
       submenu: [
@@ -52,6 +57,7 @@ const Navigation = () => {
     { label: "Lista de ventas", path: "/venta" },
     { label: "Usuarios", path: "/usuario" },
     { label: "Actividades", path: "/actividades" },
+    { label: "Reportes", path: "/reporte-ganado" },
     { label: "Bitacora", path: "/bitacora" }
   ];
 
@@ -59,9 +65,11 @@ const Navigation = () => {
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
     { label: "Leche", path: "/leche" },
+    { label: "Vacunas", path: "/vacunas" }, // Nuevo label
     { label: "Lista de salidas", path: "/salida" },
     { label: "Lista de ventas", path: "/venta" },
     { label: "Bitacora", path: "/bitacora" },
+    { label: "Reportes", path: "/reporte-ganado" },
     { label: "Actividades", path: "/actividades" }
   ];
 
@@ -69,8 +77,10 @@ const Navigation = () => {
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
     { label: "Leche", path: "/leche" },
+    { label: "Vacunas", path: "/vacunas" }, // Nuevo label
     { label: "Salidas", path: "/salidas" },
     { label: "Ventas", path: "/ventas" },
+    { label: "Reportes", path: "/reporte-ganado" },
     { label: "Actividades", path: "/actividades" }
   ];
 
@@ -86,7 +96,7 @@ const Navigation = () => {
   const profileItems = [
     { label: "Perfil", path: "/profile" },
     { label: "Editar perfil", path: "/edituser" },
-    { label: "Salir", path: "/profile", onClick: logOut }
+    { label: "Salir", path: "/login", onClick: logOut }
   ];
 
   const getNavItems = (role) => {
@@ -102,7 +112,7 @@ const Navigation = () => {
   const renderNavItems = (items) => {
     return items.map(item => (
       <li key={item.label} className="nav-item">
-        <Link to={item.path} onClick={closeMenu}>{item.label}</Link>
+        <Link to={item.path} onClick={item.onClick || closeMenu}>{item.label}</Link>
         {item.submenu && (
           <ul className="submenu">
             {item.submenu.map(subItem => (

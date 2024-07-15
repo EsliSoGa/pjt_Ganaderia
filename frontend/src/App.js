@@ -23,6 +23,8 @@ import VentaScreen from './screens/VentaScreen';
 import ActividadesScreen from "./screens/ActividadesScreen";
 import BitacoraScreen from './screens/BitacoraScreen';
 import LecheScreen from './screens/LecheScreen'; // Nueva importación
+import VacunasScreen from './screens/VacunasScreen'; // Nueva importación
+import ReporteGanadoScreen from './screens/ReporteGanadoScreen';
 
 function App() {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -78,6 +80,13 @@ function App() {
               isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <TempVentaScreen />
+            </ProtectedRoute>
+          } />
+          <Route path="/reporte-ganado" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+            >
+              <ReporteGanadoScreen />
             </ProtectedRoute>
           } />
           <Route path="/actividades" element={
@@ -137,6 +146,13 @@ function App() {
               isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <LecheScreen />
+            </ProtectedRoute>
+          } /> {/* Nueva ruta añadida */}
+          <Route path="/vacunas" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
+            >
+              <VacunasScreen />
             </ProtectedRoute>
           } /> {/* Nueva ruta añadida */}
         </Routes>

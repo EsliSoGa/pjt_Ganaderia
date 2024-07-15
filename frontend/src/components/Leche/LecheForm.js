@@ -4,9 +4,10 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
 import { Dropdown } from 'primereact/dropdown';
+import DatePicker from "react-datepicker";
 import moment from "moment";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { LecheContext } from "../../context/LecheContext";
 
@@ -132,10 +133,11 @@ const LecheForm = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
-                        <Calendar
-                            value={lecheData.Fecha}
-                            onChange={(e) => updateField(e.value.toISOString(), "Fecha")}
-                            dateFormat="dd-mm-yy"
+                        <DatePicker
+                            selected={lecheData.Fecha}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
+                            className="p-inputtext p-component"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>

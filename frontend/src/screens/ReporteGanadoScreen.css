@@ -1,0 +1,52 @@
+.reporte-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.report-table th,
+.report-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.report-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+}
+
+.report-table td {
+    text-align: center;
+}
+
+.download-button {
+    margin-top: 20px;
+    display: block;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .reporte-container {
+        padding: 10px;
+    }
+
+    .chart-container {
+        max-width: 100%;
+    }
+
+    .download-button {
+        width: 100%;
+    }
+}
