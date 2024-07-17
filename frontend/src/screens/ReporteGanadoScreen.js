@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Chart } from 'primereact/chart';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
+import { Calendar } from 'primereact/calendar';
 import { useMediaQuery } from 'react-responsive';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -17,19 +18,24 @@ const ReporteGanadoScreen = () => {
     const [lecheChartData, setLecheChartData] = useState(null);
     const [reportType, setReportType] = useState('ganado');
     const [ganadoChartType, setGanadoChartType] = useState('pie');
+    const [nacimientosIndividual, setNacimientosIndividual] = useState([]);
+    const [nacimientosGeneral, setNacimientosGeneral] = useState([]);
+    const [nacimientosConteo, setNacimientosConteo] = useState([]);
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
     useEffect(() => {
         fetchGanadoReporte();
         fetchLecheGanadoOptions();
         fetchLecheGeneralReporte();
+        fetchNacimientosIndividual(selectedGanado);
+        fetchNacimientosGeneral();
     }, []);
 
     useEffect(() => {
         if (selectedGanado) {
-            fetchLecheReporte(selectedGanado);
+            fetchNacimientosIndividual(selectedGanado);
         } else {
-            fetchLecheGeneralReporte();
+            fetchNacimientosGeneral();
         }
     }, [selectedGanado]);
 
@@ -65,12 +71,30 @@ const ReporteGanadoScreen = () => {
         }
     };
 
-    const fetchLecheReporte = async (id) => {
+    const fetchNacimientosIndividual = async (id_ganado) => {
         try {
-            const response = await axios.get(`http://localhost:8080/reporte/leche/${id}`);
-            generateLecheChartData(response.data);
+            const response = await axios.get(http://localhost:8080/reporte/servicio/nacimientos/individual/${id_ganado});
+            setNacimientosIndividual(response.data);
         } catch (error) {
-            console.error("Error fetching leche report:", error);
+            console.error("Error fetching nacimientos individuales:", error);
+        }
+    };
+
+    const fetchNacimientosGeneral = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/reporte/servicio/nacimientos/general");
+            setNacimientosGeneral(response.data);
+        } catch (error) {
+            console.error("Error fetching nacimientos generales:", error);
+        }
+    };
+
+    const fetchNacimientosConteo = async () => {
+        try {
+            const response = await axios.get("http://localhost:8080/reporte/servicio/nacimientos/conteo");
+            setNacimientosConteo(response.data);
+        } catch (error) {
+            console.error("Error fetching conteo de nacimientos:", error);
         }
     };
 
@@ -151,6 +175,64 @@ const ReporteGanadoScreen = () => {
         doc.save("reporte_leche.pdf");
     };
 
+    const downloadNacimientosIndividualPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Informe Individual de Nacimientos", 10, 10);
+
+        if (nacimientosIndividual) {
+            const tableColumn = ["Nombre del Ganado", "Meses del Feto", "Fecha del Servicio", "Fecha Tentativa de Nacimiento"];
+            const tableRows = [];
+
+            for (let item of nacimientosIndividual) {
+                tableRows.push([item.NombreGanado, item.Meses, item.Fecha, item.FechaNacimiento]);
+            }
+
+            doc.autoTable(tableColumn, tableRows, { startY: 20 });
+        }
+
+        doc.save("reporte_nacimientos_individual.pdf");
+    };
+
+    const downloadNacimientosGeneralPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Informe General de Nacimientos", 10, 10);
+
+        if (nacimientosGeneral) {
+            const tableColumn = ["Nombre del Ganado", "Meses del Feto", "Fecha del Servicio", "Fecha Tentativa de Nacimiento"];
+            const tableRows = [];
+
+            for (let item of nacimientosGeneral) {
+                tableRows.push([item.NombreGanado, item.Meses, item.Fecha, item.FechaNacimiento]);
+            }
+
+            doc.autoTable(tableColumn, tableRows, { startY: 20 });
+        }
+
+        doc.save("reporte_nacimientos_general.pdf");
+    };
+
+    const downloadNacimientosConteoPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Conteo de Nacimientos", 10, 10);
+
+        if (nacimientosConteo) {
+            const tableColumn = ["Nombre del Ganado", "Color", "Fecha del Servicio", "Fecha Tentativa de Nacimiento", "Producción Diaria"];
+            const tableRows = [];
+
+            for (let item of nacimientosConteo) {
+                tableRows.push([item.NombreGanado, item.Color, item.Fecha, item.FechaNacimiento, item.Produccion_diaria]);
+            }
+
+            doc.autoTable(tableColumn, tableRows, { startY: 20 });
+        }
+
+        doc.save("reporte_conteo_nacimientos.pdf");
+    };
+
+    const handleFetchNacimientosConteo = () => {
+        fetchNacimientosConteo();
+    };
+
     const options = {
         plugins: {
             legend: {
@@ -187,7 +269,10 @@ const ReporteGanadoScreen = () => {
                 value={reportType} 
                 options={[
                     { label: 'Ganado', value: 'ganado' },
-                    { label: 'Leche', value: 'leche' }
+                    { label: 'Leche', value: 'leche' },
+                    { label: 'Nacimientos Individuales', value: 'nacimientos_individuales' },
+                    { label: 'Nacimientos Generales', value: 'nacimientos_generales' },
+                    { label: 'Conteo de Nacimientos', value: 'conteo_nacimientos' }
                 ]} 
                 onChange={(e) => setReportType(e.value)} 
                 placeholder="Seleccione el tipo de reporte" 
@@ -243,6 +328,96 @@ const ReporteGanadoScreen = () => {
                         </div>
                     )}
                     <Button label="Descargar PDF" icon="pi pi-file-pdf" onClick={downloadLechePDF} className="download-button" />
+                </>
+            )}
+            {reportType === 'nacimientos_individuales' && (
+                <>
+                    <Dropdown 
+                        value={selectedGanado} 
+                        options={lecheGanadoOptions} 
+                        onChange={(e) => setSelectedGanado(e.value)} 
+                        placeholder="Seleccione el ganado" 
+                    />
+                    {nacimientosIndividual && (
+                        <table className="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del Ganado</th>
+                                    <th>Meses del Feto</th>
+                                    <th>Fecha del Servicio</th>
+                                    <th>Fecha Tentativa de Nacimiento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {nacimientosIndividual.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.NombreGanado}</td>
+                                        <td>{item.Meses}</td>
+                                        <td>{item.Fecha}</td>
+                                        <td>{item.FechaNacimiento}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                    <Button label="Descargar PDF" icon="pi pi-file-pdf" onClick={downloadNacimientosIndividualPDF} className="download-button" />
+                </>
+            )}
+            {reportType === 'nacimientos_generales' && (
+                <>
+                    {nacimientosGeneral && (
+                        <table className="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del Ganado</th>
+                                    <th>Meses del Feto</th>
+                                    <th>Fecha del Servicio</th>
+                                    <th>Fecha Tentativa de Nacimiento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {nacimientosGeneral.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.NombreGanado}</td>
+                                        <td>{item.Meses}</td>
+                                        <td>{item.Fecha}</td>
+                                        <td>{item.FechaNacimiento}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                    <Button label="Descargar PDF" icon="pi pi-file-pdf" onClick={downloadNacimientosGeneralPDF} className="download-button" />
+                </>
+            )}
+            {reportType === 'conteo_nacimientos' && (
+                <>
+                    <Button label="Obtener Conteo" icon="pi pi-search" onClick={handleFetchNacimientosConteo} className="fetch-button" />
+                    {nacimientosConteo && (
+                        <table className="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del Ganado</th>
+                                    <th>Color</th>
+                                    <th>Fecha del Servicio</th>
+                                    <th>Fecha Tentativa de Nacimiento</th>
+                                    <th>Producción Diaria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {nacimientosConteo.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.NombreGanado}</td>
+                                        <td>{item.Color}</td>
+                                        <td>{item.Fecha}</td>
+                                        <td>{item.FechaNacimiento}</td>
+                                        <td>{item.Produccion_diaria}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
+                    <Button label="Descargar PDF" icon="pi pi-file-pdf" onClick={downloadNacimientosConteoPDF} className="download-button" />
                 </>
             )}
         </div>
