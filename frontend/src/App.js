@@ -91,7 +91,7 @@ function App() {
           } />
           <Route path="/actividades" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <ActividadesScreen />
             </ProtectedRoute>

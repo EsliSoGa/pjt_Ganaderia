@@ -1,5 +1,5 @@
 import React from "react";
-import imagen1 from '../images/vaca1.jpg';
+import imagen1 from '../images/Fondo.jpg';
 import './Home.css'; // Importa el archivo CSS
 
 const Home = () => {
@@ -8,9 +8,9 @@ const Home = () => {
             <div className="content-container">
                 <div className="about-container">
                     <div className="about-desc">
-                        <h3>Maragos y Propiedades</h3>
+                        <h3>Vilaflor y propiedades</h3>
                         <p>
-                            Bienvenido a la finca Maragos. Aquí nos dedicamos a la cría y cuidado de ganado, así como al cultivo de tierras fértiles. Nuestro objetivo es proporcionar productos de alta calidad y promover prácticas sostenibles que beneficien tanto a nuestros animales como a nuestro entorno.
+                            Bienvenido. Aquí nos dedicamos a la cría y cuidado de ganado, así como al cultivo de tierras fértiles. Nuestro objetivo es proporcionar productos de alta calidad y promover prácticas sostenibles que beneficien tanto a nuestros animales como a nuestro entorno.
                         </p>
                     </div>
                     <div className="image-container">

@@ -9,6 +9,7 @@ import TempVentaTotalScreen from "./TempVentaTotalScreen";
 import TrasladosScreen from "./TrasladoScreen";
 import VentaScreen from "./VentaScreen";
 import LecheScreen from "./LecheScreen"; // Añadido
+import VacunasScreen from "./VacunasScreen";
 
 export default {
     GanadoScreen,
@@ -21,5 +22,6 @@ export default {
     SalidaScreen,
     VentaScreen,
     BitacoraScreen,
+    VacunasScreen,
     LecheScreen // Añadido
 }

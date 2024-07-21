@@ -44,8 +44,8 @@ const Navigation = () => {
   const navItemsAdmin = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
-    { label: "Leche", path: "/leche" },
-    { label: "Vacunas", path: "/vacunas" }, // Nuevo label
+    { label: "Salidas(Generales)", path: "/salida" },
+    { label: "Ventas(Generales)", path: "/venta" },
     {
       label: "Aprobaciones",
       submenu: [
@@ -53,33 +53,40 @@ const Navigation = () => {
         { label: "Ventas temporales", path: "/aprobarventa" }
       ]
     },
-    { label: "Lista de salidas", path: "/salida" },
-    { label: "Lista de ventas", path: "/venta" },
-    { label: "Usuarios", path: "/usuario" },
-    { label: "Actividades", path: "/actividades" },
-    { label: "Reportes", path: "/reporte-ganado" },
-    { label: "Bitacora", path: "/bitacora" }
+    {label: "Herramientas",
+      submenu: [
+        { label: "Actividades", path: "/actividades" },
+        { label: "Reportes", path: "/reporte-ganado" },
+        { label: "Bitacora", path: "/bitacora" }
+      ]
+    }
+    //{ label: "Usuarios", path: "/usuario" },
   ];
 
   const navItemsJefe = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
-    { label: "Leche", path: "/leche" },
-    { label: "Vacunas", path: "/vacunas" }, // Nuevo label
-    { label: "Lista de salidas", path: "/salida" },
-    { label: "Lista de ventas", path: "/venta" },
-    { label: "Bitacora", path: "/bitacora" },
-    { label: "Reportes", path: "/reporte-ganado" },
-    { label: "Actividades", path: "/actividades" }
+    { label: "Salidas(Generales)", path: "/salida" },
+    { label: "Ventas(Generales)", path: "/venta" },
+    {
+      label: "Aprobaciones",
+      submenu: [
+        { label: "Salidas temporales", path: "/aprobarsalida" },
+        { label: "Ventas temporales", path: "/aprobarventa" }
+      ]
+    },
+    {label: "Herramientas",
+      submenu: [
+        { label: "Actividades", path: "/actividades" },
+        { label: "Reportes", path: "/reporte-ganado" },
+        { label: "Bitacora", path: "/bitacora" }
+      ]
+    }
   ];
 
   const navItemsVaquero = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
-    { label: "Leche", path: "/leche" },
-    { label: "Vacunas", path: "/vacunas" }, // Nuevo label
-    { label: "Salidas", path: "/salidas" },
-    { label: "Ventas", path: "/ventas" },
     { label: "Reportes", path: "/reporte-ganado" },
     { label: "Actividades", path: "/actividades" }
   ];
