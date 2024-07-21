@@ -44,6 +44,19 @@ const LecheForm = (props) => {
         }
     }, [editLeche]);
 
+    useEffect(() => {
+        if (lecheData.Id_ganado) {
+            const ganado = ganados.find((p) => p.id === parseInt(lecheData.Id_ganado));
+            if (ganado) {
+                setLecheData((prevState) => ({
+                    ...prevState,
+                    Nombre: ganado.nombre,
+                    Numero: ganado.numero
+                }));
+            }
+        }
+    }, [lecheData.Id_ganado, ganados]);
+
     const updateField = (data, field) => {
         setLecheData({
             ...lecheData,

@@ -49,6 +49,19 @@ const VacunasForm = (props) => {
         }
     }, [editVacuna]);
 
+    useEffect(() => {
+        if (vacunaData.id_ganado) {
+            const ganado = ganados.find((p) => p.id === parseInt(vacunaData.id_ganado));
+            if (ganado) {
+                setVacunaData((prevState) => ({
+                    ...prevState,
+                    Nombre: ganado.nombre,
+                    Numero: ganado.numero
+                }));
+            }
+        }
+    }, [vacunaData.id_ganado, ganados]);
+
     const updateField = (data, field) => {
         setVacunaData({
             ...vacunaData,
@@ -135,8 +148,8 @@ const VacunasForm = (props) => {
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
                         <label>Ganado*</label>
-                        <Dropdown value={vacunaData.id_ganado} options={ganados} optionLabel="numero" optionValue="id"
-                            onChange={(e) => updateField(e.value, "id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                        <Dropdown value={vacunaData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
+                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha de Aplicación*</label>

@@ -18,14 +18,7 @@ const Form = (props) => {
     const [isVisibleButton, setIsVisibleButton] = useState(false);
     const [isVisibleButtonPadres, setIsVisibleButtonPadres] = useState(false);
 
-    const {
-        createGanado,
-        deleteGanado,
-        editGanados,
-        updateGanado,
-        findPadre,
-        editPadres
-    } = useContext(GanadoContext);
+    const { createGanado, deleteGanado, editGanados, updateGanado, findPadre, editPadres } = useContext(GanadoContext);
 
     const inicialGanadosState = {
         id: null,
@@ -183,6 +176,8 @@ const Form = (props) => {
     const linkTraslado = () => navigate(`/traslado/${ganadoData.id}`);
     const linkTempVenta = () => navigate(`/tventa/${ganadoData.id}`);
     const linkTempSalida = () => navigate(`/tsalida/${ganadoData.id}`);
+    const linkLeche = () => navigate(`/leche/${ganadoData.id}`);
+    const linkVacuna = () => navigate(`/vacunas/${ganadoData.id}`);
 
     const padresForm = () => {
         findPadre(ganadoData.id);
@@ -205,6 +200,12 @@ const Form = (props) => {
                 <Button className="p-button-raised p-button-rounded mb-3 p-button-danger"
                     label="Salida" icon="pi pi-sign-out" visible={isVisibleButton}
                     onClick={linkTempSalida} />
+                <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
+                    label="Leche" icon="pi pi-info-circle" visible={isVisibleButton}
+                    onClick={linkLeche} />
+                <Button className="p-button-raised p-button-rounded mb-3 p-button-warning"
+                    label="Vacuna" icon="pi pi-exclamation-circle" visible={isVisibleButton}
+                    onClick={linkVacuna} />
             </span>
             <Button className="p-button-raised p-button-rounded mb-3 p-button-secondary"
                 label="Padres" icon="pi pi-check" visible={isVisibleButton}

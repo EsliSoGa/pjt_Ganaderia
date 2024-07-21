@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Chart } from 'primereact/chart';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
-import { Calendar } from 'primereact/calendar';
 import { useMediaQuery } from 'react-responsive';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -21,21 +20,20 @@ const ReporteGanadoScreen = () => {
     const [nacimientosIndividual, setNacimientosIndividual] = useState([]);
     const [nacimientosGeneral, setNacimientosGeneral] = useState([]);
     const [nacimientosConteo, setNacimientosConteo] = useState([]);
+    const [detalladoReporte, setDetalladoReporte] = useState(null);
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
     useEffect(() => {
         fetchGanadoReporte();
         fetchLecheGanadoOptions();
         fetchLecheGeneralReporte();
-        fetchNacimientosIndividual(selectedGanado);
         fetchNacimientosGeneral();
     }, []);
 
     useEffect(() => {
         if (selectedGanado) {
             fetchNacimientosIndividual(selectedGanado);
-        } else {
-            fetchNacimientosGeneral();
+            fetchDetalladoReporte(selectedGanado);
         }
     }, [selectedGanado]);
 
@@ -73,7 +71,7 @@ const ReporteGanadoScreen = () => {
 
     const fetchNacimientosIndividual = async (id_ganado) => {
         try {
-            const response = await axios.get(http://localhost:8080/reporte/servicio/nacimientos/individual/${id_ganado});
+            const response = await axios.get(`http://localhost:8080/reporte/servicio/nacimientos/individual/${id_ganado}`);
             setNacimientosIndividual(response.data);
         } catch (error) {
             console.error("Error fetching nacimientos individuales:", error);
@@ -95,6 +93,15 @@ const ReporteGanadoScreen = () => {
             setNacimientosConteo(response.data);
         } catch (error) {
             console.error("Error fetching conteo de nacimientos:", error);
+        }
+    };
+
+    const fetchDetalladoReporte = async (id_ganado) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/reporte/detallado/${id_ganado}`);
+            setDetalladoReporte(response.data);
+        } catch (error) {
+            console.error("Error fetching detallado reporte:", error);
         }
     };
 
@@ -229,68 +236,308 @@ const ReporteGanadoScreen = () => {
         doc.save("reporte_conteo_nacimientos.pdf");
     };
 
+    const downloadDetalladoPDF = () => {
+        const doc = new jsPDF('landscape');
+        doc.text("Reporte Detallado de Ganado", 10, 10);
+
+        if (detalladoReporte) {
+            const tableRows = [];
+
+            tableRows.push(['Nombre', detalladoReporte.Nombre]);
+            tableRows.push(['Número', detalladoReporte.Numero]);
+            tableRows.push(['Sexo', detalladoReporte.Sexo]);
+            tableRows.push(['Color', detalladoReporte.Color]);
+            tableRows.push(['Peso', detalladoReporte.Peso]);
+            tableRows.push(['Fecha de Nacimiento', detalladoReporte.FechaNacimiento]);
+            tableRows.push(['Tipo', detalladoReporte.Tipo]);
+            tableRows.push(['Finca', detalladoReporte.Finca]);
+            tableRows.push(['Estado', detalladoReporte.Estado]);
+            tableRows.push(['Comentarios', detalladoReporte.Comentarios]);
+            tableRows.push(['Estado Secundario', detalladoReporte.estado_secundario]);
+
+            // Agregar secciones de tablas
+            tableRows.push(['Traslados', '']);
+            detalladoReporte.Traslados.forEach(item => {
+                tableRows.push([`Fecha: ${item.Fecha}`, `Origen: ${item.Finca_origen}`, `Destino: ${item.Finca_destino}`]);
+            });
+
+            tableRows.push(['Ventas', '']);
+            detalladoReporte.Ventas.forEach(item => {
+                tableRows.push([`Fecha: ${item.Fecha}`, `Comprador: ${item.Comprador}`, `Precio: ${item.Precio}`, `Peso: ${item.Peso}`, `Total: ${item.Total}`]);
+            });
+
+            tableRows.push(['Servicios', '']);
+            detalladoReporte.Servicios.forEach(item => {
+                tableRows.push([`Fecha: ${item.Fecha}`, `Condición: ${item.Condicion}`, `Edad: ${item.Edad}`, `Comentario: ${item.Comentario}`]);
+            });
+
+            tableRows.push(['Salidas', '']);
+            detalladoReporte.Salidas.forEach(item => {
+                tableRows.push([`Fecha: ${item.Fecha}`, `Motivo: ${item.Motivo}`, `Comentarios: ${item.Comentarios}`, `Imagen: ${item.Imagen}`]);
+            });
+
+            tableRows.push(['Vacunas', '']);
+            detalladoReporte.Vacunas.forEach(item => {
+                tableRows.push([`Fecha de Aplicación: ${item.Fecha_aplicacion}`, `Tipo de Vacuna: ${item.Tipo_vacuna}`, `Dosis: ${item.Dosis}`, `Próxima Aplicación: ${item.Proxima_aplicacion}`, `Responsable: ${item.Responsable}`, `Observaciones: ${item.Observaciones}`]);
+            });
+
+            tableRows.push(['Fecha Tentativa de Nacimiento', '']);
+            detalladoReporte.FechaTentativaNacimiento.forEach(item => {
+                tableRows.push([`Fecha: ${item.Fecha}`]);
+            });
+
+            tableRows.push(['Padres', '']);
+            if (detalladoReporte.Padres) {
+                tableRows.push([`Padre: ${detalladoReporte.Padres.Padre}`, `Madre: ${detalladoReporte.Padres.Madre}`, `Tipo de Nacimiento: ${detalladoReporte.Padres.TipoNacimiento}`]);
+            }
+
+            doc.autoTable({
+                head: [['Atributo', 'Valor']],
+                body: tableRows,
+                startY: 20,
+                theme: 'striped',
+                styles: { overflow: 'linebreak' },
+            });
+        }
+
+        doc.save("reporte_detallado.pdf");
+    };
+
     const handleFetchNacimientosConteo = () => {
         fetchNacimientosConteo();
     };
 
-    const options = {
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        let label = context.label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        if (context.parsed !== null) {
-                            label += context.parsed + ' unidades';
-                        }
-                        return label;
-                    }
-                }
-            },
-            datalabels: {
-                color: 'black',
-                formatter: (value, context) => {
-                    return value;
-                }
-            }
-        }
+    const renderDetalladoReporte = () => {
+        if (!detalladoReporte) return null;
+
+        return (
+            <div className="detallado-container">
+                <h2>Reporte Detallado</h2>
+                <div className="info-general">
+                    <h3>Información General</h3>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td className="info-column">
+                                    <table className="info-table">
+                                        <tr><td>Nombre:</td><td>{detalladoReporte.Nombre}</td></tr>
+                                        <tr><td>Número:</td><td>{detalladoReporte.Numero}</td></tr>
+                                        <tr><td>Sexo:</td><td>{detalladoReporte.Sexo}</td></tr>
+                                        <tr><td>Color:</td><td>{detalladoReporte.Color}</td></tr>
+                                        <tr><td>Peso:</td><td>{detalladoReporte.Peso}</td></tr>
+                                        <tr><td>Fecha de Nacimiento:</td><td>{detalladoReporte.FechaNacimiento}</td></tr>
+                                        <tr><td>Tipo:</td><td>{detalladoReporte.Tipo}</td></tr>
+                                        <tr><td>Finca:</td><td>{detalladoReporte.Finca}</td></tr>
+                                        <tr><td>Estado:</td><td>{detalladoReporte.Estado}</td></tr>
+                                        <tr><td>Comentarios:</td><td>{detalladoReporte.Comentarios}</td></tr>
+                                        <tr><td>Estado Secundario:</td><td>{detalladoReporte.estado_secundario}</td></tr>
+                                    </table>
+                                </td>
+                                <td className="image-column">
+                                    <img id="imagen" src={`http://localhost:8080/${detalladoReporte.Imagen}`} alt="Imagen del Ganado" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="info-section">
+                    <h3>Traslados</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detalladoReporte.Traslados.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.Fecha}</td>
+                                    <td>{item.Finca_origen}</td>
+                                    <td>{item.Finca_destino}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="info-section">
+                    <h3>Ventas</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Comprador</th>
+                                <th>Precio</th>
+                                <th>Peso</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detalladoReporte.Ventas.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.Fecha}</td>
+                                    <td>{item.Comprador}</td>
+                                    <td>{item.Precio}</td>
+                                    <td>{item.Peso}</td>
+                                    <td>{item.Total}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="info-section">
+                    <h3>Servicios</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Condición</th>
+                                <th>Edad</th>
+                                <th>Comentario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detalladoReporte.Servicios.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.Fecha}</td>
+                                    <td>{item.Condicion}</td>
+                                    <td>{item.Edad}</td>
+                                    <td>{item.Comentario}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="info-section">
+                    <h3>Salidas</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Motivo</th>
+                                <th>Comentarios</th>
+                                <th>Imagen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detalladoReporte.Salidas.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.Fecha}</td>
+                                    <td>{item.Motivo}</td>
+                                    <td>{item.Comentarios}</td>
+                                    <td className="image-column"><img src={`http://localhost:8080/${item.Imagen}`} alt="Imagen de la Salida" /></td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="info-section">
+                    <h3>Vacunas</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha de Aplicación</th>
+                                <th>Tipo de Vacuna</th>
+                                <th>Dosis</th>
+                                <th>Próxima Aplicación</th>
+                                <th>Responsable</th>
+                                <th>Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detalladoReporte.Vacunas.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.Fecha_aplicacion}</td>
+                                    <td>{item.Tipo_vacuna}</td>
+                                    <td>{item.Dosis}</td>
+                                    <td>{item.Proxima_aplicacion}</td>
+                                    <td>{item.Responsable}</td>
+                                    <td>{item.Observaciones}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="info-section">
+                    <h3>Fecha Tentativa de Nacimiento</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detalladoReporte.FechaTentativaNacimiento.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.Fecha}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="info-section">
+                    <h3>Relación de Padres</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Padre</th>
+                                <th>Madre</th>
+                                <th>Tipo de Nacimiento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {detalladoReporte.Padres && (
+                                <tr>
+                                    <td>{detalladoReporte.Padres.Padre}</td>
+                                    <td>{detalladoReporte.Padres.Madre}</td>
+                                    <td>{detalladoReporte.Padres.TipoNacimiento}</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
     };
 
     return (
         <div className="reporte-container">
             <h1>Reporte</h1>
-            <Dropdown 
-                value={reportType} 
+            <Dropdown
+                value={reportType}
                 options={[
                     { label: 'Ganado', value: 'ganado' },
                     { label: 'Leche', value: 'leche' },
                     { label: 'Nacimientos Individuales', value: 'nacimientos_individuales' },
                     { label: 'Nacimientos Generales', value: 'nacimientos_generales' },
-                    { label: 'Conteo de Nacimientos', value: 'conteo_nacimientos' }
-                ]} 
-                onChange={(e) => setReportType(e.value)} 
-                placeholder="Seleccione el tipo de reporte" 
+                    { label: 'Conteo de Nacimientos', value: 'conteo_nacimientos' },
+                    { label: 'Detallado', value: 'detallado' }
+                ]}
+                onChange={(e) => setReportType(e.value)}
+                placeholder="Seleccione el tipo de reporte"
             />
             {reportType === 'ganado' && (
                 <>
-                    <Dropdown 
-                        value={ganadoChartType} 
+                    <Dropdown
+                        value={ganadoChartType}
                         options={[
                             { label: 'Pie', value: 'pie' },
                             { label: 'List', value: 'list' }
-                        ]} 
-                        onChange={(e) => setGanadoChartType(e.value)} 
-                        placeholder="Seleccione el tipo de gráfico" 
+                        ]}
+                        onChange={(e) => setGanadoChartType(e.value)}
+                        placeholder="Seleccione el tipo de gráfico"
                     />
                     {ganadoChartType === 'pie' && ganadoChartData && (
                         <div className="chart-container">
-                            <Chart type="pie" data={ganadoChartData} options={options} />
+                            <Chart type="pie" data={ganadoChartData} />
                         </div>
                     )}
                     {ganadoChartType === 'list' && (
@@ -316,15 +563,15 @@ const ReporteGanadoScreen = () => {
             )}
             {reportType === 'leche' && (
                 <>
-                    <Dropdown 
-                        value={selectedGanado} 
-                        options={[{ label: 'General', value: null }, ...lecheGanadoOptions]} 
-                        onChange={(e) => setSelectedGanado(e.value)} 
-                        placeholder="Seleccione el ganado" 
+                    <Dropdown
+                        value={selectedGanado}
+                        options={[{ label: 'General', value: null }, ...lecheGanadoOptions]}
+                        onChange={(e) => setSelectedGanado(e.value)}
+                        placeholder="Seleccione el ganado"
                     />
                     {lecheChartData && (
                         <div className="chart-container">
-                            <Chart type="line" data={lecheChartData} options={options} />
+                            <Chart type="line" data={lecheChartData} />
                         </div>
                     )}
                     <Button label="Descargar PDF" icon="pi pi-file-pdf" onClick={downloadLechePDF} className="download-button" />
@@ -332,13 +579,13 @@ const ReporteGanadoScreen = () => {
             )}
             {reportType === 'nacimientos_individuales' && (
                 <>
-                    <Dropdown 
-                        value={selectedGanado} 
-                        options={lecheGanadoOptions} 
-                        onChange={(e) => setSelectedGanado(e.value)} 
-                        placeholder="Seleccione el ganado" 
+                    <Dropdown
+                        value={selectedGanado}
+                        options={lecheGanadoOptions}
+                        onChange={(e) => setSelectedGanado(e.value)}
+                        placeholder="Seleccione el ganado"
                     />
-                    {nacimientosIndividual && (
+                    {nacimientosIndividual.length > 0 && (
                         <table className="report-table">
                             <thead>
                                 <tr>
@@ -418,6 +665,21 @@ const ReporteGanadoScreen = () => {
                         </table>
                     )}
                     <Button label="Descargar PDF" icon="pi pi-file-pdf" onClick={downloadNacimientosConteoPDF} className="download-button" />
+                </>
+            )}
+            {reportType === 'detallado' && (
+                <>
+                    <Dropdown
+                        value={selectedGanado}
+                        options={lecheGanadoOptions}
+                        onChange={(e) => {
+                            setSelectedGanado(e.value);
+                            fetchDetalladoReporte(e.value);
+                        }}
+                        placeholder="Seleccione el ganado"
+                    />
+                    {renderDetalladoReporte()}
+                    <Button label="Descargar PDF" icon="pi pi-file-pdf" onClick={downloadDetalladoPDF} className="download-button" />
                 </>
             )}
         </div>
