@@ -57,8 +57,8 @@ const Navigation = () => {
       submenu: [
         { label: "Actividades", path: "/actividades" },
         { label: "Reportes", path: "/reporte-ganado" },
-        { label: "USUARIOS", path: "/usuario" },
-        { label: "Bitacora", path: "/bitacora" }
+        { label: "Bitacora", path: "/bitacora" },
+        { label: "Usuarios", path: "/usuario" }
       ]
     }
     //{ label: "Usuarios", path: "/usuario" },
@@ -103,7 +103,6 @@ const Navigation = () => {
 
   const profileItems = [
     { label: "Perfil", path: "/profile" },
-    { label: "Editar perfil", path: "/edituser" },
     { label: "Salir", path: "/login", onClick: logOut }
   ];
 
