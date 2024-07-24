@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Chart } from 'primereact/chart';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { useMediaQuery } from 'react-responsive';
+import { Toast } from 'primereact/toast';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import './ReporteGanadoScreen.css';
@@ -12,6 +13,7 @@ const ReporteGanadoScreen = () => {
     const [ganadoReporte, setGanadoReporte] = useState([]);
     const [lecheReporte, setLecheReporte] = useState([]);
     const [lecheGanadoOptions, setLecheGanadoOptions] = useState([]);
+    const [filteredLecheGanadoOptions, setFilteredLecheGanadoOptions] = useState([]);
     const [selectedGanado, setSelectedGanado] = useState(null);
     const [ganadoChartData, setGanadoChartData] = useState(null);
     const [lecheChartData, setLecheChartData] = useState(null);
@@ -22,6 +24,10 @@ const ReporteGanadoScreen = () => {
     const [nacimientosConteo, setNacimientosConteo] = useState([]);
     const [detalladoReporte, setDetalladoReporte] = useState(null);
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+    const toast = useRef(null);
+
+    const fincas = ['Panorama', 'Santa Matilde', 'Vilaflor'];
+    const [fincaActual, setFincaActual] = useState(fincas[0]);
 
     useEffect(() => {
         fetchGanadoReporte();
@@ -36,6 +42,10 @@ const ReporteGanadoScreen = () => {
             fetchDetalladoReporte(selectedGanado);
         }
     }, [selectedGanado]);
+
+    useEffect(() => {
+        filterLecheGanadoOptions(fincaActual);
+    }, [lecheGanadoOptions, fincaActual]);
 
     const fetchGanadoReporte = async () => {
         try {
@@ -54,10 +64,15 @@ const ReporteGanadoScreen = () => {
     const fetchLecheGanadoOptions = async () => {
         try {
             const response = await axios.get("http://localhost:8080/ganado");
-            setLecheGanadoOptions(response.data.map(g => ({ label: g.numero, value: g.id })));
+            setLecheGanadoOptions(response.data.map(g => ({ label: g.numero, value: g.id, finca: g.finca })));
         } catch (error) {
             console.error("Error fetching ganados:", error);
         }
+    };
+
+    const filterLecheGanadoOptions = (finca) => {
+        const filteredOptions = lecheGanadoOptions.filter(g => g.finca === finca);
+        setFilteredLecheGanadoOptions(filteredOptions);
     };
 
     const fetchLecheGeneralReporte = async () => {
@@ -508,8 +523,17 @@ const ReporteGanadoScreen = () => {
         );
     };
 
+    const handleFincaChange = () => {
+        const currentFincaIndex = fincas.indexOf(fincaActual);
+        const nextFinca = fincas[(currentFincaIndex + 1) % fincas.length];
+        setFincaActual(nextFinca);
+        toast.current.show({ severity: 'info', summary: 'Cambio de Finca', detail: `Finca actual: ${nextFinca}`, life: 3000 });
+    };
+
     return (
         <div className="reporte-container">
+            <Toast ref={toast} position="top-center"></Toast>
+            <Button label="Cambiar Finca" icon="pi pi-refresh" onClick={handleFincaChange} className="change-finca-button" />
             <h1>Reporte</h1>
             <Dropdown
                 value={reportType}
@@ -565,7 +589,7 @@ const ReporteGanadoScreen = () => {
                 <>
                     <Dropdown
                         value={selectedGanado}
-                        options={[{ label: 'General', value: null }, ...lecheGanadoOptions]}
+                        options={[{ label: 'General', value: null }, ...filteredLecheGanadoOptions]}
                         onChange={(e) => setSelectedGanado(e.value)}
                         placeholder="Seleccione el ganado"
                     />
@@ -581,7 +605,7 @@ const ReporteGanadoScreen = () => {
                 <>
                     <Dropdown
                         value={selectedGanado}
-                        options={lecheGanadoOptions}
+                        options={filteredLecheGanadoOptions}
                         onChange={(e) => setSelectedGanado(e.value)}
                         placeholder="Seleccione el ganado"
                     />
@@ -671,7 +695,7 @@ const ReporteGanadoScreen = () => {
                 <>
                     <Dropdown
                         value={selectedGanado}
-                        options={lecheGanadoOptions}
+                        options={filteredLecheGanadoOptions}
                         onChange={(e) => {
                             setSelectedGanado(e.value);
                             fetchDetalladoReporte(e.value);

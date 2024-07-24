@@ -94,3 +94,25 @@
       width: 100%;
   }
 }
+
+/* Agregar estilos para el botón de cambiar finca */
+.change-finca-button {
+  margin-top: 20px;
+  display: block;
+  width: 100%;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.change-finca-button:hover {
+  background-color: #0056b3;
+}
+
+.change-finca-button {
+  margin-bottom: 20px;
+}

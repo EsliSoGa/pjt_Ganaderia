@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { GanadoContext } from "../../context/GanadoContext";
 import { Panel } from "primereact/panel";
 import { DataTable } from "primereact/datatable";
@@ -10,10 +10,14 @@ import { Button } from 'primereact/button';
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 import moment from "moment";
+import { Toast } from 'primereact/toast';
 import '../SharedTableStyles.css'; // Importamos el archivo CSS general
 
 const GanadoList = () => {
     const { ganados, findGanado } = useContext(GanadoContext);
+    const [filteredGanados, setFilteredGanados] = useState(ganados);
+    const [isVisible, setIsVisible] = useState(false);
+    const toast = useRef(null);
 
     let cont = 0;
 
@@ -34,8 +38,6 @@ const GanadoList = () => {
         return <img src={`http://localhost:8080/${ganados.imagen}`} alt={ganados.nombre} style={{ width: '50px', height: '50px' }} />;
     }
 
-    const [isVisible, setIsVisible] = useState(false);
-
     const saveGanado = (id) => {
         findGanado(id);
         setIsVisible(true);
@@ -50,7 +52,7 @@ const GanadoList = () => {
         )
     }
 
-    //Filtro
+    // Filtro
     const [filters1, setFilters1] = useState(null);
     const [globalFilterValue1, setGlobalFilterValue1] = useState('');
     const initFilters1 = () => {
@@ -89,15 +91,27 @@ const GanadoList = () => {
         )
     }
 
+    const filterByFinca = (finca) => {
+        const filtered = ganados.filter(ganado => ganado.finca === finca);
+        setFilteredGanados(filtered);
+        toast.current.show({ severity: 'info', summary: 'Filtro', detail: `Mostrando ganado de la finca: ${finca}`, life: 3000 });
+    };
+
     const header1 = renderHeader1();
 
     return (
         <div className="table-container">
+            <Toast ref={toast} position="top-center"></Toast>
             <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
+            <div className="finca-filters">
+                <Button label="Panorama" onClick={() => filterByFinca('Panorama')} className="p-button-info" />
+                <Button label="Santa Matilde" onClick={() => filterByFinca('Santa Matilde')} className="p-button-success" />
+                <Button label="Vilaflor" onClick={() => filterByFinca('Vilaflor')} className="p-button-warning" />
+            </div>
             <Panel header="Listado del ganado" className="table-panel">
                 <div className="table-datatable">
                     <DataTable
-                        value={ganados}
+                        value={filteredGanados}
                         responsiveLayout="scroll"
                         selectionMode="single"
                         onSelectionChange={(e) => saveGanado(e.value.id)}

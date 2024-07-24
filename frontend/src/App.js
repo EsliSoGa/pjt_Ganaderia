@@ -84,7 +84,7 @@ function App() {
           } />
           <Route path="/reporte-ganado" element={
             <ProtectedRoute
-              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe")}
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <ReporteGanadoScreen />
             </ProtectedRoute>
