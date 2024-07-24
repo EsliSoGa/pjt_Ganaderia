@@ -25,6 +25,7 @@ import BitacoraScreen from './screens/BitacoraScreen';
 import LecheScreen from './screens/LecheScreen'; // Nueva importación
 import VacunasScreen from './screens/VacunasScreen'; // Nueva importación
 import ReporteGanadoScreen from './screens/ReporteGanadoScreen';
+import UsuariosScreen from "./screens/UsuarioScreen";
 
 function App() {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -147,14 +148,21 @@ function App() {
             >
               <LecheScreen />
             </ProtectedRoute>
-          } /> {/* Nueva ruta añadida */}
+          } />
           <Route path="/vacunas/:id" element={
             <ProtectedRoute
               isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <VacunasScreen />
             </ProtectedRoute>
-          } /> {/* Nueva ruta añadida */}
+          } />
+          <Route path="/usuario" element={
+            <ProtectedRoute
+              isAllowed={!!currentUser && (currentUser.rol === "Administrador")}
+            >
+              <UsuariosScreen />
+            </ProtectedRoute>
+          } />
         </Routes>
       </div>
     </div>

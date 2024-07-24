@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 
 var usuarioRoute = require('./routes/usuario');
+var rolesRoute = require('./routes/roles');
 var tipo_servicioRoute = require('./routes/tipoServicio');
 var servicioRoute = require('./routes/servicio');
 var ganadoRoute = require('./routes/ganado');
@@ -62,6 +63,7 @@ app.use('/traslado', trasladoRoute);
 app.use('/bitacora', bitacoraRoute);
 app.use('/reporte', reporteRoute); // Añadir la nueva ruta de reportes
 app.use('/vacunas', vacunasRoute);
+app.use('/rol', rolesRoute);
 
 app.listen(app.get('port'), () => {
     console.log('Port:', app.get('port'));

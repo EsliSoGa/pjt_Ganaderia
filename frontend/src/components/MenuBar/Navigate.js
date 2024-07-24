@@ -57,6 +57,7 @@ const Navigation = () => {
       submenu: [
         { label: "Actividades", path: "/actividades" },
         { label: "Reportes", path: "/reporte-ganado" },
+        { label: "USUARIOS", path: "/usuario" },
         { label: "Bitacora", path: "/bitacora" }
       ]
     }
