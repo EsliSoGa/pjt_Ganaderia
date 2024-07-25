@@ -25,6 +25,7 @@ const Form = (props) => {
         nombre: "",
         numero: "",
         sexo: "",
+        color: "",
         peso: "",
         fecha: null,
         tipo: "",
@@ -119,7 +120,7 @@ const Form = (props) => {
     };
 
     const saveGanado = () => {
-        if (ganadoData.numero === "" || ganadoData.nombre === "") {
+        if (ganadoData.numero === "" || ganadoData.sexo === "" || ganadoData.color === "" || ganadoData.fecha === null || ganadoData.tipo === "" || ganadoData.finca === "") {
             showInfo();
         } else {
             const formattedDate = ganadoData.fecha ? moment(ganadoData.fecha).format("YYYY-MM-DD") : null;
@@ -213,6 +214,10 @@ const Form = (props) => {
         </div>
     );
 
+    const fetchAllGanado = () => {
+        // Lógica para mostrar todo el ganado
+    };
+
     return (
         <div>
             <Toast ref={toast} position="top-center"></Toast>
@@ -227,7 +232,7 @@ const Form = (props) => {
             >
                 <div className="p-grid p-fluid" style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
-                        <label>Nombre*</label>
+                        <label>Nombre</label>
                         <InputText
                             value={ganadoData.nombre}
                             onChange={(e) => updateField(e.target.value, "nombre")}
@@ -241,7 +246,7 @@ const Form = (props) => {
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Sexo</label>
+                        <label>Sexo*</label>
                         <Dropdown value={ganadoData.sexo} options={generos} onChange={(e) => updateField(e.value, "sexo")} placeholder="Seleccione un género" />
                     </div>
                     <div className="p-field" style={styles.formField}>
@@ -252,7 +257,7 @@ const Form = (props) => {
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Peso*</label>
+                        <label>Peso</label>
                         <InputText
                             value={ganadoData.peso}
                             onChange={(e) => updateField(e.target.value, "peso")}
@@ -291,7 +296,7 @@ const Form = (props) => {
                         <Dropdown value={ganadoData.estado_secundario} options={estadoSecundarioOptions} onChange={(e) => updateField(e.value, "estado_secundario")} placeholder="Seleccione un estado secundario" />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Imagen*</label>
+                        <label>Imagen</label>
                         <InputText
                             value={ganadoData.imagen}
                             onChange={(e) => updateField(e.target.value, "imagen")}
