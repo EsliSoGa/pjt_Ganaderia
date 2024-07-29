@@ -47,6 +47,12 @@ const Form = (props) => {
         { label: "Femenino", value: "Femenino" }
     ];
 
+    const fincas = [
+        { label: 'Panorama', value: "Panorama" },
+        { label: "Vilaflor", value: "Vilaflor" },
+        { label: "Santa Matilde", value: "Santa Matilde" }
+    ];
+
     const estadoSecundarioOptions = [
         { label: 'Ordeño', value: 'Ordeño' },
         { label: 'PC', value: 'PC' },
@@ -282,10 +288,7 @@ const Form = (props) => {
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Finca*</label>
-                        <InputText
-                            value={ganadoData.finca}
-                            onChange={(e) => updateField(e.target.value, "finca")}
-                        />
+                        <Dropdown value={ganadoData.finca} options={fincas} onChange={(e) => updateField(e.value, "finca")} placeholder="Seleccione una finca" />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Estado</label>

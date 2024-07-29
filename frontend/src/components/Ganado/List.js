@@ -99,7 +99,12 @@ const GanadoList = () => {
 
     const showAllGanado = () => {
         setFilteredGanados(ganados);
-        toast.current.show({ severity: 'info', summary: 'Filtro', detail: 'Mostrando todo el ganado', life: 3000 });
+        toast.current.show({ severity: 'info', summary: 'Filtro', detail: 'Mostrando ganado', life: 3000 });
+    };
+
+    const showAllGanadoF = () => {
+        setFilteredGanados(ganados);
+        toast.current.show({ severity: 'success', summary: 'Filtro', detail: 'Actualizado', life: 3000 });
     };
 
     const header1 = renderHeader1();
@@ -113,6 +118,10 @@ const GanadoList = () => {
                 <Button label="Santa Matilde" onClick={() => filterByFinca('Santa Matilde')} className="p-button-success" />
                 <Button label="Vilaflor" onClick={() => filterByFinca('Vilaflor')} className="p-button-warning" />
                 <Button label="Mostrar Todo" onClick={showAllGanado} className="p-button-secondary" />
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button label="Actualizar" onClick={showAllGanadoF} className="p-button-danger" />
+                </div>
+
             </div>
             <Panel header="Listado del ganado" className="table-panel">
                 <div className="table-datatable">
