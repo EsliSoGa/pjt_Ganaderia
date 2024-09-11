@@ -142,14 +142,14 @@ function App() {
               <BitacoraScreen />
             </ProtectedRoute>
           } />
-          <Route path="/leche/:id" element={
+          <Route path="/leche" element={
             <ProtectedRoute
               isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >
               <LecheScreen />
             </ProtectedRoute>
           } />
-          <Route path="/vacunas/:id" element={
+          <Route path="/vacunas" element={
             <ProtectedRoute
               isAllowed={!!currentUser && (currentUser.rol === "Administrador" || currentUser.rol === "Jefe" || currentUser.rol === "Vaquero")}
             >

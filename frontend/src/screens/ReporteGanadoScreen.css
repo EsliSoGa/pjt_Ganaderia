@@ -1,118 +1,68 @@
 .reporte-container {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
-.chart-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
+.reporte-section {
+  margin-bottom: 40px;
 }
 
-.report-table {
+table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
 }
 
-.report-table th,
-.report-table td {
+th, td {
   border: 1px solid #ddd;
   padding: 8px;
 }
 
-.report-table th {
+th {
   background-color: #f2f2f2;
-  text-align: center;
-}
-
-.report-table td {
-  text-align: center;
-}
-
-.download-button {
-  margin-top: 20px;
-  display: block;
-  width: 100%;
-}
-
-.detallado-container,
-.general-container {
-  margin-top: 20px;
-}
-
-.info-general,
-.info-section {
-  margin-bottom: 20px;
-}
-
-.info-general table,
-.info-section table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.info-general th,
-.info-general td,
-.info-section th,
-.info-section td {
-  border: 1px solid #ddd;
-  padding: 8px;
   text-align: left;
 }
 
-.info-column {
-  width: 70%;
-  vertical-align: top;
+.responsive-table th, .responsive-table td {
+  padding: 12px;
+  text-align: left;
 }
 
-.image-column {
-  width: 30%;
+.image-cell {
   text-align: center;
-  vertical-align: middle;
 }
 
-.image-column img {
+.responsive-image {
+  width: 100%;
   max-width: 200px;
   height: auto;
   display: block;
   margin: 0 auto;
 }
 
-@media (max-width: 768px) {
-  .reporte-container {
-      padding: 10px;
-  }
-
-  .chart-container {
-      max-width: 100%;
-  }
-
-  .download-button {
-      width: 100%;
-  }
+.responsive-image-small {
+  width: 50px;
+  height: 50px;
 }
 
-/* Agregar estilos para el botón de cambiar finca */
-.change-finca-button {
-  margin-top: 20px;
-  display: block;
-  width: 100%;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  text-align: center;
-  border-radius: 5px;
-}
+@media screen and (max-width: 768px) {
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
 
-.change-finca-button:hover {
-  background-color: #0056b3;
-}
+  th, td {
+    padding: 10px;
+    text-align: right;
+  }
 
-.change-finca-button {
-  margin-bottom: 20px;
+  th::before, td::before {
+    float: left;
+    font-weight: bold;
+  }
+
+  th::before {
+    content: attr(data-label);
+  }
+
+  td::before {
+    content: attr(data-label);
+  }
 }

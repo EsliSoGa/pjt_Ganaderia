@@ -46,6 +46,8 @@ const Navigation = () => {
     { label: "Ganado", path: "/ganado" },
     { label: "Salidas(Generales)", path: "/salida" },
     { label: "Ventas(Generales)", path: "/venta" },
+    { label: "Leche", path: "/leche"},
+    { label: "Vacunacion", path: "/vacunas"},
     {
       label: "Aprobaciones",
       submenu: [
