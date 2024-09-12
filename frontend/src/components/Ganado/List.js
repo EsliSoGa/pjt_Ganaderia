@@ -7,6 +7,7 @@ import Form from './Form';
 
 import { InputText } from "primereact/inputtext";
 import { Button } from 'primereact/button';
+import { Tooltip } from 'primereact/tooltip'; // Agregado para mostrar mensaje flotante
 import { FilterMatchMode } from 'primereact/api';
 import { Toolbar } from 'primereact/toolbar';
 import moment from "moment";
@@ -38,9 +39,15 @@ const GanadoList = () => {
         return <img src={`http://localhost:8080/${ganados.imagen}`} alt={ganados.nombre} style={{ width: '50px', height: '50px' }} />;
     }
 
-    const saveGanado = (id) => {
-        findGanado(id);
-        setIsVisible(true);
+    const saveGanado = (id, ganado) => {
+        const birthDate = moment(ganado.fecha);
+        const ageInMonths = moment().diff(birthDate, 'months');
+        if (ageInMonths >= 4) {
+            findGanado(id);
+            setIsVisible(true);
+        } else {
+            toast.current.show({ severity: 'warn', summary: 'Advertencia', detail: 'Este ganado está deshabilitado debido a su edad (menos de 4 meses)', life: 3000 });
+        }
     };
 
     const leftToolbarTemplate = () => {
@@ -91,20 +98,13 @@ const GanadoList = () => {
         )
     }
 
-    const filterByFinca = (finca) => {
-        const filtered = ganados.filter(ganado => ganado.finca === finca);
-        setFilteredGanados(filtered);
-        toast.current.show({ severity: 'info', summary: 'Filtro', detail: `Mostrando ganado de la finca: ${finca}`, life: 3000 });
-    };
-
-    const showAllGanado = () => {
-        setFilteredGanados(ganados);
-        toast.current.show({ severity: 'info', summary: 'Filtro', detail: 'Mostrando ganado', life: 3000 });
-    };
-
-    const showAllGanadoF = () => {
-        setFilteredGanados(ganados);
-        toast.current.show({ severity: 'success', summary: 'Filtro', detail: 'Actualizado', life: 3000 });
+    // Render para deshabilitar filas de ganado menores de 4 meses
+    const rowClassName = (rowData) => {
+        const birthDate = moment(rowData.fecha);
+        const ageInMonths = moment().diff(birthDate, 'months');
+        return {
+            'row-disabled': ageInMonths < 4 // Aplicar una clase CSS para deshabilitar
+        };
     };
 
     const header1 = renderHeader1();
@@ -113,26 +113,17 @@ const GanadoList = () => {
         <div className="table-container">
             <Toast ref={toast} position="top-center"></Toast>
             <Toolbar className="mr-2" start={leftToolbarTemplate}></Toolbar>
-            <div className="finca-filters">
-                <Button label="Panorama" onClick={() => filterByFinca('Panorama')} className="p-button-info" />
-                <Button label="Santa Matilde" onClick={() => filterByFinca('Santa Matilde')} className="p-button-success" />
-                <Button label="Vilaflor" onClick={() => filterByFinca('Vilaflor')} className="p-button-warning" />
-                <Button label="Mostrar Todo" onClick={showAllGanado} className="p-button-secondary" />
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button label="Actualizar" onClick={showAllGanadoF} className="p-button-danger" />
-                </div>
-
-            </div>
             <Panel header="Listado del ganado" className="table-panel">
                 <div className="table-datatable">
                     <DataTable
-                        value={filteredGanados}
+                        value={ganados}
                         responsiveLayout="scroll"
                         selectionMode="single"
-                        onSelectionChange={(e) => saveGanado(e.value.id)}
+                        onSelectionChange={(e) => saveGanado(e.value.id, e.value)}
                         paginator className="p-datatable-customers" showGridlines rows={15}
                         dataKey="id" filters={filters1} filterDisplay="menu"
                         globalFilterFields={['nombre', 'numero', 'sexo', 'estado', 'finca', 'tipo', 'peso', dateGanado, 'tipo_nacimiento', 'estado_secundario']} header={header1} emptyMessage="No se encontró el ganado."
+                        rowClassName={rowClassName} // Asignamos las clases para deshabilitar filas
                     >
                         <Column body={numero} header="No." sortable className="table-column" />
                         <Column field="nombre" header="Nombre" sortable className="table-column" />

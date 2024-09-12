@@ -14,6 +14,7 @@ import { VacunasContext } from "../../context/VacunasContext";
 const VacunasForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [applyToAll, setApplyToAll] = useState(false); // Checkbox para aplicar a todos
 
     const {
         createVacuna,
@@ -38,6 +39,14 @@ const VacunasForm = (props) => {
     };
 
     const [vacunaData, setVacunaData] = useState(initialVacunaState);
+    const [finca, setFinca] = useState(""); // Filtro de finca
+    const [filteredGanados, setFilteredGanados] = useState([]);
+
+    const fincas = [
+        { label: 'Panorama', value: 'Panorama' },
+        { label: 'Vilaflor', value: 'Vilaflor' },
+        { label: 'Santa Matilde', value: 'Santa Matilde' }
+    ];
 
     useEffect(() => {
         if (editVacuna) {
@@ -50,17 +59,18 @@ const VacunasForm = (props) => {
     }, [editVacuna]);
 
     useEffect(() => {
-        if (vacunaData.id_ganado) {
-            const ganado = ganados.find((p) => p.id === parseInt(vacunaData.id_ganado));
-            if (ganado) {
-                setVacunaData((prevState) => ({
-                    ...prevState,
-                    Nombre: ganado.nombre,
-                    Numero: ganado.numero
-                }));
-            }
+        if (finca) {
+            // Filtrar ganados según la finca y que tengan más de 4 meses
+            const filtered = ganados.filter((ganado) => {
+                const birthDate = moment(ganado.fecha);
+                const ageInMonths = moment().diff(birthDate, 'months');
+                return ganado.finca === finca && ageInMonths > 4;
+            });
+            setFilteredGanados(filtered);
+        } else {
+            setFilteredGanados([]);
         }
-    }, [vacunaData.id_ganado, ganados]);
+    }, [finca, ganados]);
 
     const updateField = (data, field) => {
         setVacunaData({
@@ -72,6 +82,7 @@ const VacunasForm = (props) => {
     const clearSelected = () => {
         setIsVisible(false);
         setVacunaData(initialVacunaState);
+        setApplyToAll(false);
     };
 
     const saveVacuna = () => {
@@ -80,20 +91,39 @@ const VacunasForm = (props) => {
         } else {
             const formattedFechaAplicacion = vacunaData.fecha_aplicacion ? moment(vacunaData.fecha_aplicacion).format("YYYY-MM-DD") : null;
             const formattedProximaAplicacion = vacunaData.proxima_aplicacion ? moment(vacunaData.proxima_aplicacion).format("YYYY-MM-DD") : null;
-            const vacunaDataWithFormattedDate = {
-                ...vacunaData,
-                fecha_aplicacion: formattedFechaAplicacion,
-                proxima_aplicacion: formattedProximaAplicacion,
-            };
 
-            if (!editVacuna) {
-                const ganado = ganados.find((p) => p.id === parseInt(vacunaData.id_ganado));
-                vacunaDataWithFormattedDate.Nombre = ganado.nombre;
-                vacunaDataWithFormattedDate.Numero = ganado.numero;
-                createVacuna(vacunaDataWithFormattedDate);
+            if (applyToAll && filteredGanados.length > 0) {
+                // Aplicar la vacuna a todos los animales filtrados
+                filteredGanados.forEach(ganado => {
+                    const vacunaDataWithFormattedDate = {
+                        ...vacunaData,
+                        id_ganado: ganado.id,
+                        Nombre: ganado.nombre,
+                        Numero: ganado.numero,
+                        fecha_aplicacion: formattedFechaAplicacion,
+                        proxima_aplicacion: formattedProximaAplicacion,
+                    };
+                    createVacuna(vacunaDataWithFormattedDate);
+                });
             } else {
-                vacunaDataWithFormattedDate.id_usuario = 2;
-                updateVacuna(vacunaDataWithFormattedDate);
+                // Aplicar solo al ganado seleccionado
+                if (!vacunaData.id_ganado) {
+                    showInfo();
+                    return;
+                }
+
+                const vacunaDataWithFormattedDate = {
+                    ...vacunaData,
+                    fecha_aplicacion: formattedFechaAplicacion,
+                    proxima_aplicacion: formattedProximaAplicacion,
+                };
+
+                if (!editVacuna) {
+                    createVacuna(vacunaDataWithFormattedDate);
+                } else {
+                    vacunaDataWithFormattedDate.id_usuario = 2;
+                    updateVacuna(vacunaDataWithFormattedDate);
+                }
             }
             clearSelected();
         }
@@ -102,7 +132,7 @@ const VacunasForm = (props) => {
     const toast = useRef(null);
 
     const showInfo = () => {
-        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
+        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe llenar todos los campos requeridos (*)', life: 3000 });
     }
 
     const _deleteVacuna = () => {
@@ -147,9 +177,17 @@ const VacunasForm = (props) => {
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
+                        <label>Finca*</label>
+                        <Dropdown value={finca} options={fincas} onChange={(e) => setFinca(e.value)} placeholder="Seleccione una finca" />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
                         <label>Ganado*</label>
-                        <Dropdown value={vacunaData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
-                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                        <Dropdown value={vacunaData.id_ganado} options={filteredGanados} optionLabel="numero" optionValue="id"
+                            onChange={(e) => updateField(e.value, "id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Aplicar a todos</label>
+                        <input type="checkbox" checked={applyToAll} onChange={() => setApplyToAll(!applyToAll)} />
                     </div>
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha de Aplicación*</label>

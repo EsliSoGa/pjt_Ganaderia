@@ -5,22 +5,24 @@ import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
+import { Checkbox } from 'primereact/checkbox';
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
-
 import { LecheContext } from "../../context/LecheContext";
 
 const LecheForm = (props) => {
     const { isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
+    const [applyToAll, setApplyToAll] = useState(false); // Checkbox for applying to all
+    const [selectedFinca, setSelectedFinca] = useState(null); // Keep track of the selected finca
 
     const {
         createLeche,
         deleteLeche,
         editLeche,
         updateLeche,
-        ganados
+        ganados // List of all ganado (cattle)
     } = useContext(LecheContext);
 
     const inicialLecheState = {
@@ -34,6 +36,12 @@ const LecheForm = (props) => {
     };
 
     const [lecheData, setLecheData] = useState(inicialLecheState);
+
+    // Filter ganado to only show females older than 12 months and filter by selected finca
+    const filteredGanados = ganados.filter((ganado) => {
+        const ageInMonths = moment().diff(moment(ganado.fecha), 'months');
+        return ganado.sexo === "Femenino" && ageInMonths > 12 && (selectedFinca ? ganado.finca === selectedFinca : true);
+    });
 
     useEffect(() => {
         if (editLeche) {
@@ -67,6 +75,8 @@ const LecheForm = (props) => {
     const clearSelected = () => {
         setIsVisible(false);
         setLecheData(inicialLecheState);
+        setApplyToAll(false);
+        setSelectedFinca(null); // Clear finca on close
     };
 
     const saveLeche = () => {
@@ -79,14 +89,27 @@ const LecheForm = (props) => {
                 Fecha: formattedDate,
             };
 
-            if (!editLeche) {
-                const ganado = ganados.find((p) => p.id === parseInt(lecheData.Id_ganado));
-                lecheDataWithFormattedDate.Nombre = ganado.nombre;
-                lecheDataWithFormattedDate.Numero = ganado.numero;
-                createLeche(lecheDataWithFormattedDate);
+            if (applyToAll) {
+                // Apply to all filtered ganado
+                filteredGanados.forEach((ganado) => {
+                    const lecheForGanado = {
+                        ...lecheDataWithFormattedDate,
+                        Id_ganado: ganado.id,
+                        Nombre: ganado.nombre,
+                        Numero: ganado.numero
+                    };
+                    createLeche(lecheForGanado);
+                });
             } else {
-                lecheDataWithFormattedDate.id_usuario = 2;
-                updateLeche(lecheDataWithFormattedDate);
+                if (!editLeche) {
+                    const ganado = ganados.find((p) => p.id === parseInt(lecheData.Id_ganado));
+                    lecheDataWithFormattedDate.Nombre = ganado.nombre;
+                    lecheDataWithFormattedDate.Numero = ganado.numero;
+                    createLeche(lecheDataWithFormattedDate);
+                } else {
+                    lecheDataWithFormattedDate.id_usuario = 2;
+                    updateLeche(lecheDataWithFormattedDate);
+                }
             }
             clearSelected();
         }
@@ -140,10 +163,18 @@ const LecheForm = (props) => {
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
-                        <label>Ganado*</label>
-                        <Dropdown value={lecheData.Id_ganado} options={ganados} optionLabel="numero" optionValue="id"
-                            onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                        <label>Finca*</label>
+                        <Dropdown value={selectedFinca} options={Array.from(new Set(ganados.map(g => g.finca)))}
+                            onChange={(e) => setSelectedFinca(e.value)}
+                            placeholder="Seleccione una finca" disabled={!!selectedFinca} />
                     </div>
+                    {!applyToAll && (
+                        <div className="p-field" style={styles.formField}>
+                            <label>Ganado*</label>
+                            <Dropdown value={lecheData.Id_ganado} options={filteredGanados} optionLabel="numero" optionValue="id"
+                                onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                        </div>
+                    )}
                     <div className="p-field" style={styles.formField}>
                         <label>Fecha*</label>
                         <DatePicker
@@ -159,6 +190,10 @@ const LecheForm = (props) => {
                             value={lecheData.Produccion_diaria}
                             onChange={(e) => updateField(e.target.value, "Produccion_diaria")}
                         />
+                    </div>
+                    <div className="p-field-checkbox" style={styles.formField}>
+                        <Checkbox inputId="applyToAll" checked={applyToAll} onChange={(e) => setApplyToAll(e.checked)} />
+                        <label htmlFor="applyToAll" className="p-checkbox-label">Aplicar a todos los animales filtrados</label>
                     </div>
                 </div>
             </Dialog>
