@@ -2,14 +2,12 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Dropdown } from 'primereact/dropdown';
+import { InputNumber } from "primereact/inputnumber";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { InputNumber } from "primereact/inputnumber";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { Dropdown } from 'primereact/dropdown';
+import { Calendar } from "primereact/calendar";
 import moment from "moment";
-
 import { ServicioContext } from "../../context/ServicioContext";
 
 const ServicioForm = (props) => {
@@ -21,24 +19,18 @@ const ServicioForm = (props) => {
         deleteServicio,
         editServicio,
         updateServicio,
+        tipoServicios,
         ganados
     } = useContext(ServicioContext);
 
-    const tipoServicios = [
-        { label: "Palpación", value: "Palpación" },
-        { label: "Visual", value: "Visual" }
-    ];
-
     const inicialServiciosState = {
         id: null,
-        Fecha: "",
+        Fecha: null,
         Condicion: "",
         Edad: "",
         comentario: "",
         id_ganado: idS,
         Nombre_tipo: "",
-        Nombre: "",
-        Numero: "",
         id_usuario: 2
     };
 
@@ -46,34 +38,28 @@ const ServicioForm = (props) => {
 
     useEffect(() => {
         if (editServicio) {
-            setServicioData(editServicio);
-        } else {
-            const ganado = ganados.find((p) => p.id === parseInt(idS));
-            if (ganado) {
-                setServicioData((prevState) => ({
-                    ...prevState,
-                    Nombre: ganado.Nombre,
-                    Numero: ganado.Numero
-                }));
-            }
+            setServicioData({
+                ...editServicio,
+                Fecha: editServicio.Fecha ? new Date(editServicio.Fecha) : null
+            });
         }
-    }, [editServicio, ganados, idS]);
+    }, [editServicio]);
 
     const updateField = (data, field) => {
-        console.log(`Actualizando campo ${field} con valor:`, data);
-        setServicioData((prevState) => ({
-            ...prevState,
+        setServicioData({
+            ...servicioData,
             [field]: data
-        }));
+        });
+    };
+
+    const clearSelected = () => {
+        setIsVisible(false);
+        setServicioData(inicialServiciosState);
     };
 
     const saveServicio = () => {
-        if (servicioData.Nombre === "" || servicioData.comentario === "") {
+        if (servicioData.Condicion === "" || servicioData.comentario === "") {
             showInfo();
-            console.log("Campos requeridos vacíos:", {
-                Nombre: servicioData.Nombre,
-                comentario: servicioData.comentario
-            });
         } else {
             const formattedDate = servicioData.Fecha ? moment(servicioData.Fecha).format("YYYY-MM-DD") : null;
             const servicioDataWithFormattedDate = {
@@ -81,38 +67,28 @@ const ServicioForm = (props) => {
                 Fecha: formattedDate,
             };
 
-            console.log("Intentando guardar servicio con datos:", servicioDataWithFormattedDate);
-
             if (!editServicio) {
-                const ganado = ganados.find((p) => p.id === parseInt(idS));
-                servicioDataWithFormattedDate.Nombre = ganado.Nombre;
-                servicioDataWithFormattedDate.Numero = ganado.Numero;
                 createServicio(servicioDataWithFormattedDate);
             } else {
                 servicioDataWithFormattedDate.id_usuario = 2;
                 updateServicio(servicioDataWithFormattedDate);
             }
-            retornar();
+            clearSelected();
         }
     };
 
     const toast = useRef(null);
+
     const showInfo = () => {
-        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
+        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe llenar todos los campos requeridos (*)', life: 3000 });
     }
 
     const _deleteServicio = () => {
         if (editServicio) {
-            servicioData.id_usuario = 2;
             deleteServicio(servicioData);
             showError();
         }
-        retornar();
-    };
-
-    const retornar = () => {
-        setServicioData(inicialServiciosState);
-        setIsVisible(false);
+        clearSelected();
     };
 
     const showError = () => {
@@ -122,7 +98,7 @@ const ServicioForm = (props) => {
     const dialogFooter = (
         <div style={styles.dialogFooter}>
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteServicio} reject={retornar}
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteServicio} reject={clearSelected}
                 acceptClassName="p-button-danger"
             />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
@@ -134,11 +110,6 @@ const ServicioForm = (props) => {
         </div>
     );
 
-    const clearSelected = () => {
-        setIsVisible(false);
-        setServicioData(inicialServiciosState);
-    };
-
     return (
         <div>
             <Toast ref={toast} position="top-center"></Toast>
@@ -147,40 +118,41 @@ const ServicioForm = (props) => {
                 modal={true}
                 style={{ width: "550px" }}
                 contentStyle={{ overflow: "visible" }}
-                header="Detalles de servicios"
+                header="Detalle de servicio"
                 onHide={() => clearSelected()}
                 footer={dialogFooter}
             >
                 <div style={styles.formGrid}>
                     <div className="p-field" style={styles.formField}>
-                        <label>Tipo de deteccion</label>
-                        <Dropdown value={servicioData.Nombre_tipo} options={tipoServicios} optionLabel="label" optionValue="value"
-                            onChange={(e) => updateField(e.value, "Nombre_tipo")} placeholder="Seleccione un tipo" />
+                        <label>Tipo de servicio*</label>
+                        <Dropdown value={servicioData.id_tipo_servicio} options={tipoServicios} optionLabel="Nombre_tipo" optionValue="id"
+                            onChange={(e) => updateField(e.value, "id_tipo_servicio")} filter showClear filterBy="Nombre_tipo" placeholder="Seleccione un tipo" />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Fecha</label>
-                        <DatePicker
-                            selected={servicioData.Fecha ? new Date(servicioData.Fecha) : null}
-                            onChange={(date) => updateField(date, "Fecha")}
-                            dateFormat="dd-MM-yyyy"
+                        <label>Fecha*</label>
+                        <Calendar
+                            value={servicioData.Fecha}
+                            onChange={(e) => updateField(e.value, "Fecha")}
+                            dateFormat="dd-mm-yy"
+                            className="p-inputtext p-component"
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Condición</label>
+                        <label>Condición*</label>
                         <InputText
                             value={servicioData.Condicion}
                             onChange={(e) => updateField(e.target.value, "Condicion")}
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Meses Feto</label>
+                        <label>Edad*</label>
                         <InputNumber
                             value={servicioData.Edad}
                             onChange={(e) => updateField(e.value, "Edad")}
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Comentario</label>
+                        <label>Comentario*</label>
                         <InputText
                             value={servicioData.comentario}
                             onChange={(e) => updateField(e.target.value, "comentario")}

@@ -1,9 +1,9 @@
 /* Estilo del combobox */
 .combobox-finca {
   width: 100%;
-  max-width: 300px;
-  margin-bottom: 20px;
-  font-size: 16px;
+  max-width: 220px;
+  margin-bottom: 10px;
+  font-size: 14px;
   z-index: 10;
 }
 
@@ -123,6 +123,33 @@ p {
   color: #555;
 }
 
+/* Diseño de la tabla de partos estimados */
+.tabla-partos {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tabla-partos th,
+.tabla-partos td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.tabla-partos th {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.tabla-partos td {
+  font-size: 14px;
+  color: #333;
+}
+
 /* Ajustes responsive para tabletas */
 @media screen and (max-width: 768px) {
   .reporte-box {
@@ -139,5 +166,9 @@ p {
 
   p {
     font-size: 14px;
+  }
+
+  .tabla-partos {
+    font-size: 12px;
   }
 }
