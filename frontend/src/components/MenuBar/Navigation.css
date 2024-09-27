@@ -2,6 +2,17 @@
 .navbar {
   background-color: #343a40;
   padding: 10px 20px;
+  position: fixed; /* Barra fija en la parte superior */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Asegura que la barra esté siempre por encima de otros elementos */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade sombra para dar más profundidad */
+}
+
+/* Ajuste para evitar que la barra oculta el contenido */
+body {
+  padding-top: 70px; /* Ajuste el valor según la altura de la barra de navegación */
 }
 
 .nav-wrapper {
@@ -56,6 +67,7 @@
   list-style: none;
   padding: 10px;
   border-radius: 5px;
+  z-index: 1001; /* Asegura que los submenús se muestren por encima de otros elementos */
 }
 
 .nav-item:hover .submenu {
@@ -83,6 +95,7 @@
   cursor: pointer;
 }
 
+/* Media Queries for responsiveness */
 @media (max-width: 1024px) {
   .nav-menu {
     display: none;

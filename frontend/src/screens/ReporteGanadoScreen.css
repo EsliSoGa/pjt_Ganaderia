@@ -1,174 +1,307 @@
-/* Estilo del combobox */
-.combobox-finca {
-  width: 100%;
-  max-width: 220px;
-  margin-bottom: 10px;
-  font-size: 14px;
-  z-index: 10;
+/* Estilos globales */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
 }
 
-/* Fondo y contenedor principal */
+/* Contenedor principal */
 .reporte-container {
-  padding: 20px;
-  background: linear-gradient(135deg, #b5fffc 30%, #a3ffba 100%);
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
-  overflow: hidden;
+  padding: 5px;
 }
 
-.reporte-container::before,
-.reporte-container::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.2;
-  z-index: 0;
+/* Barra de título del reporte */
+.reporte-header {
+  width: 100%;
+  background-color: #4CAF50;
+  padding: 20px;
+  color: white;
+  text-align: center;
+  position: sticky;
+  top: 60px; /* Debe estar debajo de la barra de navegación */
+  z-index: 10; /* Debe ser menor que el z-index de la barra de navegación */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.reporte-container::before {
-  width: 400px;
-  height: 400px;
-  background-color: #71db9e;
-  top: -100px;
-  left: -150px;
-  animation: move1 8s ease-in-out infinite alternate;
+
+.reporte-header h1 {
+  margin: 0;
+  font-size: 20px;
 }
 
-.reporte-container::after {
-  width: 600px;
-  height: 600px;
-  background-color: #49c1a2;
-  bottom: -250px;
-  right: -150px;
-  animation: move2 10s ease-in-out infinite alternate;
+/* Cuadros de información */
+.info-section {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 15px 0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes move1 {
-  0% {
-    transform: translateY(0px);
-  }
-  100% {
-    transform: translateY(50px);
-  }
+.info-section h4 {
+  color: #4CAF50;
+  font-size: 18px;
+  border-bottom: 2px solid #4CAF50;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
 }
 
-@keyframes move2 {
-  0% {
-    transform: translateX(0px);
-  }
-  100% {
-    transform: translateX(-50px);
-  }
+.info-section p {
+  margin: 5px 0;
+  font-size: 14px;
 }
 
-/* Título de la página */
-.titulo-pagina {
-  font-size: 28px;
-  color: #ffffff;
-  z-index: 1;
-  margin-bottom: 20px;
-  font-weight: bold;
-  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Diseño de los reportes con sombras y hover */
+/* Grid de reportes */
 .reportes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
   width: 100%;
-  max-width: 1200px;
-  z-index: 1;
+  max-width: 2200px;
+  margin-top: 40px;
 }
 
+/* Cuadros de reportes */
 .reporte-box {
-  background-color: #ffffff;
-  border: 2px solid #2e7d32;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   text-align: center;
-  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 400px;
+  max-height: 435px;
   overflow: hidden;
+  position: relative;
+  max-width: 100%; /* Asegurar que el reporte no se expanda más del 100% */
 }
 
-.reporte-box::before {
-  content: "";
-  position: absolute;
-  top: -50px;
-  right: -50px;
-  width: 150px;
-  height: 150px;
-  background-color: #a3ffba;
-  border-radius: 50%;
-  opacity: 0.4;
+/* Para contenido que necesita scroll */
+.scrollable-box {
+  overflow-y: auto;
+  max-height: 400px; /* Controlar la altura máxima del contenido */
+  overflow-x: hidden; /* Evitar el desbordamiento horizontal */
 }
 
-.reporte-box:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+/* Responsividad de gráficos */
+.responsive-graph {
+  width: 100%;
+  height: 100%;
 }
 
-h2 {
-  font-size: 22px;
-  color: #2e7d32;
+/* Ficha presentable */
+.presentable-ficha {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+  width: 100%;
+  max-width: 100%;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
 }
 
-p {
+.presentable-ficha h3, .presentable-ficha h4 {
+  color: #4CAF50;
   font-size: 16px;
-  color: #555;
 }
 
-/* Diseño de la tabla de partos estimados */
+.presentable-ficha p {
+  margin: 3px 0;
+  font-size: 13px;
+}
+
+/* Ficha técnica del ganado */
+.ficha-ganado img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+/* Tablas para los reportes 3 y 4 */
 .tabla-partos {
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
   border-collapse: collapse;
-  background-color: #fff;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  margin-top: 10px;
+  table-layout: auto; /* Ajustar el ancho de las tablas automáticamente */
+  overflow-x: auto; /* Agregar desplazamiento horizontal */
+  display: block; /* Permitir que se comporte como bloque para scroll horizontal */
+  white-space: nowrap; /* Evitar que el contenido de las celdas se quiebre */
 }
 
-.tabla-partos th,
-.tabla-partos td {
+.tabla-partos th, .tabla-partos td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  white-space: nowrap; /* Evitar que el contenido se ajuste en varias líneas */
+}
+
+.tabla-partos thead {
+  position: sticky;
+  top: 0;
+  background-color: #4CAF50;
+  color: white;
+  z-index: 1; /* Asegurar que la cabecera se quede visible en scroll */
+}
+
+/* Contenedor de la imagen, centramos la imagen usando Flexbox */
+.ganado-img-container {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 300px;
+  margin-bottom: 15px;
+}
+
+/* Imagen del ganado */
+.ganado-img-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.5s ease-in-out;
+  object-fit: contain;
+}
+
+/* Efecto hover para expandir la imagen completamente */
+.ganado-img-container img:hover {
+  transform: scale(1.1);
+}
+
+/* Contenedor del input de búsqueda y el botón */
+.filtro-busqueda-ganado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Input de búsqueda estilizado */
+.filtro-busqueda-ganado input {
+  width: 220px;
+  padding: 8px 12px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-right: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de las secciones separadas */
+.info-section-separador {
+  border-top: 2px solid #ddd;
+  padding-top: 10px;
+  margin-top: 20px;
+}
+
+/* Estilo de los títulos dentro de las secciones */
+.info-section h3, .info-section h4 {
+  color: #4CAF50;
+  font-size: 16px;
+}
+
+.info-section p {
+  margin: 3px 0;
+  font-size: 13px;
+}
+
+/* Diferenciación de las secciones */
+.section-highlight {
+  background-color: white;
+  border-radius: 8px;
   padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
+  margin: 10px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tabla-partos th {
-  background-color: #2e7d32;
+/* Botón de búsqueda estilizado */
+.filtro-busqueda-ganado button {
+  background-color: #5b4caf;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filtro-busqueda-ganado button:hover {
+  background-color: #45a049;
+}
+
+/* Contenedor para el botón de alternar vistas y el dropdown */
+.toggle-container {
+  margin: 10px 0;
+  display: flex;
+  justify-content: flex-start; /* Alinear ambos elementos a la izquierda */
+  align-items: center;
+  gap: 5px; /* Añadir espacio entre el botón y el selector */
+  flex-wrap: nowrap; /* Evitar que los elementos se envuelvan en otra fila */
+}
+
+/* Botón de alternar vista */
+.toggle-button {
+  background-color: #aa7633;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  margin-top: 0; /* Elimina el margen superior para alinear el botón */
+}
+
+.toggle-button:hover {
+  background-color: #45a049;
+}
+
+
+
+/* Tabla para mostrar listado de animales */
+.reporte-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.reporte-tabla th, .reporte-tabla td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.reporte-tabla th {
+  background-color: #4CAF50;
   color: white;
 }
 
-.tabla-partos td {
+.reporte-tabla td {
   font-size: 14px;
-  color: #333;
 }
 
-/* Ajustes responsive para tabletas */
-@media screen and (max-width: 768px) {
-  .reporte-box {
-    padding: 15px;
-  }
-
-  .titulo-pagina {
-    font-size: 24px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  p {
-    font-size: 14px;
-  }
-
-  .tabla-partos {
-    font-size: 12px;
-  }
+.reporte-tabla tbody tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.3s ease;
 }
