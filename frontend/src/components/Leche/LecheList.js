@@ -108,10 +108,10 @@ const LecheList = () => {
                         onSelectionChange={(e) => saveLeche(e.value.id)}
                         paginator className="p-datatable-customers" showGridlines rows={10}
                         dataKey="id" filters={filters1} filterDisplay="menu"
-                        globalFilterFields={['Fecha', 'Produccion_diaria', 'ganado.Numero']} header={header1} emptyMessage="No se encontraron registros de producción de leche."
+                        globalFilterFields={['Fecha', 'Produccion_diaria']} header={header1} emptyMessage="No se encontraron registros de producción de leche."
                     >
                         <Column body={numero} header="No." sortable className="table-column" />
-                        <Column field="ganado.Numero" header="Ganado" sortable className="table-column" />
+                        <Column field="Numero" header="Ganado" sortable className="table-column" />
                         <Column field="Fecha" body={dateLeche} header="Fecha de producción" sortable className="table-column" />
                         <Column field="Produccion_diaria" header="Producción diaria" sortable className="table-column" />
                         <Column field="ganado.finca" header="Finca" sortable className="table-column" />

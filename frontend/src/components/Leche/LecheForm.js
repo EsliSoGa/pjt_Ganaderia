@@ -172,7 +172,7 @@ const LecheForm = (props) => {
                         <div className="p-field" style={styles.formField}>
                             <label>Ganado*</label>
                             <Dropdown value={lecheData.Id_ganado} options={filteredGanados} optionLabel="numero" optionValue="id"
-                                onChange={(e) => updateField(e.value, "Id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
+                                onChange={(e) => updateField(e.value, "id_ganado")} filter showClear filterBy="numero" placeholder="Seleccione un ganado" />
                         </div>
                     )}
                     <div className="p-field" style={styles.formField}>

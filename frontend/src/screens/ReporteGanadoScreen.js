@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { PieChart, BarChart, Bar, Pie, Cell, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import Select from 'react-select'; // Para el combobox
 import './ReporteGanadoScreen.css';
 
@@ -256,6 +256,37 @@ const ReporteGanadoScreen = () => {
     setIsGraphView(!isGraphView); // Cambia entre gráfica y tabla
   };
 
+  // Calcular la producción media diaria
+  function calcularProduccionMediaDiaria(produccionSemanal) {
+    return (produccionSemanal / 7).toFixed(2);
+  }
+
+  // Calcular la producción acumulada mensual (ejemplo básico)
+  function calcularProduccionAcumuladaMensual() {
+    // Aquí puedes agregar la lógica real para calcular la producción mensual acumulada
+    return 1200; // Ejemplo estático
+  }
+
+  // Formatear datos para la gráfica de tendencia
+  function formatearDatosGrafica(data) {
+    return data.map(item => ({
+      Fecha: formatFecha(item.FechaProduccion),
+      Produccion_diaria: item.Produccion_diaria
+    }));
+  }
+
+  // Analizar cambios en la producción para generar alertas
+  function analizarCambiosProduccion(produccionSemanal) {
+    const mediaDiaria = calcularProduccionMediaDiaria(produccionSemanal);
+    if (mediaDiaria < 15) {
+      return <p className="alerta-alerta">Alerta: Producción significativamente baja</p>;
+    } else if (mediaDiaria > 25) {
+      return <p className="alerta-alerta">Alerta: Producción significativamente alta</p>;
+    } else {
+      return <p>Producción dentro del rango esperado.</p>;
+    }
+  }
+
   return (
     <div className="reporte-container">
       {/* Barra de título */}
@@ -267,7 +298,7 @@ const ReporteGanadoScreen = () => {
       <div className="reportes-grid">
 
         {/* Reporte 1: Tipos de animales por finca */}
-        <div className="reporte-box">
+        <div className="reporte-box scrollable-box">
           <h2>Reporte 1 - Animales por Finca</h2>
 
           {/* Contenedor para el dropdown y el botón */}
@@ -337,7 +368,25 @@ const ReporteGanadoScreen = () => {
               </tbody>
             </table>
           )}
+
+          {/* Nueva sección: Gráfica de barras para mostrar la cantidad de animales por finca */}
+          <h3>Distribución de Animales por Finca</h3>
+          {reporte1Data.length > 0 ? (
+            <ResponsiveContainer className="responsive-graph" width="100%" height={300}>
+              <BarChart data={reporte1Data}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="Tipo" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="cantidad" fill="#82ca9d" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <p>No hay datos para mostrar</p>
+          )}
         </div>
+
 
         {/* Reporte 2: Estimación de partos (fichas de animales) */}
         <div className="reporte-box scrollable-box">
@@ -568,7 +617,7 @@ const ReporteGanadoScreen = () => {
 
         {/* Reporte 6: Información del Ganado */}
         <div className="reporte-box scrollable-box">
-          <h2>Reporte 6 - Información del Ganado</h2>
+          <h2>Reporte 6- Leche Ganado Individual</h2>
           <FiltroReporte6 onNumeroChange={fetchReporte6} />
 
           {reporte6Data.length > 0 ? (
@@ -598,10 +647,152 @@ const ReporteGanadoScreen = () => {
                 {reporte6Data[0].FechaProduccion ? (
                   <>
                     <p><strong>Última Fecha de Producción:</strong> {formatFecha(reporte6Data[0].FechaProduccion)}</p>
-                    <p><strong>Producción Diaria:</strong> {reporte6Data[0].Produccion_diaria} litros</p>
+                    <p><strong>Producción Semanal:</strong> {reporte6Data[0].Produccion_diaria} litros</p>
+                    <p><strong>Producción Media Diaria:</strong> {calcularProduccionMediaDiaria(reporte6Data[0].Produccion_diaria)} litros</p>
+                    <p><strong>Producción Acumulada Mensual:</strong> {calcularProduccionAcumuladaMensual()} litros</p>
                   </>
                 ) : (
                   <p>No hay datos de producción de leche.</p>
+                )}
+              </div>
+
+              {/* Gráfica de tendencia de producción semanal */}
+              <div className="info-section section-highlight">
+                <h4>Tendencia de Producción Semanal</h4>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={formatearDatosGrafica(reporte6Data)}>
+                    <Line type="monotone" dataKey="Produccion_diaria" stroke="#8884d8" name="Producción Semanal" />
+                    <CartesianGrid stroke="#ccc" />
+                    <XAxis dataKey="Fecha" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Alertas de producción */}
+              <div className="info-section alertas">
+                <h4>Alertas de Producción</h4>
+                {analizarCambiosProduccion(reporte6Data[0].Produccion_diaria)}
+              </div>
+            </div>
+          ) : (
+            <p>No se ha encontrado información para el número ingresado.</p>
+          )}
+        </div>
+
+
+        {/* Nuevo Reporte 7 que abarca las tres columnas */}
+        {/* Reporte 7 (Nuevo espacio que abarca toda la tercera fila con contenido del Reporte 5) */}
+        <div className="reporte-box-large">
+          <h2>Ficha del Ganado</h2>
+
+          {reporte5Data ? (
+            <div className="ficha-ganado-horizontal">
+              {/* Información del animal */}
+              <div className="info-section-horizontal">
+                <h3>Ficha de {reporte5Data.Nombre}</h3>
+                <div className="ganado-img-container">
+                  <img src={`http://localhost:8080/${reporte5Data.Imagen}`} alt="Ganado" />
+                </div>
+                <p><strong>Número:</strong> {reporte5Data.Numero}</p>
+                <p><strong>Sexo:</strong> {reporte5Data.Sexo}</p>
+                <p><strong>Color:</strong> {reporte5Data.Color}</p>
+                <p><strong>Peso:</strong> {reporte5Data.Peso} kg</p>
+                <p><strong>Fecha de Nacimiento:</strong> {formatFecha(reporte5Data.Fecha)}</p>
+                <p><strong>Tipo:</strong> {reporte5Data.Tipo}</p>
+                <p><strong>Finca:</strong> {reporte5Data.Finca}</p>
+              </div>
+
+              {/* Información de los padres */}
+              <div className="info-section-horizontal">
+                <h4>Información de los Padres</h4>
+                <p><strong>Padre:</strong> {reporte5Data.NombrePadre || 'No disponible'}</p>
+                <p><strong>Madre:</strong> {reporte5Data.NombreMadre || 'No disponible'}</p>
+              </div>
+
+              {/* Producción de Leche */}
+              <div className="info-section-horizontal section-highlight">
+                <h4>Registro de Producción de Leche</h4>
+                {reporte5Data.FechaLeche ? (
+                  <p><strong>Última Fecha de Producción:</strong> {formatFecha(reporte5Data.FechaLeche)}</p>
+                ) : (
+                  <p>No hay datos de producción de leche.</p>
+                )}
+                <p><strong>Producción Diaria:</strong> {reporte5Data.ProduccionLeche || 'No disponible'} litros</p>
+              </div>
+
+              {/* Registro de Vacunación */}
+              <div className="info-section-horizontal section-highlight">
+                <h4>Registro de Vacunación</h4>
+                {reporte5Data.FechaVacunacion ? (
+                  <>
+                    <p><strong>Última Vacunación:</strong> {formatFecha(reporte5Data.FechaVacunacion)}</p>
+                    <p><strong>Tipo de Vacuna:</strong> {reporte5Data.TipoVacuna}</p>
+                    <p><strong>Dosis:</strong> {reporte5Data.DosisVacuna} ml</p>
+                    <p><strong>Próxima Vacunación:</strong> {formatFecha(reporte5Data.ProximaVacuna) || 'No disponible'}</p>
+                  </>
+                ) : (
+                  <p>No hay registros de vacunación.</p>
+                )}
+              </div>
+
+              {/* Historial de Traslados */}
+              <div className="info-section-horizontal">
+                <h4>Historial de Traslados</h4>
+                {reporte5Data.FechaTraslado ? (
+                  <>
+                    <p><strong>Finca de Origen:</strong> {reporte5Data.FincaOrigen}</p>
+                    <p><strong>Finca de Destino:</strong> {reporte5Data.FincaDestino}</p>
+                    <p><strong>Fecha de Traslado:</strong> {formatFecha(reporte5Data.FechaTraslado)}</p>
+                  </>
+                ) : (
+                  <p>No hay traslados registrados.</p>
+                )}
+              </div>
+
+              {/* Servicios y Parto Estimado */}
+              <div className="info-section-horizontal">
+                <h4>Servicios y Parto Estimado</h4>
+                {reporte5Data.FechaServicio ? (
+                  <>
+                    <p><strong>Fecha del Último Servicio:</strong> {formatFecha(reporte5Data.FechaServicio)}</p>
+                    <p><strong>Condición:</strong> {reporte5Data.CondicionServicio}</p>
+                    <p><strong>Edad del Servicio:</strong> {reporte5Data.EdadServicio} meses</p>
+                    <p><strong>Fecha Estimada de Parto:</strong> {formatFecha(reporte5Data.FechaEstimadaParto)}</p>
+                  </>
+                ) : (
+                  <p>No hay registros de servicios.</p>
+                )}
+              </div>
+
+              {/* Registro de Salidas */}
+              <div className="info-section-horizontal">
+                <h4>Registro de Salidas</h4>
+                {reporte5Data.FechaSalida ? (
+                  <>
+                    <p><strong>Fecha de Salida:</strong> {formatFecha(reporte5Data.FechaSalida)}</p>
+                    <p><strong>Motivo:</strong> {reporte5Data.MotivoSalida}</p>
+                    <p><strong>Comentarios:</strong> {reporte5Data.ComentariosSalida}</p>
+                  </>
+                ) : (
+                  <p>No hay registros de salida.</p>
+                )}
+              </div>
+
+              {/* Historial de Ventas */}
+              <div className="info-section-horizontal section-highlight">
+                <h4>Historial de Ventas</h4>
+                {reporte5Data.FechaVenta ? (
+                  <>
+                    <p><strong>Fecha de Venta:</strong> {formatFecha(reporte5Data.FechaVenta)}</p>
+                    <p><strong>Comprador:</strong> {reporte5Data.CompradorVenta}</p>
+                    <p><strong>Precio:</strong> ${reporte5Data.PrecioVenta}</p>
+                    <p><strong>Total:</strong> ${reporte5Data.TotalVenta}</p>
+                  </>
+                ) : (
+                  <p>No hay registros de ventas.</p>
                 )}
               </div>
             </div>
@@ -609,6 +800,7 @@ const ReporteGanadoScreen = () => {
             <p>No se ha encontrado información para el número ingresado.</p>
           )}
         </div>
+
       </div>
     </div>
 

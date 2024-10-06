@@ -26,7 +26,6 @@ body {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-
 .reporte-header h1 {
   margin: 0;
   font-size: 20px;
@@ -36,34 +35,113 @@ body {
 .info-section {
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 10px;
-  margin: 15px 0;
+  padding: 8px;
+  margin: 10px 0;
   background-color: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .info-section h4 {
   color: #4CAF50;
-  font-size: 18px;
+  font-size: 16px;
   border-bottom: 2px solid #4CAF50;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   padding-bottom: 5px;
 }
 
 .info-section p {
   margin: 5px 0;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* Grid de reportes */
 .reportes-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+  grid-template-rows: repeat(2, 1fr); /* 2 filas estándar */
   gap: 10px;
   width: 100%;
   max-width: 2200px;
   margin-top: 40px;
+}
+
+/* Estilos para el nuevo reporte en formato horizontal */
+.reporte-box-large {
+  grid-column: span 3; /* Ocupa las tres columnas de la tercera fila */
+  background-color: white;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 500px;
+  max-width: 100%;
+}
+
+.ficha-ganado-horizontal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px; /* Espacio entre las secciones */
+  width: 100%;
+}
+
+/* Ajuste dinámico de la altura de los cuadros */
+.info-section-horizontal {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  margin: 10px 0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  min-height: 200px; /* Se ajusta la altura mínima, lo que permite a cuadros con menos contenido reducir su tamaño */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centrar el contenido verticalmente */
+}
+
+/* Tamaño dinámico para ajustar cuadros con menos contenido */
+.info-section-horizontal {
+  min-height: 200px; /* Aumentar la altura mínima para darles más espacio */
+  margin-bottom: 20px; /* Añadir un poco más de espacio entre las secciones */
+  padding: 15px; /* Aumentar el padding para dar más aire al contenido */
+}
+
+/* Mejora de apariencia: aplicar el mismo acabado sofisticado */
+.info-section-horizontal h4 {
+  color: #4CAF50;
+  font-size: 16px;
+  border-bottom: 2px solid #4CAF50;
+  margin-bottom: 15px; /* Más espacio entre el título y el contenido */
+  padding-bottom: 10px;
+}
+
+/* Ajuste de imagen en la tarjeta */
+.ganado-img-container img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Reducción de márgenes y rellenos en general */
+.presentable-ficha {
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Mejora del hover para los cuadros con menos contenido */
+.info-section-horizontal:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Cuadros de reportes */
@@ -90,13 +168,14 @@ body {
 .scrollable-box {
   overflow-y: auto;
   max-height: 400px; /* Controlar la altura máxima del contenido */
-  overflow-x: hidden; /* Evitar el desbordamiento horizontal */
+  overflow-x: auto; /* Evitar el desbordamiento horizontal */
 }
 
 /* Responsividad de gráficos */
 .responsive-graph {
   width: 100%;
   height: 100%;
+  margin-top: 20px;
 }
 
 /* Ficha presentable */
@@ -277,13 +356,12 @@ body {
   background-color: #45a049;
 }
 
-
-
 /* Tabla para mostrar listado de animales */
 .reporte-tabla {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  overflow-x: auto; /* Agregar desplazamiento horizontal */
 }
 
 .reporte-tabla th, .reporte-tabla td {
@@ -304,4 +382,10 @@ body {
 .reporte-tabla tbody tr:hover {
   background-color: #f1f1f1;
   transition: background-color 0.3s ease;
+}
+
+/* Sección para alertas de producción */
+.alerta-alerta {
+  color: red;
+  font-weight: bold;
 }
