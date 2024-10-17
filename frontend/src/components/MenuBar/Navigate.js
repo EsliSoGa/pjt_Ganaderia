@@ -44,10 +44,8 @@ const Navigation = () => {
   const navItemsAdmin = [
     { label: "Inicio", path: "/profile" },
     { label: "Ganado", path: "/ganado" },
-    { label: "Salidas(Generales)", path: "/salida" },
-    { label: "Ventas(Generales)", path: "/venta" },
-    { label: "Leche", path: "/leche"},
-    { label: "Vacunacion", path: "/vacunas"},
+    { label: "Reportes", path: "/reporte-ganado" },
+    { label: "Actividades", path: "/actividades" },
     {
       label: "Aprobaciones",
       submenu: [
@@ -57,8 +55,6 @@ const Navigation = () => {
     },
     {label: "Herramientas",
       submenu: [
-        { label: "Actividades", path: "/actividades" },
-        { label: "Reportes", path: "/reporte-ganado" },
         { label: "Bitacora", path: "/bitacora" },
         { label: "Usuarios", path: "/usuario" }
       ]
@@ -71,6 +67,7 @@ const Navigation = () => {
     { label: "Ganado", path: "/ganado" },
     { label: "Salidas(Generales)", path: "/salida" },
     { label: "Ventas(Generales)", path: "/venta" },
+    { label: "Actividades", path: "/actividades" },
     {
       label: "Aprobaciones",
       submenu: [
@@ -80,7 +77,6 @@ const Navigation = () => {
     },
     {label: "Herramientas",
       submenu: [
-        { label: "Actividades", path: "/actividades" },
         { label: "Reportes", path: "/reporte-ganado" },
         { label: "Bitacora", path: "/bitacora" }
       ]

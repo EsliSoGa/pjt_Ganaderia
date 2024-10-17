@@ -185,7 +185,7 @@ const LecheForm = (props) => {
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Producción diaria*</label>
+                        <label>Producción semanal*</label>
                         <InputText
                             value={lecheData.Produccion_diaria}
                             onChange={(e) => updateField(e.target.value, "Produccion_diaria")}

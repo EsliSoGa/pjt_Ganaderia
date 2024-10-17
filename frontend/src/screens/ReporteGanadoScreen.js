@@ -165,6 +165,7 @@ const ReporteGanadoScreen = () => {
   const [reporte4Data, setReporte4Data] = useState([]);
   const [reporte5Data, setReporte5Data] = useState(null);
   const [reporte6Data, setReporte6Data] = useState([]);
+  const [actividades, setActividades] = useState([]);
 
   // Reporte 1: Obtener tipos de animales por finca
   const fetchReporte1 = async (selectedFinca) => {
@@ -266,6 +267,30 @@ const ReporteGanadoScreen = () => {
     // Aquí puedes agregar la lógica real para calcular la producción mensual acumulada
     return 1200; // Ejemplo estático
   }
+
+  // Reporte 5: Obtener las actividades del backend
+  const fetchActividades = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/actividades`);
+      const actividades = response.data;
+
+      // Ordenar las actividades por fecha (descendente)
+      const actividadesOrdenadas = actividades.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+      // Obtener solo la actividad más reciente
+      const actividadReciente = actividadesOrdenadas.length > 0 ? actividadesOrdenadas[0] : null;
+
+      setActividades(actividadReciente ? [actividadReciente] : []);
+    } catch (error) {
+      console.error('Error fetching activities', error);
+    }
+  };
+
+  useEffect(() => {
+    // Al obtener la ficha del ganado, también obtenemos las actividades
+    fetchActividades();
+  }, []);
+
 
   // Formatear datos para la gráfica de tendencia
   function formatearDatosGrafica(data) {
@@ -580,6 +605,22 @@ const ReporteGanadoScreen = () => {
                 )}
               </div>
 
+              {/* Nueva Sección: Actividades Calendarizadas */}
+              <div className="info-section section-highlight">
+                <h4>Actividad Calendarizada Más Reciente</h4>
+                {actividades.length > 0 ? (
+                  <div>
+                    <p><strong>Nombre:</strong> {actividades[0].nombre}</p>
+                    <p><strong>Descripción:</strong> {actividades[0].descripcion}</p>
+                    <p><strong>Fecha:</strong> {formatFecha(actividades[0].fecha)}</p>
+                    <p><strong>Comentarios:</strong> {actividades[0].comentarios}</p>
+                  </div>
+                ) : (
+                  <p>No hay actividades calendarizadas.</p>
+                )}
+              </div>
+
+
               {/* Registro de Salidas */}
               <div className="info-section">
                 <h4>Registro de Salidas</h4>
@@ -780,6 +821,22 @@ const ReporteGanadoScreen = () => {
                   <p>No hay registros de salida.</p>
                 )}
               </div>
+
+              {/* Nueva Sección: Actividades Calendarizadas */}
+              <div className="info-section section-highlight">
+                <h4>Actividad Calendarizada Más Reciente</h4>
+                {actividades.length > 0 ? (
+                  <div>
+                    <p><strong>Nombre:</strong> {actividades[0].nombre}</p>
+                    <p><strong>Descripción:</strong> {actividades[0].descripcion}</p>
+                    <p><strong>Fecha:</strong> {formatFecha(actividades[0].fecha)}</p>
+                    <p><strong>Comentarios:</strong> {actividades[0].comentarios}</p>
+                  </div>
+                ) : (
+                  <p>No hay actividades calendarizadas.</p>
+                )}
+              </div>
+
 
               {/* Historial de Ventas */}
               <div className="info-section-horizontal section-highlight">

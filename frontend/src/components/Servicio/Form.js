@@ -145,7 +145,7 @@ const ServicioForm = (props) => {
                         />
                     </div>
                     <div className="p-field" style={styles.formField}>
-                        <label>Edad*</label>
+                        <label>Meses de gestacion*</label>
                         <InputNumber
                             value={servicioData.Edad}
                             onChange={(e) => updateField(e.value, "Edad")}

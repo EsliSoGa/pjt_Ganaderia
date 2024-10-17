@@ -113,7 +113,7 @@ const LecheList = () => {
                         <Column body={numero} header="No." sortable className="table-column" />
                         <Column field="Numero" header="Ganado" sortable className="table-column" />
                         <Column field="Fecha" body={dateLeche} header="Fecha de producción" sortable className="table-column" />
-                        <Column field="Produccion_diaria" header="Producción diaria" sortable className="table-column" />
+                        <Column field="Produccion_diaria" header="Producción semanal" sortable className="table-column" />
                         <Column field="ganado.finca" header="Finca" sortable className="table-column" />
                     </DataTable>
                 </div>
