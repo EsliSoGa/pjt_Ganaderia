@@ -4,7 +4,10 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta_temporal',
+    mysqlconexion.query(`SELECT v.id, v.Fecha, Comprador, Precio, v.Peso, Total, Id_ganado, g.Numero
+    FROM venta_temporal as v
+    INNER JOIN ganado as g
+    on v.Id_ganado = g.id`,
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +25,10 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta_temporal WHERE id=?', 
+    mysqlconexion.query(`SELECT v.id, v.Fecha, Comprador, Precio, v.Peso, Total, Id_ganado, g.Numero
+    FROM venta_temporal as v
+    INNER JOIN ganado as g
+    on v.Id_ganado = g.id WHERE v.id=?`, 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -48,11 +54,10 @@ router.post('/', (req,res)=>{
         Id_ganado: req.body.Id_ganado
     };
     mysqlconexion.query(`INSERT INTO venta_temporal (Fecha, Comprador, Precio, Peso, Total, Id_ganado)
-	VALUES (?, ?, ?, ?, ?, ?);`,
+    VALUES (?, ?, ?, ?, ?, ?);`,
         [venta.Fecha, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado], 
         (error,rows,fields)=>{
             if(!error){
-                //res.json(rows);
                 console.log('Enviado');
                 res.send({
                     code:200,
@@ -85,7 +90,6 @@ router.put('/:id', (req,res)=>{
     [venta.Fecha, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
-                //res.json(rows);
                 res.send({
                     code:200,
                     success:"Actualizado correctamente",
@@ -106,7 +110,6 @@ router.delete('/:id', (req,res)=>{
     const {id} = req.params;
     mysqlconexion.query('DELETE FROM venta_temporal WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
-            //res.json(rows);
             res.send({
                 code:200,
                 success:"Eliminado correctamente",
@@ -120,6 +123,58 @@ router.delete('/:id', (req,res)=>{
                 error : error});
         }
     })
+});
+
+//Aprobación de venta
+router.post('/aprobar', (req, res) => {
+    const venta = {
+        id: req.body.id,
+        idUsuario: req.body.id_usuario
+    };
+
+    mysqlconexion.query(`SELECT Id_ganado FROM venta_temporal WHERE id = ?`, [venta.id], (error, results) => {
+        if (error) {
+            console.log(error);
+            res.send({
+                code: 400,
+                failed: "error occurred",
+                error: error
+            });
+        } else if (results.length > 0) {
+            const idGanado = results[0].Id_ganado;
+            mysqlconexion.query(`UPDATE ganado SET estado = 0 WHERE id = ?`, [idGanado], (updateError, updateResults) => {
+                if (updateError) {
+                    console.log(updateError);
+                    res.send({
+                        code: 400,
+                        failed: "error occurred",
+                        error: updateError
+                    });
+                } else {
+                    mysqlconexion.query('DELETE FROM venta_temporal WHERE id = ?', [venta.id], (deleteError, deleteResults) => {
+                        if (deleteError) {
+                            console.log(deleteError);
+                            res.send({
+                                code: 400,
+                                failed: "error occurred",
+                                error: deleteError
+                            });
+                        } else {
+                            res.send({
+                                code: 200,
+                                success: "Venta aprobada y ganado actualizado correctamente",
+                            });
+                        }
+                    });
+                }
+            });
+        } else {
+            res.send({
+                code: 400,
+                failed: "Venta no encontrada"
+            });
+        }
+    });
 });
 
 module.exports = router;

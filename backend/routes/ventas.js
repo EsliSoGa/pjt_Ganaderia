@@ -4,7 +4,11 @@ const mysqlconexion = require('../db');
 
 //get
 router.get('/',(req,res)=>{
-    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta',
+    mysqlconexion.query(`SELECT v.id, v.Fecha, Comprador, Precio, v.Peso, Total, Id_ganado, g.Numero, g.Nombre
+    FROM venta as v
+    INNER JOIN ganado as g
+    on v.Id_ganado = g.id
+    ORDER BY v.id desc`,
     (error,rows,fields)=>{
         if(!error){
             res.json(rows);
@@ -22,7 +26,10 @@ router.get('/',(req,res)=>{
 //get con ID
 router.get('/:id', (req,res)=>{
     const {id} = req.params;
-    mysqlconexion.query('SELECT id, Fecha, Comprador, Precio, Peso, Total, Id_ganado FROM venta WHERE id=?', 
+    mysqlconexion.query(`SELECT v.id, v.Fecha, Comprador, Precio, v.Peso, Total, Id_ganado, g.Numero, g.Nombre
+    FROM venta as v
+    INNER JOIN ganado as g
+    on v.Id_ganado = g.id WHERE v.id=?`, 
         [id],(error,rows,fields)=>{
         if (!error){
             res.json(rows[0]);
@@ -45,14 +52,22 @@ router.post('/', (req,res)=>{
         Precio: req.body.Precio,
         Peso: req.body.Peso,
         Total: req.body.Total,
-        Id_ganado: req.body.Id_ganado
+        Id_ganado: req.body.Id_ganado,
+        descripcion: "Nombre: " + req.body.Nombre + ", Numero: " +req.body.Numero + ", Comprador: "+ req.body.Comprador + ", Fecha: "+ req.body.Fecha +", Total:"+req.body.Total,
+        id_usuario: req.body.id_usuario
     };
     mysqlconexion.query(`INSERT INTO venta (Fecha, Comprador, Precio, Peso, Total, Id_ganado)
 	VALUES (?, ?, ?, ?, ?, ?);`,
         [venta.Fecha, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado], 
         (error,rows,fields)=>{
             if(!error){
-                //res.json(rows);
+                mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario)
+                VALUES ('Crear venta', ?, now(), ?);`,
+                [venta.descripcion, venta.id_usuario], (error2,rows2,fields2)=>{
+                    if(error2){
+                        console.log(error2);
+                    }
+                })
                 console.log('Enviado');
                 res.send({
                     code:200,
@@ -78,14 +93,22 @@ router.put('/:id', (req,res)=>{
         Precio: req.body.Precio,
         Peso: req.body.Peso,
         Total: req.body.Total,
-        Id_ganado: req.body.Id_ganado
+        Id_ganado: req.body.Id_ganado,
+        descripcion: "Nombre: " + req.body.Nombre + ", Numero: " +req.body.Numero + ", Comprador: "+ req.body.Comprador + ", Fecha: "+ req.body.Fecha +", Total:"+req.body.Total,
+        id_usuario: req.body.id_usuario
     };
     mysqlconexion.query(`UPDATE venta SET Fecha=?, Comprador=?, Precio=?, Peso=?, Total=?, Id_ganado=?
     WHERE id=?`,
     [venta.Fecha, venta.Comprador, venta.Precio, venta.Peso, venta.Total, venta.Id_ganado, id], 
         (error,rows,fields)=>{
             if(!error){
-                //res.json(rows);
+                mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+                VALUES ('Actualización de venta', ?, now(), ?);`,
+                [venta.descripcion, venta.id_usuario], (error2,rows2,fields2)=>{
+                    if(error2){
+                        console.log(error2);
+                    }
+                })
                 res.send({
                     code:200,
                     success:"Actualizado correctamente",
@@ -104,9 +127,19 @@ router.put('/:id', (req,res)=>{
 //delete
 router.delete('/:id', (req,res)=>{
     const {id} = req.params;
+    const venta = {
+        descripcion: "Nombre: " + req.body.Nombre + ", Numero: " +req.body.Numero + ", Comprador: "+ req.body.Comprador + ", Fecha: "+ req.body.Fecha +", Total:"+req.body.Total,
+        id_usuario: req.body.id_usuario
+    };
     mysqlconexion.query('DELETE FROM venta WHERE id=?',[id], (error,rows,fields)=>{
         if(!error){
-            //res.json(rows);
+            mysqlconexion.query(`INSERT bitacora(Accion, Descripcion, Fecha, Id_usuario) 
+            VALUES ('Eliminar venta', ?, now(), ?);`,
+            [venta.descripcion, venta.id_usuario], (error2,rows2,fields2)=>{
+                if(error2){
+                    console.log(error2);
+                }
+            })
             res.send({
                 code:200,
                 success:"Eliminado correctamente",

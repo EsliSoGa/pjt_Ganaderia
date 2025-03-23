@@ -15,4 +15,7 @@ export class TempVentaService {
     delete(id){
         return axios.delete(this.url+id).then(res=> res.data);
     }
+    aprobar(venta){
+        return axios.post(this.url+'aprobar', venta).then(res=> res.data);
+    }
 }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export class TempSalidaService {
-    url = "http://localhost:8080/tmpSalida/";
+    url = "http://localhost:8080/tmpsalida/";
 
     create(salidas){
         return axios.post(this.url, salidas).then(res=> res.data);
@@ -14,5 +14,8 @@ export class TempSalidaService {
     }
     delete(id){
         return axios.delete(this.url+id).then(res=> res.data);
+    }
+    aprobar(salida){
+        return axios.post(this.url+'aprobar', salida).then(res=> res.data);
     }
 }

@@ -1,45 +1,61 @@
-import React, {useContext, useState, useEffect, useRef} from "react";
-import {Dialog} from "primereact/dialog";
+import React, { useContext, useState, useEffect, useRef } from "react";
+import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
-import {InputText} from "primereact/inputtext";
+import { InputText } from "primereact/inputtext";
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { Toast } from 'primereact/toast';
-import { Calendar } from "primereact/calendar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
+import axios from 'axios';
 
 import { TempSalidaContext } from "../../context/TempSalidaContext";
 
-const TempSalidaForm =(props) =>{
-    const {idTS, isVisible, setIsVisible} = props;
+const TempSalidaForm = (props) => {
+    const { idTS, isVisible, setIsVisible } = props;
     const [isVisibleDelete, setisVisibleDelete] = useState(false);
 
     const {
         createTempSalida,
         deleteTempSalida,
         editTempSalida,
-        updateTempSalida
+        updateTempSalida,
+        ganados
     } = useContext(TempSalidaContext);
 
-    const inicialTempSalidasState ={
-        id:null,
-        Fecha:"",
-        Motivo:"",
-        Imagen:"",
+    const inicialTempSalidasState = {
+        id: null,
+        Fecha: "",
+        Motivo: "",
+        Imagen: "",
         Comentarios: "",
-        Id_ganado:idTS
+        Id_ganado: idTS,
+        Numero: ""
     };
 
     const [tempSalidaData, setTempSalidaData] = useState(inicialTempSalidasState);
+    const [imageFile, setImageFile] = useState(null);
+    const toast = useRef(null);
 
     useEffect(() => {
-        if (editTempSalida) setTempSalidaData(editTempSalida);
-    }, [editTempSalida]);
+        if (editTempSalida) {
+            setTempSalidaData(editTempSalida);
+        } else {
+            const ganado = ganados.find((p) => p.id === parseInt(idTS));
+            if (ganado) {
+                setTempSalidaData((prevState) => ({
+                    ...prevState,
+                    Numero: ganado.numero
+                }));
+            }
+        }
+    }, [editTempSalida, ganados, idTS]);
 
-    const updateField = (data, field) =>{
+    const updateField = (data, field) => {
         setTempSalidaData({
             ...tempSalidaData,
-            [field]:data
-        })
+            [field]: data
+        });
     };
 
     const clearSelected = () => {
@@ -47,29 +63,51 @@ const TempSalidaForm =(props) =>{
         setTempSalidaData(inicialTempSalidasState);
     };
 
-    const saveTempSalida = () => {
-        if(tempSalidaData.Fecha==="" || tempSalidaData.Motivo=== "" || tempSalidaData.Comentarios === ""){
+    const saveTempSalida = async () => {
+        if (tempSalidaData.Fecha === "" || tempSalidaData.Motivo === "" || tempSalidaData.Comentarios === "") {
             showInfo();
-        }
-        else{
-            tempSalidaData.Fecha = moment(tempSalidaData.Fecha).format("YYYY-MM-DD");
+        } else {
+            const formattedDate = tempSalidaData.Fecha ? moment(tempSalidaData.Fecha).format("YYYY-MM-DD") : null;
+            const tempSalidaDataWithFormattedDate = {
+                ...tempSalidaData,
+                Fecha: formattedDate,
+            };
+
+            if (imageFile) {
+                try {
+                    const formData = new FormData();
+                    formData.append('image', imageFile);
+
+                    const response = await axios.post('http://localhost:8080/tmpsalida/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+                    tempSalidaDataWithFormattedDate.Imagen = response.data.filePath;
+                } catch (error) {
+                    toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error al subir la imagen' });
+                    return;
+                }
+            }
+
             if (!editTempSalida) {
-                createTempSalida(tempSalidaData);
+                createTempSalida(tempSalidaDataWithFormattedDate);
             } else {
-                updateTempSalida(tempSalidaData);
+                tempSalidaDataWithFormattedDate.id_usuario = 2;
+                updateTempSalida(tempSalidaDataWithFormattedDate);
             }
             clearSelected();
         }
     };
 
-    const toast = useRef(null);
-
     const showInfo = () => {
-        toast.current.show({severity:'info', summary: 'Mensaje', detail:'Debe de llenar todos los campos requeridos (*)', life: 3000});
+        toast.current.show({ severity: 'info', summary: 'Mensaje', detail: 'Debe de llenar todos los campos requeridos (*)', life: 3000 });
     }
 
     const _deleteTempSalida = () => {
         if (editTempSalida) {
+            tempSalidaData.id_usuario = 2;
             deleteTempSalida(tempSalidaData.id);
             showError();
         }
@@ -77,71 +115,94 @@ const TempSalidaForm =(props) =>{
     };
 
     const showError = () => {
-        toast.current.show({severity:'error', summary: 'Eliminado', detail:'Se ha eliminado con éxito', life: 3000});
+        toast.current.show({ severity: 'error', summary: 'Eliminado', detail: 'Se ha eliminado con éxito', life: 3000 });
     }
 
-    const dialogFooter=(
-        <div className="ui-dialog-buttonpane p-clearfix">
+    const dialogFooter = (
+        <div style={styles.dialogFooter}>
             <ConfirmDialog visible={isVisibleDelete} onHide={() => setisVisibleDelete(false)} message="¿Está seguro de eliminar?"
-                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTempSalida} reject={clearSelected} 
+                header="Confirmación de eliminación" icon="pi pi-info-circle" accept={_deleteTempSalida} reject={clearSelected}
                 acceptClassName="p-button-danger"
-                />
-            <Button className="p-button-raised p-button-rounded mb-3 p-button-info" 
+            />
+            <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 icon="pi pi-times" label="Eliminar"
-                onClick={() => setisVisibleDelete(true)}/>
+                onClick={() => setisVisibleDelete(true)} />
             <Button className="p-button-raised p-button-rounded mb-3 p-button-info"
                 label="Guardar" icon="pi pi-check"
-                onClick={saveTempSalida}/>
+                onClick={saveTempSalida} />
         </div>
     );
 
-    return(<div>
-        <Toast ref={toast}></Toast>
-        <Dialog
-            visible={isVisible}
-            modal={true}
-            style={{width:"420px"}}
-            contentStyle={{overflow:"visible"}}
-            header = "Detalles de salida"
-            onHide={()=>clearSelected()}
-            footer={dialogFooter}
-        >
-            <div className="p-grid p-fluid">
-                <br/>
-                <div className="p-float-label">
-                    <Calendar
-                        value={tempSalidaData.Fecha && new Date(tempSalidaData.Fecha)}
-                        onChange={(e) => updateField(e.target.value.toISOString(), "Fecha")}
-                        dateFormat="dd-mm-yy"
-                    />
-                    <label>Fecha*</label>
+    return (
+        <div>
+            <Toast ref={toast} position="top-center"></Toast>
+            <Dialog
+                visible={isVisible}
+                modal={true}
+                style={{ width: "550px" }}
+                contentStyle={{ overflow: "visible" }}
+                header="Detalles de salida"
+                onHide={() => clearSelected()}
+                footer={dialogFooter}
+            >
+                <div style={styles.formGrid}>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Ganado Número*</label>
+                        <InputText
+                            value={tempSalidaData.Numero}
+                            disabled
+                        />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Fecha*</label>
+                        <DatePicker
+                            selected={tempSalidaData.Fecha ? new Date(tempSalidaData.Fecha) : null}
+                            onChange={(date) => updateField(date, "Fecha")}
+                            dateFormat="dd-MM-yyyy"
+                        />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Motivo*</label>
+                        <InputText
+                            value={tempSalidaData.Motivo}
+                            onChange={(e) => updateField(e.target.value, "Motivo")}
+                        />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Imagen*</label>
+                        <InputText
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setImageFile(e.target.files[0])}
+                        />
+                    </div>
+                    <div className="p-field" style={styles.formField}>
+                        <label>Comentarios*</label>
+                        <InputText
+                            value={tempSalidaData.Comentarios}
+                            onChange={(e) => updateField(e.target.value, "Comentarios")}
+                        />
+                    </div>
                 </div>
-                <br/>
-                <div className="p-float-label">
-                    <InputText
-                        value={tempSalidaData.Motivo}
-                        onChange={(e)=>updateField(e.target.value, "Motivo")}
-                    />
-                    <label>Motivo*</label>
-                </div>
-                <br />
-                <div className="p-float-label"> 
-                    <InputText
-                        value={tempSalidaData.Imagen}
-                        onChange={(e)=>updateField(e.target.value, "Imagen")}
-                    />
-                    <label>Imagen*</label>
-                </div><br />
-                <div className="p-float-label">
-                    <InputText
-                        value={tempSalidaData.Comentarios}
-                        onChange={(e)=>updateField(e.target.value, "Comentarios")}
-                    />
-                    <label>Comentarios*</label>
-                </div>
-            </div>
-        </Dialog>
-    </div>);
+            </Dialog>
+        </div>
+    );
 }
+
+const styles = {
+    formGrid: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+    },
+    formField: {
+        marginBottom: '15px',
+    },
+    dialogFooter: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '10px 0',
+    }
+};
 
 export default TempSalidaForm;
