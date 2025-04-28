@@ -19,6 +19,7 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "date-fns": "^3.6.0",
     "framer-motion": "^11.5.4",
+    "frontend": "file:",
     "http-proxy-middleware": "^3.0.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
